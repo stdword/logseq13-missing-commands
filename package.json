@@ -1,0 +1,41 @@
+{
+    "name": "logseq13-missing-commands",
+    "version": "0.0.1",
+    "description": "Sorting blocks, auto heading, split by sentences, remove numbering, etc.",
+    "author": "stdword",
+    "repository": "https://github.com/stdword/logseq13-missing-commands.git",
+    "license": "MIT",
+    "logseq": {
+        "id": "logseq13-missing-commands",
+        "title": "Missing Commands for Logseq",
+        "icon": "./icon.png",
+        "main": "./dist/index.html"
+    },
+    "scripts": {
+        "preinstall": "npx only-allow pnpm",
+        "clean": "rm -r ./dist/* || true",
+        "dev": "vite",
+        "build": "tsc && vite build --mode=dev",
+        "prod": "tsc && pnpm run clean && vite build"
+    },
+    "dependencies": {
+        "@logseq/libs": "^0.0.15"
+    },
+    "devDependencies": {
+        "@semantic-release/changelog": "^6.0.3",
+        "@semantic-release/exec": "^6.0.3",
+        "@semantic-release/git": "^10.0.1",
+        "@types/node": "^20.10.4",
+        "conventional-changelog-conventionalcommits": "^7.0.2",
+        "cz-conventional-changelog": "^3.3.0",
+        "semantic-release": "^22.0.10",
+        "typescript": "^5.3.3",
+        "vite": "^5.0.7",
+        "vite-plugin-logseq": "^1.1.2"
+    },
+    "config": {
+        "commitizen": {
+            "path": "cz-conventional-changelog"
+        }
+    }
+}
