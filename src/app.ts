@@ -35,7 +35,7 @@ async function main() {
     })
 
     logseq.App.registerCommandPalette({
-        label: '🪚 Toggle Auto Heading', key: 'toggle-auto-heading',
+        label: '🪚 Toggle auto heading', key: 'toggle-auto-heading',
         keybinding: {mac: 'mod+1', binding: 'ctrl+1', mode: 'global'},
     }, (e) => toggleAutoHeadingCommand({togglingBasedOnFirstBlock: true}) )
 
