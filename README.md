@@ -47,7 +47,7 @@ Missing, but helpful commands for [Logseq](https://logseq.com).
 
 ## Installation
 ### From Logseq Marketplace (recommended way):
-<span>    </span><img width="40%" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/71c268a1-e752-416f-9364-45e47c89d6e7" />
+<span>    </span><img width="403px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/71c268a1-e752-416f-9364-45e47c89d6e7" />
 
 - Click «...» and open the «Plugins» section (or press `t p`)
 - Click on the «Marketplace»
