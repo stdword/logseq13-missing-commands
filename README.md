@@ -33,6 +33,8 @@ Missing, but helpful commands for [Logseq](https://logseq.com).
 ## Toggle Auto Heading
 <kbd>⌘1</kbd> / <kbd>ctrl+1</kbd>
 
+<img width="250px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/9c3295ff-1386-4cbd-a527-4cfd7c37211b"/>
+
 
 
 ## If you ❤️ what I'm doing — consider to support my work
@@ -45,7 +47,7 @@ Missing, but helpful commands for [Logseq](https://logseq.com).
 
 ## Installation
 ### From Logseq Marketplace (recommended way):
-<span>    </span><img width="40%" src="https://github.com/stdword/logseq13-shorten-my-links/assets/1984175/6ff0bf83-eec2-4459-a5ac-b514534efdb9" />
+<span>    </span><img width="40%" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/71c268a1-e752-416f-9364-45e47c89d6e7" />
 
 - Click «...» and open the «Plugins» section (or press `t p`)
 - Click on the «Marketplace»
@@ -64,8 +66,7 @@ Missing, but helpful commands for [Logseq](https://logseq.com).
 ### How to change default shortcut for the particular command?
 1. Open «Settings» → «Keymap» (or press `g s`).
 2. Copy this emoji «🪚» and insert it to search input.
-3. Change any shortcut you want
-   <img width="800px" src="https://github.com/stdword/logseq13-shorten-my-links/assets/1984175/76d23bb5-f7fb-4ed5-acee-ddb138cbd334"/>
+3. Change any shortcut you want <br/><img width="700px" src="https://github.com/stdword/logseq13-shorten-my-links/assets/1984175/76d23bb5-f7fb-4ed5-acee-ddb138cbd334"/>
 
 
 ## Credits
