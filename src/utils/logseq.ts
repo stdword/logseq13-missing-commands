@@ -3,20 +3,19 @@ import { BlockEntity } from '@logseq/libs/dist/LSPlugin.user'
 import { f, indexOfNth, p, sleep } from './other'
 
 
-/**
- * @returns pair [UUID, false] in case of currently editing block
- * @returns pair [UUID, true] in case of selected block (outside of editing mode)
- * @returns null in case of none of the blocks are selected (outside of editing mode)
- */
-export async function getChosenBlock(): Promise<[string, boolean] | null> {
-    const selected = (await logseq.Editor.getSelectedBlocks()) ?? []
-    const editing = await logseq.Editor.checkEditing()
-    if (!editing && selected.length === 0)
-        return null
+export async function getChosenBlocks(): Promise<[BlockEntity[], boolean]> {
+    const selected = await logseq.Editor.getSelectedBlocks()
+    if (selected)
+        return [selected, true]
 
-    const isSelectedState = selected.length !== 0
-    const uuid = isSelectedState ? selected[0].uuid : editing as string
-    return [ uuid, isSelectedState ]
+    const uuid = await logseq.Editor.checkEditing()
+    if (!uuid)
+        return [[], false]
+
+    return [
+        [await logseq.Editor.getBlock(uuid as string) as BlockEntity],
+        false,
+    ]
 }
 
 export async function insertContent(
@@ -194,6 +193,9 @@ export class PropertiesUtils {
         if (block.propertiesTextValues)
             delete block.propertiesTextValues[nameCamelCased]
 
+        block.content = PropertiesUtils.deletePropertyFromString(block.content, name)
+    }
+    static deletePropertyFromString(content: string, name: string): string {
         // case when properties in content use different style of naming
         //   logseq-prop-name
         //   logseq_prop_name
@@ -201,7 +203,21 @@ export class PropertiesUtils {
         // all this names is the same for logseq → we should erase all
         for (const n of [name, name.replaceAll('-', '_'), name.replaceAll('_', '-')]) {
             const propRegexp = PropertiesUtils.propertyContentFormat({name: n})
-            block.content = block.content.replaceAll(new RegExp(propRegexp, 'gim'), '')
+            content = content.replaceAll(new RegExp(propRegexp, 'gim'), '')
         }
+        return content
+    }
+    static deleteAllProperties(content: string): string {
+        for (const name of PropertiesUtils.getPropertyNames(content))
+            content = PropertiesUtils.deletePropertyFromString(content, name)
+        return content
+    }
+    static getPropertyNames(text: string): string[] {
+        const propertyNames: string[] = []
+        const propertyLine = new RegExp(PropertiesUtils.propertyContentFormat({
+            name: `([^${PropertiesUtils.propertyRestrictedChars}]+)`
+        }), 'gim')
+        text.replaceAll(propertyLine, (m, name) => {propertyNames.push(name); return m})
+        return propertyNames
     }
 }
