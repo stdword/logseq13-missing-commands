@@ -36,7 +36,7 @@ async function main() {
     })
 
     logseq.App.registerCommandPalette({
-        label: '🪚 Toggle auto heading', key: 'toggle-auto-heading',
+        label: '🪚 Toggle auto heading', key: 'auto-heading',
         keybinding: {mac: 'mod+1', binding: 'ctrl+1', mode: 'global'},
     }, (e) => toggleAutoHeadingCommand({togglingBasedOnFirstBlock: true}) )
 
@@ -49,7 +49,7 @@ async function main() {
 
     // Navigation
     logseq.App.registerCommandPalette({
-        label: '🪚 Edit parent block', key: 'edit-parent-block',
+        label: '🪚 Go to (↖︎) parent block', key: 'edit-block-1-deep-dive-out',
         keybinding: {mac: 'mod+alt+left', binding: 'ctrl+alt+left', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
@@ -65,7 +65,7 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        label: '🪚 Edit last child block', key: 'edit-last-child-block',
+        label: '🪚 Go to (↘︎) last child block', key: 'edit-block-2-deep-dive-in',
         keybinding: {mac: 'mod+alt+right', binding: 'ctrl+alt+right', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
@@ -82,8 +82,8 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        label: '🪚 Edit previous sibling block', key: 'edit-prev-sibling-block',
-        keybinding: {mac: 'mod+alt+up', binding: 'ctrl+alt+up', mode: 'global'},
+        label: '🪚 Go to |↑| previous sibling block', key: 'edit-block-5-prev-sibling',
+        keybinding: {mac: 'ctrl+shift+up', binding: 'ctrl+shift+up', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
         const [first] = blocks
@@ -102,8 +102,8 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        label: '🪚 Edit next sibling block', key: 'edit-next-sibling-block',
-        keybinding: {mac: 'mod+alt+down', binding: 'ctrl+alt+down', mode: 'global'},
+        label: '🪚 Go to |↓| next sibling block', key: 'edit-block-6-next-sibling',
+        keybinding: {mac: 'ctrl+shift+down', binding: 'ctrl+shift+down', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
         const [first] = blocks
@@ -122,8 +122,8 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        label: '🪚 Edit previous block', key: 'edit-prev-block',
-        keybinding: {mac: 'alt+up', binding: 'alt+up', mode: 'global'},
+        label: '🪚 Go to (↑) previous block', key: 'edit-block-3-step-up',
+        keybinding: {mac: 'mod+alt+up', binding: 'ctrl+alt+up', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
         let [current] = blocks
@@ -162,8 +162,8 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        label: '🪚 Edit next block', key: 'edit-next-block',
-        keybinding: {mac: 'alt+down', binding: 'alt+down', mode: 'global'},
+        label: '🪚 Go to (↓) next block', key: 'edit-block-4-step-down',
+        keybinding: {mac: 'mod+alt+down', binding: 'ctrl+alt+down', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
         let [current] = blocks
