@@ -45,6 +45,168 @@ async function main() {
         // @ts-expect-error
         keybinding: {},
     }, (e) => splitByParagraphsCommand() )
+
+
+    // Navigation
+    logseq.App.registerCommandPalette({
+        label: '🪚 Edit parent block', key: 'edit-parent-block',
+        keybinding: {mac: 'mod+alt+left', binding: 'ctrl+alt+left', mode: 'global'},
+    }, async (e) => {
+        const [blocks] = await getChosenBlocks()
+        const [first] = blocks
+        if (!first)
+            return
+
+        if (first.parent.id === first.page.id)
+            return
+
+        const parentBlock = await logseq.Editor.getBlock(first.parent.id) as BlockEntity
+        await logseq.Editor.editBlock(parentBlock.uuid)
+    } )
+
+    logseq.App.registerCommandPalette({
+        label: '🪚 Edit last child block', key: 'edit-last-child-block',
+        keybinding: {mac: 'mod+alt+right', binding: 'ctrl+alt+right', mode: 'global'},
+    }, async (e) => {
+        const [blocks] = await getChosenBlocks()
+        const [first] = blocks
+        if (!first)
+            return
+
+        const tree = await logseq.Editor.getBlock(first.uuid, {includeChildren: true}) as BlockEntity
+        if (!tree.children || tree.children.length === 0)
+            return
+
+        const lastChild = tree.children!.at(-1)! as BlockEntity
+        await logseq.Editor.editBlock(lastChild.uuid)
+    } )
+
+    logseq.App.registerCommandPalette({
+        label: '🪚 Edit previous sibling block', key: 'edit-prev-sibling-block',
+        keybinding: {mac: 'mod+alt+up', binding: 'ctrl+alt+up', mode: 'global'},
+    }, async (e) => {
+        const [blocks] = await getChosenBlocks()
+        const [first] = blocks
+        if (!first)
+            return
+
+        const prevBlock = await logseq.Editor.getPreviousSiblingBlock(first.uuid)
+        if (!prevBlock)
+            return
+
+        const cursorPosition = (await logseq.Editor.getEditingCursorPosition())?.pos
+        await logseq.Editor.editBlock(
+            prevBlock.uuid,
+            cursorPosition ? {pos: cursorPosition} : undefined
+        )
+    } )
+
+    logseq.App.registerCommandPalette({
+        label: '🪚 Edit next sibling block', key: 'edit-next-sibling-block',
+        keybinding: {mac: 'mod+alt+down', binding: 'ctrl+alt+down', mode: 'global'},
+    }, async (e) => {
+        const [blocks] = await getChosenBlocks()
+        const [first] = blocks
+        if (!first)
+            return
+
+        const nextBlock = await logseq.Editor.getNextSiblingBlock(first.uuid)
+        if (!nextBlock)
+            return
+
+        const cursorPosition = (await logseq.Editor.getEditingCursorPosition())?.pos
+        await logseq.Editor.editBlock(
+            nextBlock.uuid,
+            cursorPosition ? {pos: cursorPosition} : undefined
+        )
+    } )
+
+    logseq.App.registerCommandPalette({
+        label: '🪚 Edit previous block', key: 'edit-prev-block',
+        keybinding: {mac: 'alt+up', binding: 'alt+up', mode: 'global'},
+    }, async (e) => {
+        const [blocks] = await getChosenBlocks()
+        let [current] = blocks
+        if (!current)
+            return
+
+        await logseq.Editor.exitEditingMode()
+
+        let prevBlock = await logseq.Editor.getPreviousSiblingBlock(current.uuid)
+        if (prevBlock) {
+            let iteration = prevBlock
+            while (true) {
+                if (!iteration['collapsed?']) {
+                    const tree = await logseq.Editor.getBlock(iteration.uuid, {includeChildren: true}) as BlockEntity
+                    if (tree.children && tree.children.length !== 0) {
+                        iteration = tree.children.at(-1) as BlockEntity
+                        continue
+                    }
+                }
+
+                prevBlock = iteration
+                break
+            }
+        } else {
+            if (current.parent.id === current.page.id) {
+                // no prev block at all → go to the start of current
+                await logseq.Editor.editBlock(current.uuid, {pos: 0})
+                return
+            }
+
+            const parent = await logseq.Editor.getBlock(current.parent.id) as BlockEntity
+            prevBlock = parent
+        }
+
+        await logseq.Editor.editBlock((prevBlock as BlockEntity).uuid)
+    } )
+
+    logseq.App.registerCommandPalette({
+        label: '🪚 Edit next block', key: 'edit-next-block',
+        keybinding: {mac: 'alt+down', binding: 'alt+down', mode: 'global'},
+    }, async (e) => {
+        const [blocks] = await getChosenBlocks()
+        let [current] = blocks
+        if (!current)
+            return
+
+        await logseq.Editor.exitEditingMode()
+
+        let nextBlock: BlockEntity | null = null
+        if (!current['collapsed?']) {
+            const tree = await logseq.Editor.getBlock(current.uuid, {includeChildren: true}) as BlockEntity
+            if (tree.children && tree.children.length !== 0)
+                nextBlock = tree.children[0] as BlockEntity
+        }
+
+        if (!nextBlock)
+            while (true) {
+                if (!nextBlock) {
+                    nextBlock = await logseq.Editor.getNextSiblingBlock(current.uuid)
+                    if (nextBlock)
+                        break
+                }
+
+                if (current.parent.id === current.page.id)
+                    break
+
+                const parent = await logseq.Editor.getBlock(current.parent.id) as BlockEntity
+                current = parent
+
+                nextBlock = await logseq.Editor.getNextSiblingBlock(parent.uuid)
+                if (nextBlock)
+                    break
+            }
+
+        if (!nextBlock) {
+            // no next block at all → go to the end of current
+            await logseq.Editor.editBlock(current.uuid)
+            return
+        }
+
+        await logseq.Editor.editBlock((nextBlock as BlockEntity).uuid, {pos: 0})
+    } )
+
     await postInit()
 }
 
