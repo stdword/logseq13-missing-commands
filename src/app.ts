@@ -258,6 +258,27 @@ async function main() {
         await logseq.Editor.moveBlock(first.uuid, bottommost.uuid, {before: false, children: false})
         await scrollToBlock(first)
     } )
+
+    logseq.App.registerCommandPalette({
+        label: '🪚 Outdent (⇤) children of the block', key: 'move-block-0-outdent-children',
+        keybinding: {mac: 'mod+alt+tab', binding: 'ctrl+alt+tab', mode: 'global'},
+    }, async (e) => {
+        const [blocks] = await getChosenBlocks()
+        for (const block of blocks) {
+            const tree = await logseq.Editor.getBlock(block.uuid, {includeChildren: true})
+            if (!tree)
+                continue
+
+            for (const child of (tree.children ?? []).toReversed()) {
+                await logseq.Editor.moveBlock(
+                    (child as BlockEntity).uuid,
+                    block.uuid,
+                    {before: false, children: false},
+                )
+            }
+        }
+    } )
+
     await postInit()
 }
 
