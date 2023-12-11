@@ -1,4 +1,4 @@
-import { BlockEntity } from '@logseq/libs/dist/LSPlugin.user'
+import { BlockEntity, PageEntity } from '@logseq/libs/dist/LSPlugin.user'
 
 import { f, indexOfNth, p, sleep } from './other'
 
@@ -219,5 +219,21 @@ export class PropertiesUtils {
         }), 'gim')
         text.replaceAll(propertyLine, (m, name) => {propertyNames.push(name); return m})
         return propertyNames
+    }
+}
+
+// scroll to block if it has disappeared from view
+export async function scrollToBlock(block: BlockEntity) {
+    const position = (await logseq.Editor.getEditingCursorPosition())?.pos  // editing mode?
+    const view = await logseq.App.queryElementRect(`.ls-block[blockid="${block.uuid}"]`)
+    if (view && (view.top < 0 || view.bottom > top!.window.innerHeight)) {
+        const page = await logseq.Editor.getPage(block.page.id) as PageEntity
+        logseq.Editor.scrollToBlockInPage(page.name, block.uuid)
+
+        // .scrollToBlockInPage exists editing mode — return to it if necessary
+        if (position) {
+            await sleep(250)
+            await logseq.Editor.editBlock(block.uuid, {pos: position})
+        }
     }
 }

@@ -1,7 +1,7 @@
-import { BlockEntity, SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin.user'
+import { BlockEntity, PageEntity, SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin.user'
 
 import { splitByParagraphsCommand, toggleAutoHeadingCommand } from './commands'
-import { getChosenBlocks, p } from './utils'
+import { getChosenBlocks, p, scrollToBlock, sleep } from './utils'
 import { log } from 'console'
 
 
@@ -207,6 +207,57 @@ async function main() {
         await logseq.Editor.editBlock((nextBlock as BlockEntity).uuid, {pos: 0})
     } )
 
+
+    // Movements
+    logseq.App.registerCommandPalette({
+        label: '🪚 Move block (⤒) on top of siblings', key: 'move-block-1-on-top',
+        keybinding: {mac: 'mod+alt+shift+up', binding: 'ctrl+alt+shift+up', mode: 'global'},
+    }, async (e) => {
+        const [blocks] = await getChosenBlocks()
+        const [first] = blocks
+        if (!first)
+            return
+
+        // already on top
+        if (first.parent.id === first.left.id || first.left.id === first.page.id)
+            return
+
+        let topmost = first
+        while (true) {
+            const prev = await logseq.Editor.getPreviousSiblingBlock(topmost.uuid)
+            if (!prev)
+                break
+            topmost = prev
+        }
+
+        await logseq.Editor.moveBlock(first.uuid, topmost.uuid, {before: true, children: false})
+        await scrollToBlock(first)
+    } )
+
+    logseq.App.registerCommandPalette({
+        label: '🪚 Move block (⤓) on bottom of siblings', key: 'move-block-2-on-bottom',
+        keybinding: {mac: 'mod+alt+shift+down', binding: 'ctrl+alt+shift+down', mode: 'global'},
+    }, async (e) => {
+        const [blocks] = await getChosenBlocks()
+        const [first] = blocks
+        if (!first)
+            return
+
+        let bottommost = first
+        while (true) {
+            const next = await logseq.Editor.getNextSiblingBlock(bottommost.uuid)
+            if (!next)
+                break
+            bottommost = next
+        }
+
+        // already on bottom
+        if (first.id === bottommost.id)
+            return
+
+        await logseq.Editor.moveBlock(first.uuid, bottommost.uuid, {before: false, children: false})
+        await scrollToBlock(first)
+    } )
     await postInit()
 }
 
