@@ -65,7 +65,7 @@ Missing, but helpful commands for [Logseq](https://logseq.com).
 ## FAQ
 ### How to change default shortcut for the particular command?
 1. Open «Settings» → «Keymap» (or press `g s`).
-2. Copy this emoji «🪚» and insert it to search input.
+2. Copy this emoji «🪚» (for Windows use «🔪») and insert it to search input.
 3. Change any shortcut you want <br/><img width="700px" src="https://github.com/stdword/logseq13-shorten-my-links/assets/1984175/76d23bb5-f7fb-4ed5-acee-ddb138cbd334"/>
 
 

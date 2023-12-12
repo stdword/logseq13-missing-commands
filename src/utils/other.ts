@@ -1,6 +1,10 @@
 import { logseq as packageInfo } from '../../package.json'
 
 
+export const isMacOS = navigator.userAgent.toUpperCase().indexOf('MAC') >= 0
+export const isWindows = navigator.userAgent.toUpperCase().indexOf('WIN') >= 0
+
+
 /**
  * Tagged template printing function
  * @usage console.log(p`Hello, Logseq!`)

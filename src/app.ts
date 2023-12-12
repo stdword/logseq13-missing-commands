@@ -1,6 +1,6 @@
 import { BlockEntity, SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin.user'
 
-import { reverseBlocksCommand, shuffleBlocksCommand, sortBlocksCommand, splitByParagraphsCommand, toggleAutoHeadingCommand } from './commands'
+import { ICON, reverseBlocksCommand, shuffleBlocksCommand, sortBlocksCommand, splitByParagraphsCommand, toggleAutoHeadingCommand } from './commands'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
 
 
@@ -35,14 +35,14 @@ async function main() {
 
     // Decoration
     logseq.App.registerCommandPalette({
-        label: '🪚 Toggle auto heading', key: 'auto-heading',
+        label: ICON + ' Toggle auto heading', key: 'auto-heading',
         keybinding: {mac: 'mod+1', binding: 'ctrl+1', mode: 'global'},
     }, (e) => toggleAutoHeadingCommand({togglingBasedOnFirstBlock: true}) )
 
 
     // Splitting
     logseq.App.registerCommandPalette({
-        label: '🪚 Split by paragraphs', key: 'split-by-paragraphs',
+        label: ICON + ' Split by paragraphs', key: 'split-by-paragraphs',
         // @ts-expect-error
         keybinding: {},
     }, (e) => splitByParagraphsCommand() )
@@ -50,7 +50,7 @@ async function main() {
 
     // Navigation
     logseq.App.registerCommandPalette({
-        label: '🪚 Go to (↖︎) parent block', key: 'edit-block-1-deep-dive-out',
+        label: ICON + ' Go to (↖︎) parent block', key: 'edit-block-1-deep-dive-out',
         keybinding: {mac: 'mod+alt+left', binding: 'ctrl+alt+left', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
@@ -66,7 +66,7 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        label: '🪚 Go to (↘︎) last child block', key: 'edit-block-2-deep-dive-in',
+        label: ICON + ' Go to (↘︎) last child block', key: 'edit-block-2-deep-dive-in',
         keybinding: {mac: 'mod+alt+right', binding: 'ctrl+alt+right', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
@@ -83,8 +83,8 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        label: '🪚 Go to |↑| previous sibling block', key: 'edit-block-5-prev-sibling',
         keybinding: {mac: 'ctrl+shift+up', binding: 'ctrl+shift+up', mode: 'global'},
+        label: ICON + ' Go to |↑| previous sibling block', key: 'edit-block-5-prev-sibling',
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
         const [first] = blocks
@@ -103,8 +103,8 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        label: '🪚 Go to |↓| next sibling block', key: 'edit-block-6-next-sibling',
         keybinding: {mac: 'ctrl+shift+down', binding: 'ctrl+shift+down', mode: 'global'},
+        label: ICON + ' Go to |↓| next sibling block', key: 'edit-block-6-next-sibling',
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
         const [first] = blocks
@@ -123,7 +123,7 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        label: '🪚 Go to (↑) previous block', key: 'edit-block-3-step-up',
+        label: ICON + ' Go to (↑) previous block', key: 'edit-block-3-step-up',
         keybinding: {mac: 'mod+alt+up', binding: 'ctrl+alt+up', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
@@ -163,7 +163,7 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        label: '🪚 Go to (↓) next block', key: 'edit-block-4-step-down',
+        label: ICON + ' Go to (↓) next block', key: 'edit-block-4-step-down',
         keybinding: {mac: 'mod+alt+down', binding: 'ctrl+alt+down', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
@@ -211,7 +211,7 @@ async function main() {
 
     // Movements
     logseq.App.registerCommandPalette({
-        label: '🪚 Move block (⤒) on top of siblings', key: 'move-block-1-on-top',
+        label: ICON + ' Move block (⤒) on top of siblings', key: 'move-block-1-on-top',
         keybinding: {mac: 'mod+alt+shift+up', binding: 'ctrl+alt+shift+up', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
@@ -236,7 +236,7 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        label: '🪚 Move block (⤓) on bottom of siblings', key: 'move-block-2-on-bottom',
+        label: ICON + ' Move block (⤓) on bottom of siblings', key: 'move-block-2-on-bottom',
         keybinding: {mac: 'mod+alt+shift+down', binding: 'ctrl+alt+shift+down', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
@@ -261,8 +261,8 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        label: '🪚 Outdent (⇤) children of the block', key: 'move-block-0-outdent-children',
         keybinding: {mac: 'mod+alt+tab', binding: 'ctrl+alt+tab', mode: 'global'},
+        label: ICON + ' Outdent (⇤) children of the block', key: 'move-block-0-outdent-children',
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
         for (const block of blocks) {
@@ -283,23 +283,23 @@ async function main() {
 
     // Transformations
     logseq.App.registerCommandPalette({
-        label: '🪚 Sort blocks', key: 'transform-1-sort-blocks',
+        label: ICON + ' Sort blocks', key: 'transform-1-sort-blocks',
         // @ts-expect-error
         keybinding: {},
     }, (e) => sortBlocksCommand() )
     logseq.Editor.registerBlockContextMenuItem(
-        '🪚 Sort blocks', async (e) => sortBlocksCommand(e.uuid) )
+        ICON + ' Sort blocks', async (e) => sortBlocksCommand(e.uuid) )
 
     logseq.App.registerCommandPalette({
-        label: '🪚 Reverse blocks', key: 'transform-2-reverse-blocks',
+        label: ICON + ' Reverse blocks', key: 'transform-2-reverse-blocks',
         // @ts-expect-error
         keybinding: {},
     }, (e) => reverseBlocksCommand() )
     logseq.Editor.registerBlockContextMenuItem(
-        '🪚 Reverse blocks', async (e) => reverseBlocksCommand(e.uuid) )
+        ICON + ' Reverse blocks', async (e) => reverseBlocksCommand(e.uuid) )
 
     logseq.App.registerCommandPalette({
-        label: '🪚 Shuffle blocks', key: 'transform-3-shuffle-blocks',
+        label: ICON + ' Shuffle blocks', key: 'transform-3-shuffle-blocks',
         // @ts-expect-error
         keybinding: {},
     }, (e) => shuffleBlocksCommand() )

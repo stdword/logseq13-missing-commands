@@ -1,7 +1,11 @@
 import '@logseq/libs'
 
-import { PropertiesUtils, getChosenBlocks, sleep, transformSelectedBlocksCommand } from './utils'
+import { PropertiesUtils, getChosenBlocks, isWindows, sleep, transformSelectedBlocksCommand } from './utils'
 import { BlockEntity, IBatchBlock } from '@logseq/libs/dist/LSPlugin'
+
+
+// there is no `saw` emoji in Windows — use `kitchen knife`: it has the same colors
+export const ICON = isWindows ? '🔪' : '🪚'
 
 
 export async function toggleAutoHeadingCommand(opts: {togglingBasedOnFirstBlock: boolean}) {
@@ -48,7 +52,7 @@ export async function sortBlocksCommand(contextBlockUUID: string | null = null) 
     if (blocks.length === 0) {
         await logseq.UI.showMsg(
             `[:div
-                [:b "🪚 Sort Blocks Command"]
+                [:b "${ICON} Sort Blocks Command"]
                 [:p "Select some blocks to use the command"]]`,
             'warning',
             {timeout: 10000},
@@ -75,7 +79,7 @@ export async function reverseBlocksCommand(contextBlockUUID: string | null = nul
     if (blocks.length === 0) {
         await logseq.UI.showMsg(
             `[:div
-                [:b "🪚 Reverse Blocks Command"]
+                [:b "${ICON} Reverse Blocks Command"]
                 [:p "Select some blocks to use the command"]]`,
             'warning',
             {timeout: 10000},
@@ -101,7 +105,7 @@ export async function shuffleBlocksCommand(contextBlockUUID: string | null = nul
     if (blocks.length === 0) {
         await logseq.UI.showMsg(
             `[:div
-                [:b "🪚 Shuffle Blocks Command"]
+                [:b "${ICON} Shuffle Blocks Command"]
                 [:p "Select some blocks to use the command"]]`,
             'warning',
             {timeout: 10000},
