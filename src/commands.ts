@@ -64,6 +64,58 @@ export async function sortBlocksCommand(contextBlockUUID: string | null = null) 
     transformSelectedBlocksCommand(blocks, sortBlocks, isSelectedState)
 }
 
+export async function reverseBlocksCommand(contextBlockUUID: string | null = null) {
+    let blocks: BlockEntity[]
+    let isSelectedState = true
+    if (contextBlockUUID)
+        blocks = [(await logseq.Editor.getBlock(contextBlockUUID))!]
+    else
+        [blocks, isSelectedState] = await getChosenBlocks()
+
+    if (blocks.length === 0) {
+        await logseq.UI.showMsg(
+            `[:div
+                [:b "🪚 Reverse Blocks Command"]
+                [:p "Select some blocks to use the command"]]`,
+            'warning',
+            {timeout: 10000},
+        )
+        return
+    }
+
+    const reverseBlocks = (blocks) => Array
+        .from(blocks as BlockEntity[])
+        .reverse()
+
+    transformSelectedBlocksCommand(blocks, reverseBlocks, isSelectedState)
+}
+
+export async function shuffleBlocksCommand(contextBlockUUID: string | null = null) {
+    let blocks: BlockEntity[]
+    let isSelectedState = true
+    if (contextBlockUUID)
+        blocks = [(await logseq.Editor.getBlock(contextBlockUUID))!]
+    else
+        [blocks, isSelectedState] = await getChosenBlocks()
+
+    if (blocks.length === 0) {
+        await logseq.UI.showMsg(
+            `[:div
+                [:b "🪚 Shuffle Blocks Command"]
+                [:p "Select some blocks to use the command"]]`,
+            'warning',
+            {timeout: 10000},
+        )
+        return
+    }
+
+    const shuffleBlocks = (blocks) => Array
+        .from(blocks as BlockEntity[])
+        .sort(() => Math.random() - 0.5)
+
+    transformSelectedBlocksCommand(blocks, shuffleBlocks, isSelectedState)
+}
+
 
 // paragraphs → lines → sentences
 

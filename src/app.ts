@@ -1,6 +1,6 @@
 import { BlockEntity, SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin.user'
 
-import { sortBlocksCommand, splitByParagraphsCommand, toggleAutoHeadingCommand } from './commands'
+import { reverseBlocksCommand, shuffleBlocksCommand, sortBlocksCommand, splitByParagraphsCommand, toggleAutoHeadingCommand } from './commands'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
 
 
@@ -283,14 +283,26 @@ async function main() {
 
     // Transformations
     logseq.App.registerCommandPalette({
-        label: '🪚 Sort blocks', key: 'sort-blocks',
+        label: '🪚 Sort blocks', key: 'transform-1-sort-blocks',
         // @ts-expect-error
         keybinding: {},
     }, (e) => sortBlocksCommand() )
-
     logseq.Editor.registerBlockContextMenuItem(
-        '🪚 Sort blocks',
-        async (e) => sortBlocksCommand(e.uuid) )
+        '🪚 Sort blocks', async (e) => sortBlocksCommand(e.uuid) )
+
+    logseq.App.registerCommandPalette({
+        label: '🪚 Reverse blocks', key: 'transform-2-reverse-blocks',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => reverseBlocksCommand() )
+    logseq.Editor.registerBlockContextMenuItem(
+        '🪚 Reverse blocks', async (e) => reverseBlocksCommand(e.uuid) )
+
+    logseq.App.registerCommandPalette({
+        label: '🪚 Shuffle blocks', key: 'transform-3-shuffle-blocks',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => shuffleBlocksCommand() )
 
     await postInit()
 }
