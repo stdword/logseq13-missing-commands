@@ -1,6 +1,6 @@
 import '@logseq/libs'
 
-import { PropertiesUtils, getChosenBlocks, sleep } from './utils'
+import { PropertiesUtils, getChosenBlocks, sleep, transformSelectedBlocksCommand } from './utils'
 import { BlockEntity, IBatchBlock } from '@logseq/libs/dist/LSPlugin'
 
 
@@ -36,6 +36,34 @@ export async function toggleAutoHeadingCommand(opts: {togglingBasedOnFirstBlock:
             await logseq.Editor.removeBlockProperty(block.uuid, PROPERTY)
     }
 }
+
+export async function sortBlocksCommand(contextBlockUUID: string | null = null) {
+    let blocks: BlockEntity[]
+    let isSelectedState = true
+    if (contextBlockUUID)
+        blocks = [(await logseq.Editor.getBlock(contextBlockUUID))!]
+    else
+        [blocks, isSelectedState] = await getChosenBlocks()
+
+    if (blocks.length === 0) {
+        await logseq.UI.showMsg(
+            `[:div
+                [:b "🪚 Sort Blocks Command"]
+                [:p "Select some blocks to use the command"]]`,
+            'warning',
+            {timeout: 10000},
+        )
+        return
+    }
+
+    const comparer = (a: string, b: string) => a.localeCompare(b, 'en', { numeric: true })
+    const sortBlocks = (blocks) => Array
+        .from(blocks as BlockEntity[])
+        .sort((a, b) => comparer(a.content, b.content))
+
+    transformSelectedBlocksCommand(blocks, sortBlocks, isSelectedState)
+}
+
 
 // paragraphs → lines → sentences
 

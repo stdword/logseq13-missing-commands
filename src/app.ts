@@ -1,15 +1,13 @@
-import { BlockEntity, PageEntity, SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin.user'
+import { BlockEntity, SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin.user'
 
-import { splitByParagraphsCommand, toggleAutoHeadingCommand } from './commands'
-import { getChosenBlocks, p, scrollToBlock, sleep } from './utils'
-import { log } from 'console'
+import { sortBlocksCommand, splitByParagraphsCommand, toggleAutoHeadingCommand } from './commands'
+import { getChosenBlocks, p, scrollToBlock } from './utils'
 
 
 const DEV = process.env.NODE_ENV === 'development'
 
 
 async function onAppSettingsChanged() {
-    //
 }
 
 async function init() {
@@ -35,11 +33,14 @@ async function main() {
         await onAppSettingsChanged()
     })
 
+    // Decoration
     logseq.App.registerCommandPalette({
         label: '🪚 Toggle auto heading', key: 'auto-heading',
         keybinding: {mac: 'mod+1', binding: 'ctrl+1', mode: 'global'},
     }, (e) => toggleAutoHeadingCommand({togglingBasedOnFirstBlock: true}) )
 
+
+    // Splitting
     logseq.App.registerCommandPalette({
         label: '🪚 Split by paragraphs', key: 'split-by-paragraphs',
         // @ts-expect-error
@@ -278,6 +279,18 @@ async function main() {
             }
         }
     } )
+
+
+    // Transformations
+    logseq.App.registerCommandPalette({
+        label: '🪚 Sort blocks', key: 'sort-blocks',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => sortBlocksCommand() )
+
+    logseq.Editor.registerBlockContextMenuItem(
+        '🪚 Sort blocks',
+        async (e) => sortBlocksCommand(e.uuid) )
 
     await postInit()
 }

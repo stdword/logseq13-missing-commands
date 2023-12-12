@@ -1,4 +1,4 @@
-import { BlockEntity, PageEntity } from '@logseq/libs/dist/LSPlugin.user'
+import { BlockEntity, IBatchBlock, PageEntity } from '@logseq/libs/dist/LSPlugin.user'
 
 import { f, indexOfNth, p, sleep } from './other'
 
@@ -152,7 +152,6 @@ export function setEditingCursorSelection(start: number, end: number) {
     return true
 }
 
-
 export class PropertiesUtils {
     static readonly idProperty = 'id'
     static readonly headingProperty = 'heading'
@@ -222,7 +221,9 @@ export class PropertiesUtils {
     }
 }
 
-// scroll to block if it has disappeared from view
+/**
+ * Scroll to block if it has disappeared from view
+ */
 export async function scrollToBlock(block: BlockEntity) {
     const position = (await logseq.Editor.getEditingCursorPosition())?.pos  // editing mode?
     const view = await logseq.App.queryElementRect(`.ls-block[blockid="${block.uuid}"]`)
@@ -236,4 +237,196 @@ export async function scrollToBlock(block: BlockEntity) {
             await logseq.Editor.editBlock(block.uuid, {pos: position})
         }
     }
+}
+
+export async function ensureChildrenIncluded(node: BlockEntity): Promise<BlockEntity> {
+    // @ts-expect-error
+    if (node.children?.at(0)?.uuid)
+        return node
+    return (await logseq.Editor.getBlock(node.uuid, {includeChildren: true}))!
+}
+
+export async function replaceChildrenBlocksInTree(
+    root: BlockEntity,
+    transformChildrenCallback: (blocks: BlockEntity[]) => BlockEntity[],
+): Promise<BlockEntity | null> {
+    root = await ensureChildrenIncluded(root)
+    if (!root || !root.children || root.children.length === 0)
+        return null  // nothing to replace
+
+    // METHOD: blocks removal to replace whole tree
+    // but it is important to check if any block in the tree has references
+    // (Logseq replaces references with it's text)
+    const blocksWithPersistedID = findPropertyInTree(root as IBatchBlock, PropertiesUtils.idProperty)
+    const blocksAndItsReferences = (await Promise.all(
+        blocksWithPersistedID.map(async (b): Promise<[IBatchBlock, Number[]]> => {
+            const references = await findBlockReferences((b as BlockEntity).uuid)
+            return [b, references]
+        })
+    ))
+    const blocksWithReferences = blocksAndItsReferences.filter(([b, rs]) => (rs.length !== 0))
+    if (blocksWithReferences.length !== 0)
+        return null  // blocks removal cannot be used
+
+
+    const transformedBlocks = transformChildrenCallback(root.children as BlockEntity[])
+
+    // root is the first block in page
+    if (root.left.id === root.page.id) {
+        const page = await logseq.Editor.getPage(root.page.id)
+        await logseq.Editor.removeBlock(root.uuid)
+
+        // logseq bug: cannot use sibling next to root to insert whole tree to a page
+        //  so insert root of a tree separately from children
+        let prepended = await logseq.Editor.insertBlock(
+            page!.uuid, root.content,
+            {properties: root.properties, before: true, customUUID: root.uuid},
+        )
+        if (!prepended) {
+            // logseq bug: for empty pages need to change `before: true → false`
+            prepended = (await logseq.Editor.insertBlock(
+                page!.uuid, root.content,
+                {properties: root.properties, before: false, customUUID: root.uuid},
+            ))!
+        }
+
+        await logseq.Editor.insertBatchBlock(
+            prepended.uuid, transformedBlocks as IBatchBlock[],
+            {before: false, sibling: false, keepUUID: true},
+        )
+        return prepended
+    }
+
+    // use root to insert whole tree at once
+    const oldChildren = root.children
+    root.children = transformedBlocks
+
+    // root is the first child for its parent
+    if (root.left.id === root.parent.id) {
+        let parentRoot = (await logseq.Editor.getBlock(root.parent.id))!
+        await logseq.Editor.removeBlock(root.uuid)
+        await logseq.Editor.insertBatchBlock(
+            parentRoot.uuid, root as IBatchBlock,
+            {before: true, sibling: false, keepUUID: true},
+        )
+
+        // restore original object
+        root.children = oldChildren
+
+        parentRoot = (await logseq.Editor.getBlock(parentRoot.uuid, {includeChildren: true}))!
+        return parentRoot.children![0] as BlockEntity
+    }
+
+    // root is not first child of parent and is not first block on page: it has sibling
+    const preRoot = (await logseq.Editor.getPreviousSiblingBlock(root.uuid))!
+    await logseq.Editor.removeBlock(root.uuid)
+    await logseq.Editor.insertBatchBlock(
+        preRoot.uuid, root as IBatchBlock,
+        {before: false, sibling: true, keepUUID: true},
+    )
+
+    // restore original object
+    root.children = oldChildren
+
+    return (await logseq.Editor.getNextSiblingBlock(preRoot.uuid))!
+}
+
+export async function transformSelectedBlocksWithMovements(
+    blocks: BlockEntity[],
+    transformCallback: (blocks: BlockEntity[]) => BlockEntity[],
+) {
+    // METHOD: blocks movement
+
+    // Logseq sorts selected blocks, so the first is the most upper one
+    let insertionPoint = blocks[0]
+
+    // Logseq bug: selected blocks can be duplicated (but sorted!)
+    //   just remove duplication
+    blocks = blocks.filter((b, i, r) => r.at(i - 1)?.uuid !== b.uuid)
+
+    const transformed = transformCallback(blocks)
+    for (const block of transformed) {
+        // Logseq don't add movement to history if there was no movement at all
+        //   so we don't have to save API calls: just call .moveBlock on EVERY block
+        await logseq.Editor.moveBlock(block.uuid, insertionPoint.uuid, {before: false})
+        insertionPoint = block
+    }
+}
+
+export async function transformSelectedBlocksCommand(
+    blocks: BlockEntity[],
+    transformCallback: (blocks: BlockEntity[]) => BlockEntity[],
+    isSelectedState: boolean,
+) {
+    // CASE: all sorting blocks relates to one root block
+    if (blocks.length === 1) {
+        const tree = await ensureChildrenIncluded(blocks[0])
+        if (!tree.children || tree.children.length === 0)
+            return  // nothing to transform
+
+        const newRoot = await replaceChildrenBlocksInTree(tree, transformCallback)
+        if (newRoot) {  // successfully replaced
+            if (isSelectedState)
+                await logseq.Editor.selectBlock(newRoot.uuid)
+            else
+                await logseq.Editor.editBlock(newRoot.uuid)
+
+            return
+        }
+
+        // fallback to array of blocks
+        blocks = tree.children as BlockEntity[]
+    }
+
+
+    // CASE: selected blocks from different parents
+    transformSelectedBlocksWithMovements(blocks, transformCallback)
+}
+
+export async function walkBlockTreeAsync(
+    root: IBatchBlock,
+    callback: (b: IBatchBlock, lvl: number) => Promise<string | void>,
+    level: number = 0,
+): Promise<IBatchBlock> {
+    return {
+        content: (await callback(root, level)) ?? '',
+        children: await Promise.all(
+            (root.children || []).map(
+                async (b) => await walkBlockTree(b as IBatchBlock, callback, level + 1)
+        ))
+    }
+}
+
+export function walkBlockTree(
+    root: IBatchBlock,
+    callback: (b: IBatchBlock, lvl: number) => string | void,
+    level: number = 0,
+): IBatchBlock {
+    return {
+        content: callback(root, level) ?? '',
+        children: (root.children || []).map(
+            (b) => walkBlockTree(b as IBatchBlock, callback, level + 1)
+        )
+    }
+}
+
+export function findPropertyInTree(tree: IBatchBlock, propertyName: string): IBatchBlock[] {
+    const found: IBatchBlock[] = []
+    walkBlockTree(tree, (node, level) => {
+        if (PropertiesUtils.hasProperty(node.content, propertyName))
+            found.push(node)
+    })
+    return found
+}
+
+export async function findBlockReferences(uuid: string): Promise<Number[]> {
+    const results = await logseq.DB.datascriptQuery(`
+        [:find (pull ?b [:db/id])
+         :where
+            [?b :block/content ?c]
+            [(clojure.string/includes? ?c "((${uuid}))")]
+        ]`)
+    if (!results)
+        return []
+    return results.flat().map((item) => item.id)
 }
