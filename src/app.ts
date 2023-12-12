@@ -83,8 +83,8 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        keybinding: {mac: 'ctrl+shift+up', binding: 'ctrl+shift+up', mode: 'global'},
         label: ICON + ' Go to |↑| previous sibling block', key: 'edit-block-5-prev-sibling',
+        keybinding: {mac: 'ctrl+shift+up', binding: 'meta+alt+up', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
         const [first] = blocks
@@ -103,8 +103,8 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        keybinding: {mac: 'ctrl+shift+down', binding: 'ctrl+shift+down', mode: 'global'},
         label: ICON + ' Go to |↓| next sibling block', key: 'edit-block-6-next-sibling',
+        keybinding: {mac: 'ctrl+shift+down', binding: 'meta+alt+down', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
         const [first] = blocks
@@ -261,8 +261,8 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        keybinding: {mac: 'mod+alt+tab', binding: 'ctrl+alt+tab', mode: 'global'},
         label: ICON + ' Outdent (⇤) children of the block', key: 'move-block-0-outdent-children',
+        keybinding: {mac: 'ctrl+shift+tab', binding: 'ctrl+shift+tab', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
         for (const block of blocks) {
