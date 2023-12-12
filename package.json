@@ -1,13 +1,13 @@
 {
     "name": "logseq13-missing-commands",
     "version": "1.1.0",
-    "description": "Sorting blocks, auto heading, split by sentences, remove numbering, etc.",
+    "description": "🪚 Sorting blocks, auto heading, split by sentences, remove numbering, etc.",
     "author": "stdword",
     "repository": "https://github.com/stdword/logseq13-missing-commands.git",
     "license": "MIT",
     "logseq": {
         "id": "logseq13-missing-commands",
-        "title": "Missing Commands for Logseq",
+        "title": "Missing Commands & Views",
         "icon": "./icon.png",
         "main": "./dist/index.html"
     },
