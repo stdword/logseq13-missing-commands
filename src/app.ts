@@ -1,7 +1,10 @@
 import { BlockEntity, SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin.user'
 
-import { ICON, editNextBlockCommand, editPreviousBlockCommand, reverseBlocksCommand, shuffleBlocksCommand, sortBlocksCommand, splitByParagraphsCommand, toggleAutoHeadingCommand } from './commands'
-import { getChosenBlocks, p, scrollToBlock } from './utils'
+import {
+    ICON, editNextBlockCommand, editPreviousBlockCommand, reverseBlocksCommand,
+    shuffleBlocksCommand, sortBlocksCommand, splitByParagraphs, toggleAutoHeadingCommand
+} from './commands'
+import { getChosenBlocks, p, scrollToBlock, splitBlocksCommand } from './utils'
 
 
 const DEV = process.env.NODE_ENV === 'development'
@@ -45,7 +48,7 @@ async function main() {
         label: ICON + ' Split by paragraphs', key: 'split-by-paragraphs',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => splitByParagraphsCommand() )
+    }, (e) => splitBlocksCommand(splitByParagraphs) )
 
 
     // Navigation

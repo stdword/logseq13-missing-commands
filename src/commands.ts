@@ -211,23 +211,9 @@ export async function editNextBlockCommand() {
 
 // paragraphs → lines → sentences
 
-function splitByParagraphs(text: string): IBatchBlock[] {
+export function splitByParagraphs(text: string): IBatchBlock[] {
     const textBlocks = text.split(/\n\n+/)
     return textBlocks.map((tb) => {return {content: tb}})
-}
-
-export async function splitByParagraphsCommand() {
-    const [ blocks, isSelectedState ] = await getChosenBlocks()
-    if (blocks.length === 0)
-        return
-
-    for (const block of blocks) {
-        const content = PropertiesUtils.deleteAllProperties(block.content)
-        const batch = splitByParagraphs(content)
-
-        await logseq.Editor.insertBatchBlock(block.uuid, batch.slice(1), {before: false, sibling: true})
-        await logseq.Editor.updateBlock(block.uuid, batch[0].content, {properties: block.properties})
-    }
 }
 
 

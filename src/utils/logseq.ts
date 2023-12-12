@@ -383,20 +383,6 @@ export async function transformSelectedBlocksCommand(
     transformSelectedBlocksWithMovements(blocks, transformCallback)
 }
 
-// export async function walkBlockTreeAsync(
-//     root: IBatchBlock,
-//     callback: (b: IBatchBlock, lvl: number) => Promise<string | void>,
-//     level: number = 0,
-// ): Promise<IBatchBlock> {
-//     return {
-//         content: (await callback(root, level)) ?? '',
-//         children: await Promise.all(
-//             (root.children || []).map(
-//                 async (b) => await walkBlockTree(b as IBatchBlock, callback, level + 1)
-//         ))
-//     }
-// }
-
 export function walkBlockTree(
     root: IBatchBlock,
     callback: (b: IBatchBlock, lvl: number) => string | void,
@@ -429,4 +415,27 @@ export async function findBlockReferences(uuid: string): Promise<Number[]> {
     if (!results)
         return []
     return results.flat().map((item) => item.id)
+}
+
+export async function splitBlocksCommand(
+    splitCallback: (content: string) => IBatchBlock[],
+) {
+    const [ blocks, isSelectedState ] = await getChosenBlocks()
+    if (blocks.length === 0)
+        return
+
+    for (const block of blocks) {
+        const content = PropertiesUtils.deleteAllProperties(block.content)
+        const batch = splitCallback(content)
+
+        const [head, tail] = [batch[0], batch.slice(1)]
+
+        await logseq.Editor.updateBlock(block.uuid, head.content)
+        await logseq.Editor.insertBatchBlock(block.uuid, tail, {before: false, sibling: true})
+    }
+
+    if (isSelectedState) {
+        await sleep(20)
+        await logseq.Editor.exitEditingMode()
+    }
 }
