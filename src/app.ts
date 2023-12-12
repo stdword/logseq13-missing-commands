@@ -1,6 +1,6 @@
 import { BlockEntity, SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin.user'
 
-import { ICON, reverseBlocksCommand, shuffleBlocksCommand, sortBlocksCommand, splitByParagraphsCommand, toggleAutoHeadingCommand } from './commands'
+import { ICON, editNextBlock, editPreviousBlock, reverseBlocksCommand, shuffleBlocksCommand, sortBlocksCommand, splitByParagraphsCommand, toggleAutoHeadingCommand } from './commands'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
 
 
@@ -125,88 +125,12 @@ async function main() {
     logseq.App.registerCommandPalette({
         label: ICON + ' Go to (↑) previous block', key: 'edit-block-3-step-up',
         keybinding: {mac: 'mod+alt+up', binding: 'ctrl+alt+up', mode: 'global'},
-    }, async (e) => {
-        const [blocks] = await getChosenBlocks()
-        let [current] = blocks
-        if (!current)
-            return
-
-        await logseq.Editor.exitEditingMode()
-
-        let prevBlock = await logseq.Editor.getPreviousSiblingBlock(current.uuid)
-        if (prevBlock) {
-            let iteration = prevBlock
-            while (true) {
-                if (!iteration['collapsed?']) {
-                    const tree = await logseq.Editor.getBlock(iteration.uuid, {includeChildren: true}) as BlockEntity
-                    if (tree.children && tree.children.length !== 0) {
-                        iteration = tree.children.at(-1) as BlockEntity
-                        continue
-                    }
-                }
-
-                prevBlock = iteration
-                break
-            }
-        } else {
-            if (current.parent.id === current.page.id) {
-                // no prev block at all → go to the start of current
-                await logseq.Editor.editBlock(current.uuid, {pos: 0})
-                return
-            }
-
-            const parent = await logseq.Editor.getBlock(current.parent.id) as BlockEntity
-            prevBlock = parent
-        }
-
-        await logseq.Editor.editBlock((prevBlock as BlockEntity).uuid)
-    } )
+    }, async (e) => editPreviousBlock() )
 
     logseq.App.registerCommandPalette({
         label: ICON + ' Go to (↓) next block', key: 'edit-block-4-step-down',
         keybinding: {mac: 'mod+alt+down', binding: 'ctrl+alt+down', mode: 'global'},
-    }, async (e) => {
-        const [blocks] = await getChosenBlocks()
-        let [current] = blocks
-        if (!current)
-            return
-
-        await logseq.Editor.exitEditingMode()
-
-        let nextBlock: BlockEntity | null = null
-        if (!current['collapsed?']) {
-            const tree = await logseq.Editor.getBlock(current.uuid, {includeChildren: true}) as BlockEntity
-            if (tree.children && tree.children.length !== 0)
-                nextBlock = tree.children[0] as BlockEntity
-        }
-
-        if (!nextBlock)
-            while (true) {
-                if (!nextBlock) {
-                    nextBlock = await logseq.Editor.getNextSiblingBlock(current.uuid)
-                    if (nextBlock)
-                        break
-                }
-
-                if (current.parent.id === current.page.id)
-                    break
-
-                const parent = await logseq.Editor.getBlock(current.parent.id) as BlockEntity
-                current = parent
-
-                nextBlock = await logseq.Editor.getNextSiblingBlock(parent.uuid)
-                if (nextBlock)
-                    break
-            }
-
-        if (!nextBlock) {
-            // no next block at all → go to the end of current
-            await logseq.Editor.editBlock(current.uuid)
-            return
-        }
-
-        await logseq.Editor.editBlock((nextBlock as BlockEntity).uuid, {pos: 0})
-    } )
+    }, async (e) => editNextBlock() )
 
 
     // Movements

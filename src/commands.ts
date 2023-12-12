@@ -41,6 +41,7 @@ export async function toggleAutoHeadingCommand(opts: {togglingBasedOnFirstBlock:
     }
 }
 
+
 export async function sortBlocksCommand(contextBlockUUID: string | null = null) {
     let blocks: BlockEntity[]
     let isSelectedState = true
@@ -118,6 +119,91 @@ export async function shuffleBlocksCommand(contextBlockUUID: string | null = nul
         .sort(() => Math.random() - 0.5)
 
     transformSelectedBlocksCommand(blocks, shuffleBlocks, isSelectedState)
+}
+
+
+export async function editPreviousBlock() {
+    const [blocks] = await getChosenBlocks()
+    let [current] = blocks
+    if (!current)
+        return
+
+    let prevBlock = await logseq.Editor.getPreviousSiblingBlock(current.uuid)
+    if (prevBlock) {
+        let iteration = prevBlock
+        while (true) {
+            if (!iteration['collapsed?']) {
+                const tree = await logseq.Editor.getBlock(iteration.uuid, {includeChildren: true}) as BlockEntity
+                if (tree.children && tree.children.length !== 0) {
+                    iteration = tree.children.at(-1) as BlockEntity
+                    continue
+                }
+            }
+
+            prevBlock = iteration
+            break
+        }
+    } else {
+        if (current.parent.id === current.page.id) {
+            // no prev block at all → go to the start of current
+            await logseq.Editor.editBlock(current.uuid, {pos: 0})
+            return
+        }
+
+        const parent = await logseq.Editor.getBlock(current.parent.id) as BlockEntity
+        prevBlock = parent
+    }
+
+    const cursorPosition = (await logseq.Editor.getEditingCursorPosition())?.pos
+    await logseq.Editor.editBlock(
+        (prevBlock as BlockEntity).uuid,
+        cursorPosition ? {pos: cursorPosition} : undefined
+    )
+}
+
+export async function editNextBlock() {
+    const [blocks] = await getChosenBlocks()
+    let [current] = blocks
+    if (!current)
+        return
+
+    let nextBlock: BlockEntity | null = null
+    if (!current['collapsed?']) {
+        const tree = await logseq.Editor.getBlock(current.uuid, {includeChildren: true}) as BlockEntity
+        if (tree.children && tree.children.length !== 0)
+            nextBlock = tree.children[0] as BlockEntity
+    }
+
+    if (!nextBlock)
+        while (true) {
+            if (!nextBlock) {
+                nextBlock = await logseq.Editor.getNextSiblingBlock(current.uuid)
+                if (nextBlock)
+                    break
+            }
+
+            if (current.parent.id === current.page.id)
+                break
+
+            const parent = await logseq.Editor.getBlock(current.parent.id) as BlockEntity
+            current = parent
+
+            nextBlock = await logseq.Editor.getNextSiblingBlock(parent.uuid)
+            if (nextBlock)
+                break
+        }
+
+    if (!nextBlock) {
+        // no next block at all → go to the end of current
+        await logseq.Editor.editBlock(current.uuid)
+        return
+    }
+
+    const cursorPosition = (await logseq.Editor.getEditingCursorPosition())?.pos
+    await logseq.Editor.editBlock(
+        (nextBlock as BlockEntity).uuid,
+        cursorPosition ? {pos: cursorPosition} : undefined
+    )
 }
 
 
