@@ -137,3 +137,50 @@ export async function splitByParagraphsCommand() {
         await logseq.Editor.updateBlock(block.uuid, batch[0].content, {properties: block.properties})
     }
 }
+
+
+// export async function magicSplitCommand() {
+//     const [ blocks, isSelectedState ] = await getChosenBlocks()
+//     if (blocks.length === 0) {
+//         await logseq.UI.showMsg(
+//             `[:div
+//                 [:b "Magic Split Command"]
+//                 [:p "Select some blocks or start editing one to use the command"]]`,
+//             'warning',
+//             {timeout: 10000},
+//         )
+//         return
+//     }
+
+//     function repeatedCharsWithSpaces(chars) {
+//         chars = chars.replaceAll('[', '\\[')
+//         chars = chars.replaceAll(']', '\\]')
+//         chars = chars.replaceAll('-', '\\-')
+//         const spaces = '  ' // with &nbsp;
+//         return '[' + spaces + chars + ']*'
+//     }
+
+//     for (const block of blocks) {
+//         const lines = block.content.split(/\n/gm)
+
+//         var trimStart = null
+//         if (c.args['trim-numbering'])
+//             trimStart = /^\s*\d+\s*\.\s*/
+//         else if (c.args['trim-start'])
+//             trimStart = trimStart = new RegExp('^' + repeatedCharsWithSpaces(c.args['trim-start']))
+
+//         var trimEnd = new RegExp(repeatedCharsWithSpaces(c.args['trim-end']) + '$')
+
+//         lines.forEach((line, i) => {
+//             if (trimStart)
+//                 line = line.replace(trimStart, '')
+//             if (trimEnd)
+//                 line = line.replace(trimEnd, '')
+
+//             if (i === 0 && line === '')
+//                 return
+
+//             top.logseq.api.insert_block(c.block.uuid, line, {focus: false, sibling: true})
+//         })
+//     }
+// }

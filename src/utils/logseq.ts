@@ -18,95 +18,95 @@ export async function getChosenBlocks(): Promise<[BlockEntity[], boolean]> {
     ]
 }
 
-export async function insertContent(
-    content: string,
-    options: {
-        positionOnArg?: number,
-        positionOnNthText?: {count: number, text: string},
-        positionBeforeText?: string,
-        positionAfterText?: string,
-        positionIndex?: number
-    } = {},
-): Promise<boolean> {
-    // Bug-or-feature with Command Palette modal: Logseq exits editing state when modal appears
-    // To handle this: use selected blocks — the editing block turns to selected
+// export async function insertContent(
+//     content: string,
+//     options: {
+//         positionOnArg?: number,
+//         positionOnNthText?: {count: number, text: string},
+//         positionBeforeText?: string,
+//         positionAfterText?: string,
+//         positionIndex?: number
+//     } = {},
+// ): Promise<boolean> {
+//     // Bug-or-feature with Command Palette modal: Logseq exits editing state when modal appears
+//     // To handle this: use selected blocks — the editing block turns to selected
 
-    const chosenBlock = await getChosenBlock()
-    if (!chosenBlock) {
-        console.warn(p`Attempt to insert content while not in editing state and no one block is selected`)
-        return false
-    }
-    const [ uuid, isSelectedState ] = chosenBlock
+//     const chosenBlock = await getChosenBlock()
+//     if (!chosenBlock) {
+//         console.warn(p`Attempt to insert content while not in editing state and no one block is selected`)
+//         return false
+//     }
+//     const [ uuid, isSelectedState ] = chosenBlock
 
-    const { positionOnArg, positionOnNthText, positionBeforeText, positionAfterText, positionIndex } = options
-    let position: number | undefined
-    if (positionOnNthText) {
-        const { text, count } = positionOnNthText
-        position = indexOfNth(content, text, count) ?? content.length
-    }
-    else if (positionOnArg) {
-        let index = indexOfNth(content, ',', positionOnArg)
-        if (!index)  // fallback to first arg
-            index = indexOfNth(content, ',', 1)
-        if (!index)  // no args at all
-            index = content.length
-        else
-            index++ // shift 1 char from «,»
+//     const { positionOnArg, positionOnNthText, positionBeforeText, positionAfterText, positionIndex } = options
+//     let position: number | undefined
+//     if (positionOnNthText) {
+//         const { text, count } = positionOnNthText
+//         position = indexOfNth(content, text, count) ?? content.length
+//     }
+//     else if (positionOnArg) {
+//         let index = indexOfNth(content, ',', positionOnArg)
+//         if (!index)  // fallback to first arg
+//             index = indexOfNth(content, ',', 1)
+//         if (!index)  // no args at all
+//             index = content.length
+//         else
+//             index++ // shift 1 char from «,»
 
-        // consume spaces
-        while (/\s/.test(content[index]))
-            index++
+//         // consume spaces
+//         while (/\s/.test(content[index]))
+//             index++
 
-        position = index
-    }
-    else if (positionBeforeText) {
-        const index = content.indexOf(positionBeforeText)
-        if (index !== -1)
-            position = index
-    }
-    else if (positionAfterText) {
-        const index = content.indexOf(positionAfterText)
-        if (index !== -1)
-            position = index + positionAfterText.length
-    }
-    else if (positionIndex) {
-        const adjustedIndex = adjustIndexForLength(positionIndex, content.length)
-        if (adjustedIndex < content.length)  // skip adjustedIndex == content.length
-            position = adjustedIndex
-    }
+//         position = index
+//     }
+//     else if (positionBeforeText) {
+//         const index = content.indexOf(positionBeforeText)
+//         if (index !== -1)
+//             position = index
+//     }
+//     else if (positionAfterText) {
+//         const index = content.indexOf(positionAfterText)
+//         if (index !== -1)
+//             position = index + positionAfterText.length
+//     }
+//     else if (positionIndex) {
+//         const adjustedIndex = adjustIndexForLength(positionIndex, content.length)
+//         if (adjustedIndex < content.length)  // skip adjustedIndex == content.length
+//             position = adjustedIndex
+//     }
 
-    if (isSelectedState) {
-        await logseq.Editor.updateBlock(uuid, content)
-        if (position !== undefined)
-            await logseq.Editor.editBlock(uuid, { pos: position })
-    } else {
-        await logseq.Editor.insertAtEditingCursor(content)
+//     if (isSelectedState) {
+//         await logseq.Editor.updateBlock(uuid, content)
+//         if (position !== undefined)
+//             await logseq.Editor.editBlock(uuid, { pos: position })
+//     } else {
+//         await logseq.Editor.insertAtEditingCursor(content)
 
-        if (position !== undefined) {
-            // need delay before getting cursor position
-            await sleep(20)
-            const posInfo = await logseq.Editor.getEditingCursorPosition()
+//         if (position !== undefined) {
+//             // need delay before getting cursor position
+//             await sleep(20)
+//             const posInfo = await logseq.Editor.getEditingCursorPosition()
 
-            const relativePosition = posInfo!.pos - content.length + position
-            console.debug(
-                p`Calculating arg position`,
-                posInfo!.pos, '-', content.length, '+', position, '===', relativePosition,
-            )
+//             const relativePosition = posInfo!.pos - content.length + position
+//             console.debug(
+//                 p`Calculating arg position`,
+//                 posInfo!.pos, '-', content.length, '+', position, '===', relativePosition,
+//             )
 
-            // try non-API way
-            const done = setEditingCursorPosition(relativePosition)
-            if (!done) {
-                // API way: need to exit to perform entering on certain position
-                await logseq.Editor.exitEditingMode()
-                await sleep(20)
+//             // try non-API way
+//             const done = setEditingCursorPosition(relativePosition)
+//             if (!done) {
+//                 // API way: need to exit to perform entering on certain position
+//                 await logseq.Editor.exitEditingMode()
+//                 await sleep(20)
 
-                await logseq.Editor.editBlock(uuid, { pos: relativePosition })
-            }
-        }
-    }
+//                 await logseq.Editor.editBlock(uuid, { pos: relativePosition })
+//             }
+//         }
+//     }
 
-    return true
-}
+//     return true
+// }
 
 /**
  * Sets the current editing block cursor position.
@@ -383,19 +383,19 @@ export async function transformSelectedBlocksCommand(
     transformSelectedBlocksWithMovements(blocks, transformCallback)
 }
 
-export async function walkBlockTreeAsync(
-    root: IBatchBlock,
-    callback: (b: IBatchBlock, lvl: number) => Promise<string | void>,
-    level: number = 0,
-): Promise<IBatchBlock> {
-    return {
-        content: (await callback(root, level)) ?? '',
-        children: await Promise.all(
-            (root.children || []).map(
-                async (b) => await walkBlockTree(b as IBatchBlock, callback, level + 1)
-        ))
-    }
-}
+// export async function walkBlockTreeAsync(
+//     root: IBatchBlock,
+//     callback: (b: IBatchBlock, lvl: number) => Promise<string | void>,
+//     level: number = 0,
+// ): Promise<IBatchBlock> {
+//     return {
+//         content: (await callback(root, level)) ?? '',
+//         children: await Promise.all(
+//             (root.children || []).map(
+//                 async (b) => await walkBlockTree(b as IBatchBlock, callback, level + 1)
+//         ))
+//     }
+// }
 
 export function walkBlockTree(
     root: IBatchBlock,
