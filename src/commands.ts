@@ -122,7 +122,7 @@ export async function shuffleBlocksCommand(contextBlockUUID: string | null = nul
 }
 
 
-export async function editPreviousBlock() {
+export async function editPreviousBlockCommand() {
     const [blocks] = await getChosenBlocks()
     let [current] = blocks
     if (!current)
@@ -161,7 +161,7 @@ export async function editPreviousBlock() {
     )
 }
 
-export async function editNextBlock() {
+export async function editNextBlockCommand() {
     const [blocks] = await getChosenBlocks()
     let [current] = blocks
     if (!current)
@@ -174,24 +174,26 @@ export async function editNextBlock() {
             nextBlock = tree.children[0] as BlockEntity
     }
 
-    if (!nextBlock)
+    if (!nextBlock) {
+        let iteration = current
         while (true) {
             if (!nextBlock) {
-                nextBlock = await logseq.Editor.getNextSiblingBlock(current.uuid)
+                nextBlock = await logseq.Editor.getNextSiblingBlock(iteration.uuid)
                 if (nextBlock)
                     break
             }
 
-            if (current.parent.id === current.page.id)
+            if (iteration.parent.id === iteration.page.id)
                 break
 
-            const parent = await logseq.Editor.getBlock(current.parent.id) as BlockEntity
-            current = parent
+            const parent = await logseq.Editor.getBlock(iteration.parent.id) as BlockEntity
+            iteration = parent
 
             nextBlock = await logseq.Editor.getNextSiblingBlock(parent.uuid)
             if (nextBlock)
                 break
         }
+    }
 
     if (!nextBlock) {
         // no next block at all → go to the end of current

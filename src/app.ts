@@ -1,6 +1,6 @@
 import { BlockEntity, SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin.user'
 
-import { ICON, editNextBlock, editPreviousBlock, reverseBlocksCommand, shuffleBlocksCommand, sortBlocksCommand, splitByParagraphsCommand, toggleAutoHeadingCommand } from './commands'
+import { ICON, editNextBlockCommand, editPreviousBlockCommand, reverseBlocksCommand, shuffleBlocksCommand, sortBlocksCommand, splitByParagraphsCommand, toggleAutoHeadingCommand } from './commands'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
 
 
@@ -125,12 +125,12 @@ async function main() {
     logseq.App.registerCommandPalette({
         label: ICON + ' Go to (↑) previous block', key: 'edit-block-3-step-up',
         keybinding: {mac: 'mod+alt+up', binding: 'ctrl+alt+up', mode: 'global'},
-    }, async (e) => editPreviousBlock() )
+    }, async (e) => editPreviousBlockCommand() )
 
     logseq.App.registerCommandPalette({
         label: ICON + ' Go to (↓) next block', key: 'edit-block-4-step-down',
         keybinding: {mac: 'mod+alt+down', binding: 'ctrl+alt+down', mode: 'global'},
-    }, async (e) => editNextBlock() )
+    }, async (e) => editNextBlockCommand() )
 
 
     // Movements
