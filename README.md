@@ -24,11 +24,13 @@ Missing Commands for Logseq
 <p align="center"><i>A part of the <a href="https://logseq.com"><img align="center" width="20px" src="https://github.com/stdword/logseq13-missing-commands/blob/main/assets/logseq.png?raw=true"/></a> <b><a href="https://github.com/search?q=owner%3Astdword+logseq13&type=repositories">Logseq13</a></b> family of plugins</i></p>
 
 
+
 ## Summary
 
 Missing, but helpful _commands_, _views_ & _features_ for [Logseq](https://logseq.com)
 
 _Designed to be very productive with keyboard & agile with view customizations_  ❤️
+
 
 
 ## Features
@@ -41,6 +43,12 @@ To fill the input with selected search item. Just press the <kbd>tab</kbd> key t
 Helpfull, when you need to access subpages of the current page. Just press the <kbd>←</kbd> arrow key <u>on empty search input</u>.
 
 <img width="600px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/3289dae9-6391-40ed-8198-7e957cd029eb"/>
+
+### Go to block _start_ (_end_) with double-pressing the «Home» («End») key
+Just like in Sublime Text editor. MacOS's <kbd>⌘←</kbd> / <kbd>⌘→</kbd> and Windows's <kbd>fn←</kbd> / <kbd>fn→</kbd> are also supported.
+
+<img width="200px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/4773523a-5900-4b48-b196-f6cb39799548"/>
+
 
 
 ## Commands
@@ -61,6 +69,7 @@ Without accessing block context menu.
 </p>
 
 
+
 ## Installation
 ### From Logseq Marketplace (recommended way):
 <span>    </span><img width="403px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/71c268a1-e752-416f-9364-45e47c89d6e7" />
@@ -78,11 +87,13 @@ Without accessing block context menu.
 6. ⚠️ The important point here is: every new plugin release should be updated manually
 
 
+
 ## FAQ
 ### How to change default shortcut for the particular command?
 1. Open «Settings» → «Keymap» (or press `g s`).
 2. Copy this emoji «🪚» (for Windows use «🔪») and insert it to search input.
 3. Change any shortcut you want <br/><img width="700px" src="https://github.com/stdword/logseq13-shorten-my-links/assets/1984175/76d23bb5-f7fb-4ed5-acee-ddb138cbd334"/>
+
 
 
 ## Credits
