@@ -29,10 +29,18 @@ Missing Commands for Logseq
 Missing, but helpful commands for [Logseq](https://logseq.com).
 
 
+## Features
+### TAB-trigger on Search
+To fill the input with selected search item. Just press the <kbd>tab</kbd> key to speed up the input values.
+<img width="600px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/bf27f3a6-8464-4e1f-b967-e5e9efe46e21"/>
 
-## Toggle Auto Heading
-<kbd>⌘1</kbd> / <kbd>ctrl+1</kbd>
+### Fast access to hierarchies on Search
+Helpfull, when you need to access subpages of the current page. Just press the <kbd>←</kbd> arrow key <u>on empty search input</u>.
+<img width="600px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/3289dae9-6391-40ed-8198-7e957cd029eb"/>
 
+
+## Commands
+### Toggle Auto Heading
 <img width="250px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/9c3295ff-1386-4cbd-a527-4cfd7c37211b"/>
 
 
