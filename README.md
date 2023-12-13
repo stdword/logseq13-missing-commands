@@ -26,7 +26,7 @@ Missing Commands for Logseq
 
 ## Summary
 
-Missing, but helpful commands for [Logseq](https://logseq.com).
+Missing, but helpful commands, views & features for [Logseq](https://logseq.com).
 
 
 ## Features
@@ -40,7 +40,10 @@ Helpfull, when you need to access subpages of the current page. Just press the <
 
 
 ## Commands
+To find out the shortcut for the particular command use [this](https://github.com/stdword/logseq13-missing-commands/tree/main?tab=readme-ov-file#how-to-change-default-shortcut-for-the-particular-command) instruction.
+
 ### Toggle Auto Heading
+Without accessing block context menu.
 <img width="250px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/9c3295ff-1386-4cbd-a527-4cfd7c37211b"/>
 
 
