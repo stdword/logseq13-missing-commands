@@ -26,7 +26,9 @@ Missing Commands for Logseq
 
 ## Summary
 
-Missing, but helpful commands, views & features for [Logseq](https://logseq.com).
+Missing, but helpful _commands_, _views_ & _features_ for [Logseq](https://logseq.com)
+
+_Designed to be very productive with keyboard & agile with view customizations_  ❤️
 
 
 ## Features
