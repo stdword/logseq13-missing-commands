@@ -45,7 +45,7 @@ Helpfull, when you need to access subpages of the current page. Just press the <
 <img width="600px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/3289dae9-6391-40ed-8198-7e957cd029eb"/>
 
 ### Go to block _start_ (_end_) with double-pressing the «Home» («End») key
-Just like in Sublime Text editor. MacOS's <kbd>⌘←</kbd> / <kbd>⌘→</kbd> and Windows's <kbd>fn←</kbd> / <kbd>fn→</kbd> are also supported.
+Just like in Sublime Text editor. MacOS's <kbd>⌘ ←</kbd> / <kbd>⌘ →</kbd> and Windows's <kbd>fn ←</kbd> / <kbd>fn →</kbd> are also supported.
 
 <img width="200px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/4773523a-5900-4b48-b196-f6cb39799548"/>
 
