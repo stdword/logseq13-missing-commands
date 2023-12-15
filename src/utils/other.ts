@@ -55,3 +55,14 @@ export function indexOfNth(string: string, substring: string, count: number = 1)
 
     return string.split(substring, count).join(substring).length
 }
+
+/**
+ * Remove duplicates
+ */
+export function unique<X>(items: Array<X>, keyFunction: (item: X) => any) {
+    return items.filter((b, i, r) => {
+        if (i === 0)
+            return true
+        return keyFunction(r[i - 1]) !== keyFunction(b)
+    })
+}

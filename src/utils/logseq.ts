@@ -1,6 +1,6 @@
 import { BlockEntity, IBatchBlock, PageEntity } from '@logseq/libs/dist/LSPlugin.user'
 
-import { f, indexOfNth, p, sleep } from './other'
+import { f, indexOfNth, p, sleep, unique } from './other'
 
 
 export async function getChosenBlocks(): Promise<[BlockEntity[], boolean]> {
@@ -342,7 +342,7 @@ export async function transformSelectedBlocksWithMovements(
 
     // Logseq bug: selected blocks can be duplicated (but sorted!)
     //   just remove duplication
-    blocks = blocks.filter((b, i, r) => r.at(i - 1)?.uuid !== b.uuid)
+    blocks = unique(blocks, (b) => b.uuid)
 
     const transformed = transformCallback(blocks)
     for (const block of transformed) {
@@ -383,6 +383,20 @@ export async function transformSelectedBlocksCommand(
     transformSelectedBlocksWithMovements(blocks, transformCallback)
 }
 
+export async function walkBlockTreeAsync(
+    root: IBatchBlock,
+    callback: (b: IBatchBlock, lvl: number) => Promise<string | void>,
+    level: number = 0,
+): Promise<IBatchBlock> {
+    return {
+        content: (await callback(root, level)) ?? '',
+        children: await Promise.all(
+            (root.children || []).map(
+                async (b) => await walkBlockTreeAsync(b as IBatchBlock, callback, level + 1)
+        ))
+    }
+}
+
 export function walkBlockTree(
     root: IBatchBlock,
     callback: (b: IBatchBlock, lvl: number) => string | void,
@@ -417,25 +431,56 @@ export async function findBlockReferences(uuid: string): Promise<Number[]> {
     return results.flat().map((item) => item.id)
 }
 
-export async function splitBlocksCommand(
-    splitCallback: (content: string) => IBatchBlock[],
-) {
-    const [ blocks, isSelectedState ] = await getChosenBlocks()
-    if (blocks.length === 0)
-        return
+export function filterOutChildBlocks(blocks: BlockEntity[]): BlockEntity[] {
+    const filtered: BlockEntity[] = []
 
+    const uuids: string[] = []
     for (const block of blocks) {
-        const content = PropertiesUtils.deleteAllProperties(block.content)
-        const batch = splitCallback(content)
+        if (uuids.includes(block.uuid))
+            continue
 
-        const [head, tail] = [batch[0], batch.slice(1)]
+        walkBlockTree(block as IBatchBlock, (b, level) => {
+            const block = b as BlockEntity
+            if (!uuids.includes(block.uuid))
+                uuids.push(block.uuid)
+        })
 
-        await logseq.Editor.updateBlock(block.uuid, head.content)
-        await logseq.Editor.insertBatchBlock(block.uuid, tail, {before: false, sibling: true})
+        filtered.push(block)
     }
 
-    if (isSelectedState) {
-        await sleep(20)
-        await logseq.Editor.exitEditingMode()
+    return filtered
+}
+
+/**
+ * Reason: logseq bug — before: true doesn't work for batch inserting
+ */
+export async function insertBatchBlockBefore(
+    srcBlock: BlockEntity,
+    blocks: IBatchBlock | IBatchBlock[],
+    opts?: Partial<{
+        keepUUID: boolean;
+    }>
+) {
+    // first block in a page
+    if (srcBlock.left.id === srcBlock.page.id) {
+        // there is no batch way: use pseudo block
+        const first = ( await logseq.Editor.insertBlock(
+            srcBlock.uuid, '', {before: true, sibling: true}) )!
+        const result = await logseq.Editor.insertBatchBlock(
+            first.uuid, blocks, {before: false, sibling: true, ...opts})
+        // due to logseq bug: empty first block overrides with next insertion
+        //    there is no reason to remove pseudo block
+        // await logseq.Editor.removeBlock(first.uuid)
+        return result
     }
+
+    const prev = await logseq.Editor.getPreviousSiblingBlock(srcBlock.uuid)
+    if (prev)
+        return await logseq.Editor.insertBatchBlock(
+            prev.uuid, blocks, {before: false, sibling: true, ...opts})
+
+    // first block for parent
+    const parent = ( await logseq.Editor.getBlock(srcBlock.parent.id) )!
+    return await logseq.Editor.insertBatchBlock(
+        parent.uuid, blocks, {sibling: false, ...opts})
 }

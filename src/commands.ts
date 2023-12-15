@@ -1,6 +1,6 @@
 import '@logseq/libs'
 
-import { PropertiesUtils, getChosenBlocks, isWindows, sleep, transformSelectedBlocksCommand } from './utils'
+import { PropertiesUtils, filterOutChildBlocks, getChosenBlocks, insertBatchBlockBefore, isWindows, sleep, transformSelectedBlocksCommand, unique, walkBlockTreeAsync } from './utils'
 import { BlockEntity, IBatchBlock } from '@logseq/libs/dist/LSPlugin'
 
 
@@ -216,6 +216,64 @@ export function splitByParagraphs(text: string): IBatchBlock[] {
     return textBlocks.map((tb) => {return {content: tb}})
 }
 
+export async function splitBlocksCommand(
+    splitCallback: (content: string) => IBatchBlock[],
+    keepChildrenInFirstBlock: boolean = true,
+    recursive: boolean = false,
+) {
+    let [ blocks, isSelectedState ] = await getChosenBlocks()
+    if (blocks.length === 0)
+        return
+
+    blocks = unique(blocks, (b) => b.uuid)
+    if (recursive) {
+        blocks = await Promise.all(
+            blocks.map(async (b) => {
+                return (
+                    await logseq.Editor.getBlock(b.uuid, {includeChildren: true})
+                )!
+            })
+        )
+        blocks = filterOutChildBlocks(blocks)
+    }
+
+    for (const block of blocks) {
+        async function processBlock(b) {
+            const block = b as BlockEntity
+
+            const content = PropertiesUtils.deleteAllProperties(block.content)
+            const batch = splitCallback(content)
+
+            let head, tail
+            if (keepChildrenInFirstBlock)
+                [head, tail] = [batch[0], batch.slice(1)]
+            else
+                [tail, head] = [batch.slice(0, -1), batch.at(-1)!]
+
+            if (content !== head.content)  // has changes?
+                await logseq.Editor.updateBlock(
+                    block.uuid, head.content, {properties: block.properties})
+
+            if (tail.length !== 0) {
+                if (keepChildrenInFirstBlock)
+                    await logseq.Editor.insertBatchBlock(
+                        block.uuid, tail, {before: false, sibling: true})
+                else
+                    await insertBatchBlockBefore(block, tail)
+            }
+        }
+
+        if (recursive)
+            await walkBlockTreeAsync(block as IBatchBlock, async (b, level) => processBlock(b))
+        else
+            await processBlock(block)
+    }
+
+    if (isSelectedState) {
+        await sleep(20)
+        await logseq.Editor.exitEditingMode()
+    }
+}
 
 // export async function magicSplitCommand() {
 //     const [ blocks, isSelectedState ] = await getChosenBlocks()

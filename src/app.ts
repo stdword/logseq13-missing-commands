@@ -2,12 +2,64 @@ import { BlockEntity, SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin.user'
 
 import {
     ICON, editNextBlockCommand, editPreviousBlockCommand, reverseBlocksCommand,
-    shuffleBlocksCommand, sortBlocksCommand, splitByParagraphs, toggleAutoHeadingCommand
+    shuffleBlocksCommand, sortBlocksCommand, splitBlocksCommand, splitByParagraphs, toggleAutoHeadingCommand
 } from './commands'
-import { getChosenBlocks, p, scrollToBlock, splitBlocksCommand } from './utils'
+import { getChosenBlocks, p, scrollToBlock } from './utils'
 
 
 const DEV = process.env.NODE_ENV === 'development'
+
+const settingsSchema: SettingSchemaDesc[] = [
+    {
+        key: 'splittingHeading',
+        title: '⛓️ Split & Join',
+        description: '',
+        type: 'heading',
+        default: null
+    },
+    {
+        key: 'storeChildBlocksIn',
+        title: 'Where to store nested blocks when splitting the block?',
+        description: `
+            <span style="display: flex; gap: 1rem; align-items: center;">
+                <div>
+                    <ul>
+                        <li>First Last</li>
+                        <ul>
+                            <li>nested</li>
+                        </ul>
+                    </ul>
+                    <p style="margin: 0px"> </p>
+                </div>
+                <div>→</div>
+                <div>
+                    <ul>
+                        <li>First</li>
+                        <ul>
+                            <li>nested</li>
+                        </ul>
+                        <li>Last</li>
+                    </ul>
+                </div>
+                <div>OR</div>
+                <div>
+                    <ul>
+                        <li>First</li>
+                        <li>Last</li>
+                        <ul>
+                            <li>nested</li>
+                        </ul>
+                    </ul>
+                </div>
+            </span>
+        `.trim(),
+        type: 'enum',
+        enumPicker: 'radio',
+        enumChoices: ['In the First block', 'In the Last block'],
+        default: 'In the Last block',
+    },
+]
+const settingsValues: any = settingsSchema.reduce((r, v) => ({ ...r, [v.key]: v}), {})
 
 
 async function onAppSettingsChanged() {
@@ -22,6 +74,8 @@ async function init() {
         )
     }
 
+    logseq.useSettingsSchema(settingsSchema)
+
     console.info(p`Loaded`)
 }
 
@@ -31,6 +85,8 @@ async function postInit() {
 
 async function main() {
     await init()
+
+    const settings = logseq.settings!
 
     logseq.onSettingsChanged(async (old, new_) => {
         await onAppSettingsChanged()
@@ -43,12 +99,24 @@ async function main() {
     }, (e) => toggleAutoHeadingCommand({togglingBasedOnFirstBlock: true}) )
 
 
-    // Splitting
+    // Splitting & Joining
     logseq.App.registerCommandPalette({
-        label: ICON + ' Split by paragraphs', key: 'split-by-paragraphs',
+        label: ICON + ' Split by paragraphs', key: 'split-1-by-paragraphs',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => splitBlocksCommand(splitByParagraphs) )
+    }, (e) => splitBlocksCommand(
+        splitByParagraphs,
+        settings.storeChildBlocksIn === settingsValues.storeChildBlocksIn.enumChoices[0],
+    ))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Split by paragraphs (with nested)', key: 'split-2-by-paragraphs-nested',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => splitBlocksCommand(
+        splitByParagraphs,
+        settings.storeChildBlocksIn === settingsValues.storeChildBlocksIn.enumChoices[0],
+        true,
+    ))
 
 
     // Navigation
