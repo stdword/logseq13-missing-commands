@@ -216,6 +216,11 @@ export function splitByParagraphs(text: string): IBatchBlock[] {
     return textBlocks.map((tb) => {return {content: tb}})
 }
 
+export function splitByLines(text: string): IBatchBlock[] {
+    const textBlocks = text.split(/\n/)
+    return textBlocks.map((tb) => {return {content: tb}})
+}
+
 export async function splitBlocksCommand(
     splitCallback: (content: string) => IBatchBlock[],
     keepChildrenInFirstBlock: boolean = true,

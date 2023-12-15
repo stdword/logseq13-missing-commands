@@ -2,7 +2,7 @@ import { BlockEntity, SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin.user'
 
 import {
     ICON, editNextBlockCommand, editPreviousBlockCommand, reverseBlocksCommand,
-    shuffleBlocksCommand, sortBlocksCommand, splitBlocksCommand, splitByParagraphs, toggleAutoHeadingCommand
+    shuffleBlocksCommand, sortBlocksCommand, splitBlocksCommand, splitByLines, splitByParagraphs, toggleAutoHeadingCommand
 } from './commands'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
 
@@ -101,7 +101,25 @@ async function main() {
 
     // Splitting & Joining
     logseq.App.registerCommandPalette({
-        label: ICON + ' Split by paragraphs', key: 'split-1-by-paragraphs',
+        label: ICON + ' Split by lines', key: 'split-1-by-lines',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => splitBlocksCommand(
+        splitByLines,
+        settings.storeChildBlocksIn === settingsValues.storeChildBlocksIn.enumChoices[0],
+    ))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Split by lines (with nested)', key: 'split-2-by-lines-nested',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => splitBlocksCommand(
+        splitByLines,
+        settings.storeChildBlocksIn === settingsValues.storeChildBlocksIn.enumChoices[0],
+        true,
+    ))
+
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Split by paragraphs', key: 'split-3-by-paragraphs',
         // @ts-expect-error
         keybinding: {},
     }, (e) => splitBlocksCommand(
@@ -109,7 +127,7 @@ async function main() {
         settings.storeChildBlocksIn === settingsValues.storeChildBlocksIn.enumChoices[0],
     ))
     logseq.App.registerCommandPalette({
-        label: ICON + ' Split by paragraphs (with nested)', key: 'split-2-by-paragraphs-nested',
+        label: ICON + ' Split by paragraphs (with nested)', key: 'split-4-by-paragraphs-nested',
         // @ts-expect-error
         keybinding: {},
     }, (e) => splitBlocksCommand(
