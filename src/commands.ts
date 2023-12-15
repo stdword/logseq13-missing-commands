@@ -221,6 +221,11 @@ export function splitByLines(text: string): IBatchBlock[] {
     return textBlocks.map((tb) => {return {content: tb}})
 }
 
+export function splitByWords(text: string): IBatchBlock[] {
+    const textBlocks = text.split(/[^\w-]+/)
+    return textBlocks.filter((tb) => !!tb).map((tb) => {return {content: tb}})
+}
+
 export async function splitBlocksCommand(
     splitCallback: (content: string) => IBatchBlock[],
     keepChildrenInFirstBlock: boolean = true,
