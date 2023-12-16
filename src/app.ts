@@ -1,7 +1,7 @@
 import { BlockEntity, SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin.user'
 
 import {
-    ICON, editNextBlockCommand, editPreviousBlockCommand, reverseBlocksCommand,
+    ICON, editNextBlockCommand, editPreviousBlockCommand, joinBlocksCommand, reverseBlocksCommand,
     shuffleBlocksCommand, sortBlocksCommand, splitBlocksCommand, splitByLines, splitByParagraphs, splitByWords, toggleAutoHeadingCommand
 } from './commands'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
@@ -99,7 +99,7 @@ async function main() {
     }, (e) => toggleAutoHeadingCommand({togglingBasedOnFirstBlock: true}) )
 
 
-    // Splitting & Joining
+    // Splitting
     logseq.App.registerCommandPalette({
         label: ICON + ' Split by words', key: 'split-1-by-words',
         // @ts-expect-error
@@ -152,6 +152,64 @@ async function main() {
         splitByParagraphs,
         settings.storeChildBlocksIn === settingsValues.storeChildBlocksIn.enumChoices[0],
         true,
+    ))
+
+
+    // Joining
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Join via spaces', key: 'join-1-spaces',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => joinBlocksCommand(
+        false,
+        (root, level, children) => (root ? root + ' ' : '') + children.join(' '),
+    ))
+
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Join selected together via commas (with respect to root block)', key: 'join-2-commas',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => joinBlocksCommand(
+        false,
+        (root, level, children) => {
+            const prefix = root ? root + (level === 0 ? ': ' : ', ') : ''
+            return prefix + children.join(', ')
+        },
+    ))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Join selected independently via commas (with respect to root block)', key: 'join-3-commas-independently',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => joinBlocksCommand(
+        true,
+        (root, level, children) => {
+            const prefix = root ? root + (level === 0 ? ': ' : ', ') : ''
+            return prefix + children.join(', ')
+        },
+    ))
+
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Join via new lines', key: 'join-4-lines',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => joinBlocksCommand(
+        false,
+        (root, level, children) => (root ? root + '\n' : '') + children.join('\n'),
+    ))
+
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Join via new lines (keep nested structure)', key: 'join-5-lines-nested',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => joinBlocksCommand(
+        false,
+        (root, level, children) => (root ? root + '\n' : '') + children.join('\n'),
+        (content, level) => {
+            if (level <= 1)
+                return content
+            const prefix = '* '
+            return '\t'.repeat(level - 1) + prefix + content
+        },
     ))
 
 

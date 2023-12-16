@@ -1,6 +1,9 @@
 import '@logseq/libs'
 
-import { PropertiesUtils, filterOutChildBlocks, getChosenBlocks, insertBatchBlockBefore, isWindows, sleep, transformSelectedBlocksCommand, unique, walkBlockTreeAsync } from './utils'
+import {
+    PropertiesUtils, ensureChildrenIncluded, filterOutChildBlocks, getBlocksWithReferences, getChosenBlocks, insertBatchBlockBefore,
+    isWindows, reduceBlockTree, reduceTextWithLength, sleep, transformBlocksTreeByReplacing, transformSelectedBlocksWithMovements, unique, walkBlockTree, walkBlockTreeAsync,
+} from './utils'
 import { BlockEntity, IBatchBlock } from '@logseq/libs/dist/LSPlugin'
 
 
@@ -306,6 +309,116 @@ export async function splitBlocksCommand(
             await walkBlockTreeAsync(block as IBatchBlock, async (b, level) => processBlock(b))
         else
             await processBlock(block)
+    }
+
+    if (isSelectedState) {
+        await sleep(20)
+        await logseq.Editor.exitEditingMode()
+    }
+}
+
+export async function joinBlocksCommand(
+    independentMode: boolean,
+    joinAttachCallback: (root: string, level: number, children: string[]) => string,
+    joinMapCallback?: (content: string, level: number) => string,
+) {
+    let [ blocks, isSelectedState ] = await getChosenBlocks()
+    if (blocks.length === 0)
+        return
+
+    blocks = unique(blocks, (b) => b.uuid)
+    blocks = await Promise.all(
+        blocks.map(async (b) => {
+            return (
+                await logseq.Editor.getBlock(b.uuid, {includeChildren: true})
+            )!
+        })
+    )
+    blocks = filterOutChildBlocks(blocks)
+
+    if (blocks.length === 0)
+        return
+    if (blocks.length === 1)
+        if (!blocks[0].children || blocks[0].children.length === 0)
+            return  // nothing to join
+
+    let noWarnings = true
+    for (const block of blocks) {
+        // it is important to check if any block in the tree has references
+        // (Logseq replaces references with it's text)
+        let blocksWithReferences = await getBlocksWithReferences(block)
+
+        // root can have references (in independent mode), others — not
+        const blocksWithReferences_noRoot = blocksWithReferences.filter((b) => b.uuid !== block.uuid)
+        block._rootHasReferences = blocksWithReferences.length !== blocksWithReferences_noRoot.length
+
+        if (independentMode || blocks.length === 1)
+            blocksWithReferences = blocksWithReferences_noRoot
+
+        if (blocksWithReferences.length !== 0) {
+            const html = blocksWithReferences.map((b) => {
+                let content = PropertiesUtils.deleteAllProperties(b.content)
+                content = reduceTextWithLength(content, 35)
+                return `[:li [:i "${content}"]]`
+            })
+            await logseq.UI.showMsg(
+                `[:div
+                    [:b "${ICON} Join Blocks Command"]
+                    [:p "There are blocks that have references from another blocks: "
+                        [:ul ${html}]
+                    ]
+                    [:p "Remove references or select only blocks without them."]
+                ]`,
+                'warning',
+                {timeout: 20000},
+            )
+            noWarnings = false
+            continue
+        }
+    }
+
+    if (!noWarnings)
+        return
+
+    function reduceTree(block: IBatchBlock, { startLevel }: { startLevel: number }) {
+        const preparedTree = walkBlockTree(block, (b, level) => {
+            const content = PropertiesUtils.deleteAllProperties(b.content)
+            return joinMapCallback ? joinMapCallback(content, level) : content
+        }, startLevel)
+
+        const reducedContent = reduceBlockTree(preparedTree, (b, level, children) => {
+            if (children.length === 0)
+                return b.content
+            return joinAttachCallback(b.content, level, children)
+        }, startLevel)
+
+        return reducedContent
+    }
+
+    if (independentMode || blocks.length === 1) {
+        for (const block of blocks) {
+            if (!block.children || block.children.length === 0)
+                continue  // nothing to join
+
+            const reducedContent = reduceTree(block as IBatchBlock, {startLevel: 0})
+
+            if (block._rootHasReferences) {
+                await logseq.Editor.updateBlock(block.uuid, reducedContent)
+                for (const child of block.children!)
+                    await logseq.Editor.removeBlock((child as BlockEntity).uuid)
+            } else {
+                await insertBatchBlockBefore(block, {content: reducedContent, properties: block.properties})
+                await logseq.Editor.removeBlock(block.uuid)
+            }
+        }
+    } else {
+        const top = blocks[0]
+        const pseudoRoot: IBatchBlock = {content: '', children: blocks as IBatchBlock[]}
+        const reducedContent = reduceTree(pseudoRoot, {startLevel: 0})
+
+        await insertBatchBlockBefore(top, {content: reducedContent, properties: top.properties})
+        for (const block of blocks)
+            await logseq.Editor.removeBlock(block.uuid)
     }
 
     if (isSelectedState) {

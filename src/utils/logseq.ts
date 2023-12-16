@@ -246,7 +246,6 @@ export async function ensureChildrenIncluded(node: BlockEntity): Promise<BlockEn
     return (await logseq.Editor.getBlock(node.uuid, {includeChildren: true}))!
 }
 
-export async function replaceChildrenBlocksInTree(
 export async function getBlocksWithReferences(root: BlockEntity): Promise<BlockEntity[]> {
     const blocksWithPersistedID = findPropertyInTree(root as IBatchBlock, PropertiesUtils.idProperty)
     const blocksAndItsReferences = (await Promise.all(
@@ -262,6 +261,8 @@ export async function getBlocksWithReferences(root: BlockEntity): Promise<BlockE
         return b
     })
 }
+
+export async function transformBlocksTreeByReplacing(
     root: BlockEntity,
     transformChildrenCallback: (blocks: BlockEntity[]) => BlockEntity[],
 ): Promise<BlockEntity | null> {
