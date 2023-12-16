@@ -196,7 +196,6 @@ async function main() {
         false,
         (root, level, children) => (root ? root + '\n' : '') + children.join('\n'),
     ))
-
     logseq.App.registerCommandPalette({
         label: ICON + ' Join via new lines (keep nested structure)', key: 'join-5-lines-nested',
         // @ts-expect-error
@@ -208,7 +207,8 @@ async function main() {
             if (level <= 1)
                 return content
             const prefix = '* '
-            return '\t'.repeat(level - 1) + prefix + content
+            const shift = '\t'.repeat(level - 1)
+            return shift + prefix + content.replaceAll(/\n^/gm, '\n' + shift + ' '.repeat(prefix.length))
         },
     ))
 

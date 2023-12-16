@@ -342,6 +342,8 @@ export async function joinBlocksCommand(
         if (!blocks[0].children || blocks[0].children.length === 0)
             return  // nothing to join
 
+    independentMode = independentMode || blocks.length === 1
+
     let noWarnings = true
     for (const block of blocks) {
         // it is important to check if any block in the tree has references
@@ -352,7 +354,7 @@ export async function joinBlocksCommand(
         const blocksWithReferences_noRoot = blocksWithReferences.filter((b) => b.uuid !== block.uuid)
         block._rootHasReferences = blocksWithReferences.length !== blocksWithReferences_noRoot.length
 
-        if (independentMode || blocks.length === 1)
+        if (independentMode)
             blocksWithReferences = blocksWithReferences_noRoot
 
         if (blocksWithReferences.length !== 0) {
@@ -395,7 +397,7 @@ export async function joinBlocksCommand(
         return reducedContent
     }
 
-    if (independentMode || blocks.length === 1) {
+    if (independentMode) {
         for (const block of blocks) {
             if (!block.children || block.children.length === 0)
                 continue  // nothing to join
