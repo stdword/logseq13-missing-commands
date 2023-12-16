@@ -212,6 +212,18 @@ async function main() {
         },
     ))
 
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Join to paragraphs', key: 'join-6-paragraphs',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => joinBlocksCommand(
+        false,
+        (root, level, children) => {
+            const suffix = '\n\n'
+            return (root ? root + suffix : '') + children.join('\n\n')
+        },
+    ))
+
 
     // Navigation
     logseq.App.registerCommandPalette({
