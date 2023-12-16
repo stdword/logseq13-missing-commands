@@ -66,3 +66,11 @@ export function unique<X>(items: Array<X>, keyFunction: (item: X) => any) {
         return keyFunction(r[i - 1]) !== keyFunction(b)
     })
 }
+
+
+export function reduceTextWithLength(text: string, length: number, suffix = '...') {
+    if (text.length <= length)
+        return text
+    return text.substring(0, length).trimEnd() + suffix
+}
+

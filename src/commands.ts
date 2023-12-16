@@ -41,6 +41,35 @@ export async function toggleAutoHeadingCommand(opts: {togglingBasedOnFirstBlock:
     }
 }
 
+export async function transformSelectedBlocksCommand(
+    blocks: BlockEntity[],
+    transformCallback: (blocks: BlockEntity[]) => BlockEntity[],
+    isSelectedState: boolean,
+) {
+    // CASE: all transformed blocks relates to one root block
+    if (blocks.length === 1) {
+        const tree = await ensureChildrenIncluded(blocks[0])
+        if (!tree.children || tree.children.length === 0)
+            return  // nothing to transform
+
+        const newRoot = await transformBlocksTreeByReplacing(tree, transformCallback)
+        if (newRoot) {  // successfully replaced
+            if (isSelectedState)
+                await logseq.Editor.selectBlock(newRoot.uuid)
+            else
+                await logseq.Editor.editBlock(newRoot.uuid)
+
+            return
+        }
+
+        // fallback to array of blocks
+        blocks = tree.children as BlockEntity[]
+    }
+
+
+    // CASE: selected blocks from different parents
+    transformSelectedBlocksWithMovements(blocks, transformCallback)
+}
 
 export async function sortBlocksCommand(contextBlockUUID: string | null = null) {
     let blocks: BlockEntity[]

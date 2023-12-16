@@ -247,6 +247,21 @@ export async function ensureChildrenIncluded(node: BlockEntity): Promise<BlockEn
 }
 
 export async function replaceChildrenBlocksInTree(
+export async function getBlocksWithReferences(root: BlockEntity): Promise<BlockEntity[]> {
+    const blocksWithPersistedID = findPropertyInTree(root as IBatchBlock, PropertiesUtils.idProperty)
+    const blocksAndItsReferences = (await Promise.all(
+        blocksWithPersistedID.map(async (b): Promise<[BlockEntity, Number[]]> => {
+            const block = b as BlockEntity
+            const references = await findBlockReferences(block.uuid)
+            return [block, references]
+        })
+    ))
+    const blocksWithReferences = blocksAndItsReferences.filter(([b, rs]) => (rs.length !== 0))
+    return blocksWithReferences.map(([b, rs]) => {
+        b._references = rs
+        return b
+    })
+}
     root: BlockEntity,
     transformChildrenCallback: (blocks: BlockEntity[]) => BlockEntity[],
 ): Promise<BlockEntity | null> {
@@ -257,17 +272,9 @@ export async function replaceChildrenBlocksInTree(
     // METHOD: blocks removal to replace whole tree
     // but it is important to check if any block in the tree has references
     // (Logseq replaces references with it's text)
-    const blocksWithPersistedID = findPropertyInTree(root as IBatchBlock, PropertiesUtils.idProperty)
-    const blocksAndItsReferences = (await Promise.all(
-        blocksWithPersistedID.map(async (b): Promise<[IBatchBlock, Number[]]> => {
-            const references = await findBlockReferences((b as BlockEntity).uuid)
-            return [b, references]
-        })
-    ))
-    const blocksWithReferences = blocksAndItsReferences.filter(([b, rs]) => (rs.length !== 0))
+    const blocksWithReferences = await getBlocksWithReferences(root)
     if (blocksWithReferences.length !== 0)
         return null  // blocks removal cannot be used
-
 
     const transformedBlocks = transformChildrenCallback(root.children as BlockEntity[])
 
@@ -353,36 +360,6 @@ export async function transformSelectedBlocksWithMovements(
     }
 }
 
-export async function transformSelectedBlocksCommand(
-    blocks: BlockEntity[],
-    transformCallback: (blocks: BlockEntity[]) => BlockEntity[],
-    isSelectedState: boolean,
-) {
-    // CASE: all sorting blocks relates to one root block
-    if (blocks.length === 1) {
-        const tree = await ensureChildrenIncluded(blocks[0])
-        if (!tree.children || tree.children.length === 0)
-            return  // nothing to transform
-
-        const newRoot = await replaceChildrenBlocksInTree(tree, transformCallback)
-        if (newRoot) {  // successfully replaced
-            if (isSelectedState)
-                await logseq.Editor.selectBlock(newRoot.uuid)
-            else
-                await logseq.Editor.editBlock(newRoot.uuid)
-
-            return
-        }
-
-        // fallback to array of blocks
-        blocks = tree.children as BlockEntity[]
-    }
-
-
-    // CASE: selected blocks from different parents
-    transformSelectedBlocksWithMovements(blocks, transformCallback)
-}
-
 export async function walkBlockTreeAsync(
     root: IBatchBlock,
     callback: (b: IBatchBlock, lvl: number) => Promise<string | void>,
@@ -408,6 +385,17 @@ export function walkBlockTree(
             (b) => walkBlockTree(b as IBatchBlock, callback, level + 1)
         )
     }
+}
+
+export function reduceBlockTree(
+    root: IBatchBlock,
+    callback: (b: IBatchBlock, lvl: number, children: string[]) => string,
+    level: number = 0,
+): string {
+    const children = (root.children || []).map(
+        (b) => reduceBlockTree(b as IBatchBlock, callback, level + 1)
+    )
+    return callback(root, level, children) ?? ''
 }
 
 export function findPropertyInTree(tree: IBatchBlock, propertyName: string): IBatchBlock[] {
@@ -452,7 +440,7 @@ export function filterOutChildBlocks(blocks: BlockEntity[]): BlockEntity[] {
 }
 
 /**
- * Reason: logseq bug — before: true doesn't work for batch inserting
+ * Reason: logseq bug — `before: true` doesn't work for batch inserting
  */
 export async function insertBatchBlockBefore(
     srcBlock: BlockEntity,
