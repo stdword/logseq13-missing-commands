@@ -377,9 +377,14 @@ export async function splitBlocksCommand(
             else
                 [tail, head] = [batch.slice(0, -1), batch.at(-1)!]
 
-            if (content !== head.content)  // has changes?
+            if (content !== head.content) // has changes?
                 await logseq.Editor.updateBlock(
-                    block.uuid, head.content, {properties: block.properties})
+                    block.uuid, head.content,
+                    {properties: Object.assign(block.properties ?? {}, head.properties ?? {})})
+
+            if (head.children.length !== 0)
+                await logseq.Editor.insertBatchBlock(
+                    block.uuid, head.children, {sibling: false})
 
             if (tail.length !== 0) {
                 if (keepChildrenInFirstBlock)
