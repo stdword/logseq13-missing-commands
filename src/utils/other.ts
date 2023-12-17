@@ -91,7 +91,7 @@ export function escapeForRegExp(str: string) {
 
 
 /**
- * source: https://stackoverflow.com/questions/36129721/convert-number-to-alphabet-letter/75643566#75643566
+ * source: https://stackoverflow.com/a/75643566
  */
 export function numberToLetters(x: number) {
     if (x <= 0)
@@ -99,6 +99,34 @@ export function numberToLetters(x: number) {
     const letters = numberToLetters(Math.floor((x - 1) / 26)) + String.fromCharCode((x - 1) % 26 + 65)
     return letters.toLowerCase()
 }
-export function lettersToNumber(ls: string) {
-    return ls.toLowerCase().split('').reduce((acc, val) => acc * 26 + val.charCodeAt(0) - 64, 0)
+export function lettersToNumber(letters: string) {
+    return letters.toLowerCase().split('').reduce((acc, val) => acc * 26 + val.charCodeAt(0) - 64, 0)
+}
+
+/**
+ * source: https://stackoverflow.com/a/70844631
+ */
+const romanValues = {
+    M: 1000, CM: 900, D: 500, CD: 400,
+    C: 100,  XC: 90,  L: 50,  XL: 40,
+    X: 10,   IX: 9,   V: 5,   IV: 4,
+    I: 1,
+}
+export function numberToRoman(x: number = 0) {
+    return Object.keys(romanValues).reduce((acc, key) => {
+        while (x >= romanValues[key]) {
+            acc += key
+            x -= romanValues[key]
+        }
+        return acc
+    }, '')
+}
+export function fromRoman(letters: string = '') {
+    return Object.keys(romanValues).reduce((acc, key) => {
+        while (letters.indexOf(key) === 0) {
+            acc += romanValues[key];
+            letters = letters.substr(key.length);
+        }
+        return acc;
+    }, 0);
 }

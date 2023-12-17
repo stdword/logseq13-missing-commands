@@ -4,7 +4,7 @@ import markdownit from 'markdown-it'
 
 import {
     PropertiesUtils, ensureChildrenIncluded, escapeForRegExp, filterOutChildBlocks, getBlocksWithReferences,
-    getChosenBlocks, insertBatchBlockBefore, isWindows, numberToLetters, p, reduceBlockTree,
+    getChosenBlocks, insertBatchBlockBefore, isWindows, numberToLetters, numberToRoman, p, reduceBlockTree,
     reduceTextWithLength, sleep, transformBlocksTreeByReplacing,
     transformSelectedBlocksWithMovements, unique, walkBlockTree, walkBlockTreeAsync,
 } from './utils'
@@ -409,7 +409,7 @@ export async function splitBlocksCommand(
 
 export async function joinBlocksCommand(
     independentMode: boolean,
-    joinAttachCallback: (root: BlockEntity, level: number, children: string[]) => string,
+    joinAttachCallback: (root: string, level: number, children: string[], block?: BlockEntity) => string,
     joinMapCallback?: (content: string, level: number, block: BlockEntity, parent?: BlockEntity) => string,
 ) {
     let [ blocks, isSelectedState ] = await getChosenBlocks()
@@ -473,7 +473,7 @@ export async function joinBlocksCommand(
         return
 
     function reduceTree(block: IBatchBlock, { startLevel }: { startLevel: number }) {
-        const preparedTree = walkBlockTree(block, (b, level, p) => {
+        const preparedTree = walkBlockTree(block, (b, level, p, data) => {
             const content = PropertiesUtils.deleteAllProperties(b.content)
             return joinMapCallback
                 ? joinMapCallback(
@@ -481,8 +481,8 @@ export async function joinBlocksCommand(
                 : content
         }, startLevel)
 
-        const reducedContent = reduceBlockTree(preparedTree, (b, level, children) => {
-            return joinAttachCallback(b as BlockEntity, level, children)
+        const reducedContent = reduceBlockTree(preparedTree, (b, level, children, data) => {
+            return joinAttachCallback(b.content, level, children, b.data.node as BlockEntity)
         }, startLevel)
 
         return reducedContent
@@ -521,60 +521,68 @@ export async function joinBlocksCommand(
 }
 
 export function magicJoinCommand(independentMode: boolean) {
-    // this is not the NUMBER SIGN, but the FULLWIDTH NUMBER SIGN
-    const numberingPlaceholder1 = '[＃＃]'  // for arabic numbering
-    const numberingPlaceholder2 = '[＃＃＃]'  // for letter numbering
-    const numberingPlaceholder3 = '[＃＃＃＃]'  // for greek numbering
-    const numberingCommonPrefix = '[＃＃'  // should be real common prefix!
-    const numberingPlaceholders = [numberingPlaceholder1, numberingPlaceholder2, numberingPlaceholder3]
-
-    let currentNumberingPlaceholderIndex = 0
-
     const bulletPrefix = '* '
+    const numberingPrefixGetters = [
+        (n) => `${n}) `,
+        (n) => `${numberToLetters(n)}) `,
+        (n) => `${numberToRoman(n)}) `,
+    ]
 
     return joinBlocksCommand(
         independentMode,
-        (root, level, children) => {
+        (content, level, children, root) => {
+            if (!root)
+                throw new Error('assertion')
+
             const divider = '\n'
             const dividerParagraph = '\n\n'
-
-            let content = root.content
 
             if (content && children.length !== 0)
                 content += (level < 1 ? dividerParagraph : divider)
 
-            let numbering = 1
-            function fillNumbering(content) {
-                const bulletPrefixRegex = escapeForRegExp(bulletPrefix)
-                const numberingRegex = new RegExp(`^\s*(${bulletPrefixRegex})?`)
-                if (numberingRegex.test(content)) {
-                    content = content.replace(numberingPlaceholder1, (ch) => `${numbering++})`)
-                    content = content.replace(numberingPlaceholder2, (ch) => `${numberToLetters(numbering++)})`)
-                    content = content.replace(numberingPlaceholder3, (ch) => `${numbering++}.`)
-                } else  // start again on non-numbered child
-                    numbering = 1
-                return content
+            function prefixTextLines(text: string, prefix: string) {
+                const shift = '  '.repeat(level === 0 ? 0 : level - 1)
+                const filler = ' '.repeat(prefix.length)
+                return (
+                    shift + prefix +
+                    text.replaceAll(/\n^/gm, '\n' + shift + filler)
+                )
             }
 
-            if (level == 0)
-                content = fillNumbering(content)
+            let numbering = 1
+            function resolvePrefix(content: string, block: BlockEntity) {
+                console.log('TRACING', {level, content, block})
+                const prefix = block._prefixGetter(numbering)
 
-            content += children.map((child, index, array) => {
-                const prevChild = array[index - 1]
+                if (block._isOrdered)
+                    numbering++
+                else  // start again on non-numbered child
+                    numbering = 1
+
+                return prefixTextLines(content, prefix)
+            }
+
+
+            if (level == 0)
+                content = resolvePrefix(content, root)
+
+            content += children.map((child, index) => {
                 let chosenDivider = (level < 1 ? dividerParagraph : divider)
 
                 if (level === 0) {
-                    if (child.startsWith(numberingCommonPrefix)) {
+                    const childBlock = root.children![index] as BlockEntity
+                    const prevChildBlock = root.children![index - 1] as BlockEntity
+                    if (childBlock._isOrdered) {
                         // reduce divider for items in ordered list
                         chosenDivider = divider
                     }
-                    else if (prevChild && prevChild.startsWith(numberingCommonPrefix)) {
+                    else if (prevChildBlock && prevChildBlock._isOrdered) {
                         // increase upper divider for the last item in ordered list
                         child = divider + child
                     }
                 }
 
-                child = fillNumbering(child)
+                child = resolvePrefix(child, root.children![index] as BlockEntity)
 
                 return child + chosenDivider
             }).join('').trimEnd()
@@ -589,31 +597,30 @@ export function magicJoinCommand(independentMode: boolean) {
             return content
         },
         (content, level, block, parent) => {
-            // if (level <= 0)
-                // return content
-
-            let numberingPrefix = ''
+            let numberingPrefixGetter = (n) => ''
             const isOrdered = (block.properties ?? {})['logseq.orderListType'] === 'number'
             if (isOrdered) {
-                let index = (parent?._numberingPlaceholderIndex + 1) || 0
+                const type = (
+                    (parent?._numberingType + 1) || 0
+                ) % numberingPrefixGetters.length
+
+                // don't save type for level 0 as the root item moves to the child level
+                //    and they need the one level of numbering
                 if (level !== 0)
-                    block._numberingPlaceholderIndex = index
-                numberingPrefix = numberingPlaceholders[index % numberingPlaceholders.length] + ' '
+                    block._numberingType = type
+
+                block._isOrdered = true
+
+                numberingPrefixGetter = numberingPrefixGetters[type]
             }
 
-            function prefixTextLines(text: string, prefix: string) {
-                const shift = '  '.repeat(level === 0 ? 0 : level - 1)
-                const filler = ' '.repeat(prefix.length)
-                return (
-                    shift + prefix +
-                    content.replaceAll(/\n^/gm, '\n' + shift + filler)
-                )
-            }
-
+            let prefixGetter = (n) => (bulletPrefix + numberingPrefixGetter(n))
             if (level <= 1)
-                return prefixTextLines(content, numberingPrefix)
+                prefixGetter = numberingPrefixGetter
 
-            return prefixTextLines(content, bulletPrefix + numberingPrefix)
+            block._prefixGetter = prefixGetter
+
+            return content
         },
     )
 }

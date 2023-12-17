@@ -286,29 +286,33 @@ export async function walkBlockTreeAsync(
     }
 }
 
+export type WalkBlock = IBatchBlock & {data?: any}
 export function walkBlockTree(
-    root: IBatchBlock,
-    callback: (b: IBatchBlock, lvl: number, parent?: IBatchBlock) => string | void,
+    root: WalkBlock,
+    callback: (b: WalkBlock, lvl: number, parent?: WalkBlock, data?: any) => string | void,
     level: number = 0,
-    parent?: IBatchBlock,
-): IBatchBlock {
+    parent?: WalkBlock,
+): WalkBlock {
+    const data = {node: root as IBatchBlock}
+    const content = callback(root, level, parent, data) ?? ''
     return {
-        content: callback(root, level, parent) ?? '',
+        data,
+        content,
         children: (root.children || []).map(
-            (b) => walkBlockTree(b as IBatchBlock, callback, level + 1, root)
-        )
+            (b) => walkBlockTree(b as WalkBlock, callback, level + 1, root)
+        ),
     }
 }
 
 export function reduceBlockTree(
-    root: IBatchBlock,
-    callback: (b: IBatchBlock, lvl: number, children: string[]) => string,
+    root: WalkBlock,
+    callback: (b: WalkBlock, lvl: number, children: string[], data?: any) => string,
     level: number = 0,
 ): string {
     const children = (root.children || []).map(
-        (b) => reduceBlockTree(b as IBatchBlock, callback, level + 1)
+        (b) => reduceBlockTree(b as WalkBlock, callback, level + 1)
     )
-    return callback(root, level, children) ?? ''
+    return callback(root, level, children, root.data) ?? ''
 }
 
 export function findPropertyInTree(tree: IBatchBlock, propertyName: string): IBatchBlock[] {
