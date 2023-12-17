@@ -271,10 +271,12 @@ export function magicSplit(text: string): IBatchBlock[] {
 
     type State = {container: IBatchBlock, isForNumbering: boolean}
     const statesStack: State[] = []
-    let state: State = {
+
+    const initialState = {
         container: {content: '', children: results},
         isForNumbering: false,
     }
+    let state = initialState
 
     function createBlock(content: string, opts: { numbering: boolean } = { numbering: false }) {
         const properties: {[name: string]: string} = {}
@@ -327,7 +329,12 @@ export function magicSplit(text: string): IBatchBlock[] {
 
             case 'ordered_list_close':
             case 'bullet_list_close':
-                state = statesStack.pop()!
+                if (statesStack.length === 0)
+                    state = initialState
+                else
+                    state = statesStack.pop()!
+
+                state.isForNumbering = false
                 break
 
             case 'list_item_open':
