@@ -19,12 +19,14 @@
         "prod": "tsc && pnpm run clean && vite build"
     },
     "dependencies": {
-        "@logseq/libs": "^0.0.15"
+        "@logseq/libs": "^0.0.15",
+        "markdown-it": "^14.0.0"
     },
     "devDependencies": {
         "@semantic-release/changelog": "^6.0.3",
         "@semantic-release/exec": "^6.0.3",
         "@semantic-release/git": "^10.0.1",
+        "@types/markdown-it": "^13.0.7",
         "@types/node": "^20.10.4",
         "conventional-changelog-conventionalcommits": "^7.0.2",
         "cz-conventional-changelog": "^3.3.0",
