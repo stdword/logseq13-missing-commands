@@ -1,14 +1,25 @@
 import '@logseq/libs'
 
+import markdownit from 'markdown-it'
+
 import {
-    PropertiesUtils, ensureChildrenIncluded, filterOutChildBlocks, getBlocksWithReferences, getChosenBlocks, insertBatchBlockBefore,
-    isWindows, reduceBlockTree, reduceTextWithLength, sleep, transformBlocksTreeByReplacing, transformSelectedBlocksWithMovements, unique, walkBlockTree, walkBlockTreeAsync,
+    PropertiesUtils, ensureChildrenIncluded, filterOutChildBlocks, getBlocksWithReferences,
+    getChosenBlocks, insertBatchBlockBefore, isWindows, p, reduceBlockTree,
+    reduceTextWithLength, sleep, transformBlocksTreeByReplacing,
+    transformSelectedBlocksWithMovements, unique, walkBlockTree, walkBlockTreeAsync,
 } from './utils'
 import { BlockEntity, IBatchBlock } from '@logseq/libs/dist/LSPlugin'
 
 
 // there is no `saw` emoji in Windows — use `kitchen knife`: it has the same colors
 export const ICON = isWindows ? '🔪' : '🪚'
+
+const md = markdownit('zero').enable([
+    'paragraph',
+    'text',
+    'list',
+    // 'newline',
+], true)
 
 
 export async function toggleAutoHeadingCommand(opts: {togglingBasedOnFirstBlock: boolean}) {
@@ -241,13 +252,6 @@ export async function editNextBlockCommand() {
 }
 
 
-// paragraphs → lines → sentences
-
-export function splitByParagraphs(text: string): IBatchBlock[] {
-    const textBlocks = text.split(/\n\n+/)
-    return textBlocks.map((tb) => {return {content: tb}})
-}
-
 export function splitByLines(text: string): IBatchBlock[] {
     const textBlocks = text.split(/\n/)
     return textBlocks.map((tb) => {return {content: tb}})
@@ -257,6 +261,87 @@ export function splitByWords(text: string): IBatchBlock[] {
     const textBlocks = text.split(/[^\w-]+/)
     return textBlocks.filter((tb) => !!tb).map((tb) => {return {content: tb}})
 }
+
+export function magicSplit(text: string): IBatchBlock[] {
+    const tokens = md.parse(text, {})
+    console.debug(p`Parsed tokens`, Array.from(tokens))
+    console.debug(p`HTML-view`, md.renderer.render(tokens, {}, {}))
+
+    const results: IBatchBlock[] = []
+
+    type State = {container: IBatchBlock, isForNumbering: boolean}
+    const statesStack: State[] = []
+    let state: State = {
+        container: {content: '', children: results},
+        isForNumbering: false,
+    }
+
+    function createBlock(content: string, opts: { numbering: boolean } = { numbering: false }) {
+        const properties: {[name: string]: string} = {}
+        if (opts.numbering)
+            properties['logseq.order-list-type'] = 'number'
+        return {content, children: [], properties}
+    }
+
+    while (true) {
+        if (tokens.length === 0)
+            break
+
+        let token = tokens.shift()!
+
+        switch (token!.type) {
+            case 'paragraph_open': {
+                const message = 'paragraph_open, inline, paragraph_close always comes along'
+
+                token = tokens.shift()!
+                if (token.type !== 'inline')
+                    throw new Error(message)
+
+                state.container.children!.push(
+                    createBlock(token.content, {numbering: state.isForNumbering})
+                )
+
+                token = tokens.shift()!
+                if (token.type !== 'paragraph_close')
+                    throw new Error(message)
+
+                break
+            }
+
+            case 'ordered_list_open':
+            case 'bullet_list_open': {
+                const isForNumbering = token.type === 'ordered_list_open'
+
+                // items of ordered list are always child items
+                // so try to get the parent block here
+                const lastBlock = state.container.children!.at(-1)
+                if (lastBlock) {
+                    statesStack.push(state)
+                    state = {container: lastBlock, isForNumbering}
+                }
+                else
+                    state.isForNumbering = isForNumbering
+
+                break
+            }
+
+            case 'ordered_list_close':
+            case 'bullet_list_close':
+                state = statesStack.pop()!
+                break
+
+            case 'list_item_open':
+            case 'list_item_close':
+                break
+
+            default:
+                throw new Error(`Unknown token: ${token.type}`)
+        }
+    }
+
+    return results
+}
+
 
 export async function splitBlocksCommand(
     splitCallback: (content: string) => IBatchBlock[],

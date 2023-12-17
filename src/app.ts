@@ -1,8 +1,8 @@
 import { BlockEntity, SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin.user'
 
 import {
-    ICON, editNextBlockCommand, editPreviousBlockCommand, joinBlocksCommand, reverseBlocksCommand,
-    shuffleBlocksCommand, sortBlocksCommand, splitBlocksCommand, splitByLines, splitByParagraphs, splitByWords, toggleAutoHeadingCommand
+    ICON, editNextBlockCommand, editPreviousBlockCommand, joinBlocksCommand, magicSplit, reverseBlocksCommand,
+    shuffleBlocksCommand, sortBlocksCommand, splitBlocksCommand, splitByLines, splitByWords, toggleAutoHeadingCommand
 } from './commands'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
 
@@ -137,22 +137,23 @@ async function main() {
     ))
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Split by paragraphs', key: 'split-5-by-paragraphs',
+        label: ICON + ' Magic Split', key: 'split-5-magic',
         // @ts-expect-error
         keybinding: {},
     }, (e) => splitBlocksCommand(
-        splitByParagraphs,
+        magicSplit,
         settings.storeChildBlocksIn === settingsValues.storeChildBlocksIn.enumChoices[0],
-    ))
+        false,
+    ) )
     logseq.App.registerCommandPalette({
-        label: ICON + ' Split by paragraphs (with nested)', key: 'split-6-by-paragraphs-nested',
+        label: ICON + ' Magic Split (with nested)', key: 'split-6-magic-nested',
         // @ts-expect-error
         keybinding: {},
     }, (e) => splitBlocksCommand(
-        splitByParagraphs,
+        magicSplit,
         settings.storeChildBlocksIn === settingsValues.storeChildBlocksIn.enumChoices[0],
         true,
-    ))
+    ) )
 
 
     // Joining
