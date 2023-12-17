@@ -225,6 +225,17 @@ async function main() {
         },
     ))
 
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Magic Join selected together', key: '6-join-7-magic',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => magicJoinCommand(false))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Magic Join selected independently', key: '6-join-8-magic-independently',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => magicJoinCommand(true))
+
 
     // Navigation
     logseq.App.registerCommandPalette({

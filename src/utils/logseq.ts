@@ -288,13 +288,14 @@ export async function walkBlockTreeAsync(
 
 export function walkBlockTree(
     root: IBatchBlock,
-    callback: (b: IBatchBlock, lvl: number) => string | void,
+    callback: (b: IBatchBlock, lvl: number, parent?: IBatchBlock) => string | void,
     level: number = 0,
+    parent?: IBatchBlock,
 ): IBatchBlock {
     return {
-        content: callback(root, level) ?? '',
+        content: callback(root, level, parent) ?? '',
         children: (root.children || []).map(
-            (b) => walkBlockTree(b as IBatchBlock, callback, level + 1)
+            (b) => walkBlockTree(b as IBatchBlock, callback, level + 1, root)
         )
     }
 }

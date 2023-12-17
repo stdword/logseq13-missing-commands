@@ -3,8 +3,8 @@ import '@logseq/libs'
 import markdownit from 'markdown-it'
 
 import {
-    PropertiesUtils, ensureChildrenIncluded, filterOutChildBlocks, getBlocksWithReferences,
-    getChosenBlocks, insertBatchBlockBefore, isWindows, p, reduceBlockTree,
+    PropertiesUtils, ensureChildrenIncluded, escapeForRegExp, filterOutChildBlocks, getBlocksWithReferences,
+    getChosenBlocks, insertBatchBlockBefore, isWindows, numberToLetters, p, reduceBlockTree,
     reduceTextWithLength, sleep, transformBlocksTreeByReplacing,
     transformSelectedBlocksWithMovements, unique, walkBlockTree, walkBlockTreeAsync,
 } from './utils'
@@ -409,8 +409,8 @@ export async function splitBlocksCommand(
 
 export async function joinBlocksCommand(
     independentMode: boolean,
-    joinAttachCallback: (root: string, level: number, children: string[]) => string,
-    joinMapCallback?: (content: string, level: number) => string,
+    joinAttachCallback: (root: BlockEntity, level: number, children: string[]) => string,
+    joinMapCallback?: (content: string, level: number, block: BlockEntity, parent?: BlockEntity) => string,
 ) {
     let [ blocks, isSelectedState ] = await getChosenBlocks()
     if (blocks.length === 0)
@@ -473,15 +473,16 @@ export async function joinBlocksCommand(
         return
 
     function reduceTree(block: IBatchBlock, { startLevel }: { startLevel: number }) {
-        const preparedTree = walkBlockTree(block, (b, level) => {
+        const preparedTree = walkBlockTree(block, (b, level, p) => {
             const content = PropertiesUtils.deleteAllProperties(b.content)
-            return joinMapCallback ? joinMapCallback(content, level) : content
+            return joinMapCallback
+                ? joinMapCallback(
+                    content, level, b as BlockEntity, p as BlockEntity | undefined)
+                : content
         }, startLevel)
 
         const reducedContent = reduceBlockTree(preparedTree, (b, level, children) => {
-            if (children.length === 0)
-                return b.content
-            return joinAttachCallback(b.content, level, children)
+            return joinAttachCallback(b as BlockEntity, level, children)
         }, startLevel)
 
         return reducedContent
@@ -499,7 +500,7 @@ export async function joinBlocksCommand(
                 for (const child of block.children!)
                     await logseq.Editor.removeBlock((child as BlockEntity).uuid)
             } else {
-                await insertBatchBlockBefore(block, {content: reducedContent, properties: block.properties})
+                await insertBatchBlockBefore(block, {content: reducedContent})
                 await logseq.Editor.removeBlock(block.uuid)
             }
         }
@@ -508,7 +509,7 @@ export async function joinBlocksCommand(
         const pseudoRoot: IBatchBlock = {content: '', children: blocks as IBatchBlock[]}
         const reducedContent = reduceTree(pseudoRoot, {startLevel: 0})
 
-        await insertBatchBlockBefore(top, {content: reducedContent, properties: top.properties})
+        await insertBatchBlockBefore(top, {content: reducedContent})
         for (const block of blocks)
             await logseq.Editor.removeBlock(block.uuid)
     }
@@ -517,6 +518,104 @@ export async function joinBlocksCommand(
         await sleep(20)
         await logseq.Editor.exitEditingMode()
     }
+}
+
+export function magicJoinCommand(independentMode: boolean) {
+    // this is not the NUMBER SIGN, but the FULLWIDTH NUMBER SIGN
+    const numberingPlaceholder1 = '[＃＃]'  // for arabic numbering
+    const numberingPlaceholder2 = '[＃＃＃]'  // for letter numbering
+    const numberingPlaceholder3 = '[＃＃＃＃]'  // for greek numbering
+    const numberingCommonPrefix = '[＃＃'  // should be real common prefix!
+    const numberingPlaceholders = [numberingPlaceholder1, numberingPlaceholder2, numberingPlaceholder3]
+
+    let currentNumberingPlaceholderIndex = 0
+
+    const bulletPrefix = '* '
+
+    return joinBlocksCommand(
+        independentMode,
+        (root, level, children) => {
+            const divider = '\n'
+            const dividerParagraph = '\n\n'
+
+            let content = root.content
+
+            if (content && children.length !== 0)
+                content += (level < 1 ? dividerParagraph : divider)
+
+            let numbering = 1
+            function fillNumbering(content) {
+                const bulletPrefixRegex = escapeForRegExp(bulletPrefix)
+                const numberingRegex = new RegExp(`^\s*(${bulletPrefixRegex})?`)
+                if (numberingRegex.test(content)) {
+                    content = content.replace(numberingPlaceholder1, (ch) => `${numbering++})`)
+                    content = content.replace(numberingPlaceholder2, (ch) => `${numberToLetters(numbering++)})`)
+                    content = content.replace(numberingPlaceholder3, (ch) => `${numbering++}.`)
+                } else  // start again on non-numbered child
+                    numbering = 1
+                return content
+            }
+
+            if (level == 0)
+                content = fillNumbering(content)
+
+            content += children.map((child, index, array) => {
+                const prevChild = array[index - 1]
+                let chosenDivider = (level < 1 ? dividerParagraph : divider)
+
+                if (level === 0) {
+                    if (child.startsWith(numberingCommonPrefix)) {
+                        // reduce divider for items in ordered list
+                        chosenDivider = divider
+                    }
+                    else if (prevChild && prevChild.startsWith(numberingCommonPrefix)) {
+                        // increase upper divider for the last item in ordered list
+                        child = divider + child
+                    }
+                }
+
+                child = fillNumbering(child)
+
+                return child + chosenDivider
+            }).join('').trimEnd()
+
+            if (level === 1) {
+                // Logseq markdown syntax require additional new line after block with children
+                //     to display next block as a separate paragraph
+                if (children.length !== 0)
+                    content += '\n'
+            }
+
+            return content
+        },
+        (content, level, block, parent) => {
+            // if (level <= 0)
+                // return content
+
+            let numberingPrefix = ''
+            const isOrdered = (block.properties ?? {})['logseq.orderListType'] === 'number'
+            if (isOrdered) {
+                let index = (parent?._numberingPlaceholderIndex + 1) || 0
+                if (level !== 0)
+                    block._numberingPlaceholderIndex = index
+                numberingPrefix = numberingPlaceholders[index % numberingPlaceholders.length] + ' '
+            }
+
+            function prefixTextLines(text: string, prefix: string) {
+                const shift = '  '.repeat(level === 0 ? 0 : level - 1)
+                const filler = ' '.repeat(prefix.length)
+                return (
+                    shift + prefix +
+                    content.replaceAll(/\n^/gm, '\n' + shift + filler)
+                )
+            }
+
+            if (level <= 1)
+                return prefixTextLines(content, numberingPrefix)
+
+            return prefixTextLines(content, bulletPrefix + numberingPrefix)
+        },
+    )
 }
 
 // export async function removeNumbering() {

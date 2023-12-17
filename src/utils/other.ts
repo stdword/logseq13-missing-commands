@@ -74,3 +74,31 @@ export function reduceTextWithLength(text: string, length: number, suffix = '...
     return text.substring(0, length).trimEnd() + suffix
 }
 
+export function escapeForRegExp(str: string) {
+    const specials = [
+        // '-', '^', '$',
+        '/', '.', '*', '+', '?', '|',
+        '(', ')', '[', ']', '{', '}', '\\',
+    ]
+
+    const replacer = new RegExp('(\\' + specials.join('|\\') + ')', 'g')
+    return str.replaceAll(replacer, '\\$1')
+
+    // alternative from MDN
+    // return str.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&')
+    // $& means the whole matched string
+}
+
+
+/**
+ * source: https://stackoverflow.com/questions/36129721/convert-number-to-alphabet-letter/75643566#75643566
+ */
+export function numberToLetters(x: number) {
+    if (x <= 0)
+        return ''
+    const letters = numberToLetters(Math.floor((x - 1) / 26)) + String.fromCharCode((x - 1) % 26 + 65)
+    return letters.toLowerCase()
+}
+export function lettersToNumber(ls: string) {
+    return ls.toLowerCase().split('').reduce((acc, val) => acc * 26 + val.charCodeAt(0) - 64, 0)
+}
