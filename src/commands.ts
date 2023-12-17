@@ -429,19 +429,7 @@ export async function joinBlocksCommand(
     }
 }
 
-// export async function magicSplitCommand() {
-//     const [ blocks, isSelectedState ] = await getChosenBlocks()
-//     if (blocks.length === 0) {
-//         await logseq.UI.showMsg(
-//             `[:div
-//                 [:b "Magic Split Command"]
-//                 [:p "Select some blocks or start editing one to use the command"]]`,
-//             'warning',
-//             {timeout: 10000},
-//         )
-//         return
-//     }
-
+// export async function removeNumbering() {
 //     function repeatedCharsWithSpaces(chars) {
 //         chars = chars.replaceAll('[', '\\[')
 //         chars = chars.replaceAll(']', '\\]')
