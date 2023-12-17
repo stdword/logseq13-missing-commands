@@ -29,11 +29,11 @@ Missing Commands for Logseq
 
 Missing, but helpful _commands_, _views_ & _features_ for [Logseq](https://logseq.com)
 
-_Designed to be very productive with keyboard & agile with view customizations_  ❤️
+_Designed to be very productive with keyboard_  ❤️
 
 
 
-## Features
+## 1) Features
 ### TAB-trigger on Search
 To fill the input with selected search item. Just press the <kbd>tab</kbd> key to speed up the input values.
 
@@ -51,13 +51,18 @@ Just like in Sublime Text editor. MacOS's <kbd>⌘ ←</kbd> / <kbd>⌘ →</kbd
 
 
 
-## Commands
+## 2) Commands
 To find out the shortcut for the particular command use [this](https://github.com/stdword/logseq13-missing-commands/tree/main?tab=readme-ov-file#how-to-change-default-shortcut-for-the-particular-command) instruction.
 
 ### Toggle Auto Heading
 Without accessing block context menu.
 
 <img width="250px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/9c3295ff-1386-4cbd-a527-4cfd7c37211b"/>
+
+
+
+## 3) Views
+TBD
 
 
 
