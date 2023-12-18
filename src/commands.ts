@@ -272,7 +272,7 @@ export function magicSplit(text: string): IBatchBlock[] {
     type State = {container: IBatchBlock, isForNumbering: boolean}
     const statesStack: State[] = []
 
-    const initialState = {
+    const initialState: State = {
         container: {content: '', children: results},
         isForNumbering: false,
     }
@@ -378,7 +378,7 @@ export async function splitBlocksCommand(
             const content = PropertiesUtils.deleteAllProperties(block.content)
             const batch = splitCallback(content)
 
-            let head, tail
+            let head: IBatchBlock, tail: IBatchBlock[]
             if (keepChildrenInFirstBlock)
                 [head, tail] = [batch[0], batch.slice(1)]
             else
@@ -389,9 +389,9 @@ export async function splitBlocksCommand(
                     block.uuid, head.content,
                     {properties: Object.assign(block.properties ?? {}, head.properties ?? {})})
 
-            if (head.children.length !== 0)
+            if (head.children!.length !== 0)
                 await logseq.Editor.insertBatchBlock(
-                    block.uuid, head.children, {sibling: false})
+                    block.uuid, head.children!, {sibling: false})
 
             if (tail.length !== 0) {
                 if (keepChildrenInFirstBlock)
@@ -541,41 +541,35 @@ export function magicJoinCommand(independentMode: boolean) {
             if (!root)
                 throw new Error('assertion')
 
-            const divider = '\n'
-            const dividerParagraph = '\n\n'
-
-            if (content && children.length !== 0)
-                content += (level < 1 ? dividerParagraph : divider)
-
-            function prefixTextLines(text: string, prefix: string) {
-                const shift = '  '.repeat(level === 0 ? 0 : level - 1)
-                const filler = ' '.repeat(prefix.length)
-                return (
-                    shift + prefix +
-                    text.replaceAll(/\n^/gm, '\n' + shift + filler)
-                )
-            }
-
             let numbering = 1
             function resolvePrefix(content: string, block: BlockEntity) {
-                console.log('TRACING', {level, content, block})
                 const prefix = block._prefixGetter(numbering)
+                console.log('Prefix', {prefix})
 
                 if (block._isOrdered)
                     numbering++
                 else  // start again on non-numbered child
                     numbering = 1
 
-                return prefixTextLines(content, prefix)
+                const filler = ' '.repeat(prefix.length)
+                return prefix + content.replaceAll(/\n^/gm, '\n' + filler)
             }
-
 
             if (level == 0)
                 content = resolvePrefix(content, root)
 
-            content += children.map((child, index) => {
-                let chosenDivider = (level < 1 ? dividerParagraph : divider)
 
+            const divider = '\n'
+            const dividerParagraph = '\n\n'
+
+            if (content && children.length !== 0)
+                content += (level < 1 ? dividerParagraph : divider)
+
+
+            content += children.map((child, index) => {
+                child = resolvePrefix(child, root.children![index] as BlockEntity)
+
+                let chosenDivider = (level < 1 ? dividerParagraph : divider)
                 if (level === 0) {
                     const childBlock = root.children![index] as BlockEntity
                     const prevChildBlock = root.children![index - 1] as BlockEntity
@@ -588,8 +582,6 @@ export function magicJoinCommand(independentMode: boolean) {
                         child = divider + child
                     }
                 }
-
-                child = resolvePrefix(child, root.children![index] as BlockEntity)
 
                 return child + chosenDivider
             }).join('').trimEnd()
@@ -604,7 +596,6 @@ export function magicJoinCommand(independentMode: boolean) {
             return content
         },
         (content, level, block, parent) => {
-            let numberingPrefixGetter = (n) => ''
             const isOrdered = (block.properties ?? {})['logseq.orderListType'] === 'number'
             if (isOrdered) {
                 const type = (
@@ -617,15 +608,14 @@ export function magicJoinCommand(independentMode: boolean) {
                     block._numberingType = type
 
                 block._isOrdered = true
-
-                numberingPrefixGetter = numberingPrefixGetters[type]
+                block._prefixGetter = numberingPrefixGetters[type]
             }
-
-            let prefixGetter = (n) => (bulletPrefix + numberingPrefixGetter(n))
-            if (level <= 1)
-                prefixGetter = numberingPrefixGetter
-
-            block._prefixGetter = prefixGetter
+            else {
+                if (level <= 1)
+                    block._prefixGetter = (_) => ''
+                else
+                    block._prefixGetter = (_) => bulletPrefix
+            }
 
             return content
         },

@@ -164,7 +164,7 @@ async function main() {
         keybinding: {},
     }, (e) => joinBlocksCommand(
         false,
-        (root, level, children) => (root.content ? root.content + ' ' : '') + children.join(' '),
+        (content, level, children) => (content ? content + ' ' : '') + children.join(' '),
     ))
 
     logseq.App.registerCommandPalette({
@@ -173,8 +173,7 @@ async function main() {
         keybinding: {},
     }, (e) => joinBlocksCommand(
         false,
-        (root, level, children) => {
-            const content = root.content
+        (content, level, children) => {
             const prefix = content ? content + (level === 0 ? ': ' : ', ') : ''
             return prefix + children.join(', ')
         },
@@ -185,8 +184,7 @@ async function main() {
         keybinding: {},
     }, (e) => joinBlocksCommand(
         true,
-        (root, level, children) => {
-            const content = root.content
+        (content, level, children) => {
             const prefix = content ? content + (level === 0 ? ': ' : ', ') : ''
             return prefix + children.join(', ')
         },
@@ -198,7 +196,7 @@ async function main() {
         keybinding: {},
     }, (e) => joinBlocksCommand(
         false,
-        (root, level, children) => (root.content ? root.content + '\n' : '') + children.join('\n'),
+        (content, level, children) => (content ? content + '\n' : '') + children.join('\n'),
     ))
     logseq.App.registerCommandPalette({
         label: ICON + ' Join via new lines (keep nested structure)', key: '6-join-5-lines-nested',
@@ -206,7 +204,7 @@ async function main() {
         keybinding: {},
     }, (e) => joinBlocksCommand(
         false,
-        (root, level, children) => (root.content ? root.content + '\n' : '') + children.join('\n'),
+        (content, level, children) => (content ? content + '\n' : '') + children.join('\n'),
         (content, level) => {
             if (level <= 1)
                 return content
@@ -222,8 +220,7 @@ async function main() {
         keybinding: {},
     }, (e) => joinBlocksCommand(
         false,
-        (root, level, children) => {
-            const content = root.content
+        (content, level, children) => {
             const suffix = '\n\n'
             return (content ? content + suffix : '') + children.join('\n\n')
         },
