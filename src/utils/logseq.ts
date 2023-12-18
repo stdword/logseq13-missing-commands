@@ -366,6 +366,14 @@ export async function insertBatchBlockBefore(
         keepUUID: boolean;
     }>
 ) {
+    // logseq bug: two space cut off from 2, 3, ... lines of all inserting blocks
+    //    so add fake two spaces to every line
+    let tree = blocks
+    if (Array.isArray(blocks))
+        tree = {content: '', children: blocks}
+    walkBlockTree(tree as IBatchBlock, (b, level) => {
+        b.content = b.content.trim().replaceAll(/\n^/gm, '\n  ')})
+
     // first block in a page
     if (srcBlock.left.id === srcBlock.page.id) {
         // there is no batch way: use pseudo block

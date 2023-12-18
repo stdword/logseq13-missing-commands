@@ -544,7 +544,6 @@ export function magicJoinCommand(independentMode: boolean) {
             let numbering = 1
             function resolvePrefix(content: string, block: BlockEntity) {
                 const prefix = block._prefixGetter(numbering)
-                console.log('Prefix', {prefix})
 
                 if (block._isOrdered)
                     numbering++
