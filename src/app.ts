@@ -214,25 +214,13 @@ async function main() {
         },
     ))
 
-    logseq.App.registerCommandPalette({ // TODO: remove with respect to MAGIC JOIN
-        label: ICON + ' Join to paragraphs', key: '6-join-6-paragraphs',
-        // @ts-expect-error
-        keybinding: {},
-    }, (e) => joinBlocksCommand(
-        false,
-        (content, level, children) => {
-            const suffix = '\n\n'
-            return (content ? content + suffix : '') + children.join('\n\n')
-        },
-    ))
-
     logseq.App.registerCommandPalette({
-        label: ICON + ' Magic Join selected together', key: '6-join-7-magic',
+        label: ICON + ' Magic Join selected together', key: '6-join-6-magic',
         // @ts-expect-error
         keybinding: {},
     }, (e) => magicJoinCommand(false))
     logseq.App.registerCommandPalette({
-        label: ICON + ' Magic Join selected independently', key: '6-join-8-magic-independently',
+        label: ICON + ' Magic Join selected independently', key: '6-join-7-magic-independently',
         // @ts-expect-error
         keybinding: {},
     }, (e) => magicJoinCommand(true))

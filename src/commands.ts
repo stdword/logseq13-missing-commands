@@ -4,7 +4,7 @@ import markdownit from 'markdown-it'
 
 import {
     PropertiesUtils, ensureChildrenIncluded, escapeForRegExp, filterOutChildBlocks, getBlocksWithReferences,
-    getChosenBlocks, insertBatchBlockBefore, isWindows, numberToLetters, numberToRoman, p, reduceBlockTree,
+    getChosenBlocks, insertBatchBlockBefore, isWindows, lettersToNumber, numberToLetters, numberToRoman, p, reduceBlockTree,
     reduceTextWithLength, sleep, transformBlocksTreeByReplacing,
     transformSelectedBlocksWithMovements, unique, walkBlockTree, walkBlockTreeAsync,
 } from './utils'
@@ -263,6 +263,18 @@ export function splitByWords(text: string): IBatchBlock[] {
 }
 
 export function magicSplit(text: string): IBatchBlock[] {
+    // add special types of ordered lists
+    // (1)  → 1)
+    text = text.replaceAll(/^(\s*)\((\d+\)\s)/gm, '$1$2')
+    // (1.2.3) → 1) and 1.2.3) → 1)
+    text = text.replaceAll(/^(\s*)\(?(\d+\.)+\d+\)\s/gm, '$11) ')
+    // 1.2.3. → 1)
+    text = text.replaceAll(/^(\s*)(\d+\.)+\d+\.\s/gm, '$11) ')
+    // a) → 1) and (a) → 1)
+    text = text.replaceAll(/^(\s*)\(?([a-z]+)\)\s/gmi, '$11) ')
+    // a. → 1)
+    text = text.replaceAll(/^(\s*)([a-z]+)\.\s/gmi, '$11) ')
+
     const tokens = md.parse(text, {})
     console.debug(p`Parsed tokens`, Array.from(tokens))
     console.debug(p`HTML-view`, md.renderer.render(tokens, {}, {}))
@@ -329,12 +341,13 @@ export function magicSplit(text: string): IBatchBlock[] {
 
             case 'ordered_list_close':
             case 'bullet_list_close':
-                if (statesStack.length === 0)
+                if (statesStack.length === 0) {
                     state = initialState
+                    state.isForNumbering = false
+                }
                 else
                     state = statesStack.pop()!
 
-                state.isForNumbering = false
                 break
 
             case 'list_item_open':
