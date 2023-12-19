@@ -34,6 +34,9 @@ _Designed to be very productive with keyboard_  ❤️
 
 
 ## 1) Features
+TBD
+
+<!--
 ### TAB-trigger on Search
 To fill the input with selected search item. Just press the <kbd>tab</kbd> key to speed up the input values.
 
@@ -49,16 +52,33 @@ Just like in Sublime Text editor. MacOS's <kbd>⌘ ←</kbd> / <kbd>⌘ →</kbd
 
 <img width="200px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/4773523a-5900-4b48-b196-f6cb39799548"/>
 
+-->
 
 
 ## 2) Commands
 To find out the shortcut for the particular command use [this](https://github.com/stdword/logseq13-missing-commands/tree/main?tab=readme-ov-file#how-to-change-default-shortcut-for-the-particular-command) instruction.
 
-### Toggle Auto Heading
+<details><summary><h3>Toggle Auto Heading</h3></summary>
 Without accessing block context menu.
+<br/>
+<img width="250px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/0f63fb09-d873-45a4-aa50-f4f9c414d3be"/>
+</details>
 
-<img width="250px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/9c3295ff-1386-4cbd-a527-4cfd7c37211b"/>
 
+### _Fast blocks navigation_
+<details><summary><h4>Go to (↑) previous block / (↓) next block</h3></summary>
+Instantly goes to next / prev block. Even with multiline blocks.
+**Note**: cursor position saves from block to block
+<p align="center">
+  <b>before & after</b> <br>
+  <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/d9920377-dc70-423a-a4ac-dd7807221ac6" width=45% />
+  <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/42489113-574c-4c22-ab19-07f132e2216f" width=45% />
+</p>
+</details>
+<details><summary><h4>Go to (↖︎) parent block / (↘︎) last child block</h3></summary>
+TBD
+<br/>
+</details>
 
 
 ## 3) Views
