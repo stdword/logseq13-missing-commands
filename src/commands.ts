@@ -3,7 +3,7 @@ import '@logseq/libs'
 import markdownit from 'markdown-it'
 
 import {
-    PropertiesUtils, ensureChildrenIncluded, escapeForRegExp, filterOutChildBlocks, getBlocksWithReferences,
+    PropertiesUtils, checkPropertyExistenceInTree, ensureChildrenIncluded, escapeForRegExp, filterOutChildBlocks, getBlocksWithReferences,
     getChosenBlocks, insertBatchBlockBefore, isWindows, lettersToNumber, numberToLetters, numberToRoman, p, reduceBlockTree,
     reduceTextWithLength, sleep, transformBlocksTreeByReplacing,
     transformSelectedBlocksWithMovements, unique, walkBlockTree, walkBlockTreeAsync,
@@ -263,7 +263,7 @@ export function splitByWords(text: string): IBatchBlock[] {
 }
 
 export function magicSplit(text: string): IBatchBlock[] {
-    // add special types of ordered lists
+    // add special types of ordered lists for parser to recognize it
     // (1)  → 1)
     text = text.replaceAll(/^(\s*)\((\d+\)\s)/gm, '$1$2')
     // (1.2.3) → 1) and 1.2.3) → 1)
@@ -397,14 +397,16 @@ export async function splitBlocksCommand(
             else
                 [tail, head] = [batch.slice(0, -1), batch.at(-1)!]
 
-            if (content !== head.content) // has changes?
-                await logseq.Editor.updateBlock(
-                    block.uuid, head.content,
-                    {properties: Object.assign(block.properties ?? {}, head.properties ?? {})})
+            if (content !== head.content) {  // has changes?
+                const properties = PropertiesUtils.fromCamelCaseAll(block.properties)
+                Object.assign(properties, head.properties ?? {})
+
+                await logseq.Editor.updateBlock(block.uuid, head.content, {properties})
+            }
 
             if (head.children && head.children.length !== 0)
                 await logseq.Editor.insertBatchBlock(
-                    block.uuid, head.children!, {sibling: false})
+                    block.uuid, head.children, {sibling: false})
 
             if (tail.length !== 0) {
                 if (keepChildrenInFirstBlock)
@@ -454,10 +456,11 @@ export async function joinBlocksCommand(
 
     independentMode = independentMode || blocks.length === 1
 
+
+    // it is important to check if any block in the tree has references
+    // (Logseq replaces references with it's text)
     let noWarnings = true
     for (const block of blocks) {
-        // it is important to check if any block in the tree has references
-        // (Logseq replaces references with it's text)
         let blocksWithReferences = await getBlocksWithReferences(block)
 
         // root can have references (in independent mode), others — not
@@ -485,12 +488,35 @@ export async function joinBlocksCommand(
                 {timeout: 20000},
             )
             noWarnings = false
-            continue
         }
     }
-
     if (!noWarnings)
         return
+
+    // check for properties
+    for (const block of blocks) {
+        const names = checkPropertyExistenceInTree(block as IBatchBlock, {skipRoot: independentMode})
+        if (names.length !== 0) {
+            const html = names.map((name) => {
+                return `[:li [:i "${PropertiesUtils.fromCamelCase(name)}"]]`
+            })
+            await logseq.UI.showMsg(
+                `[:div
+                    [:b "${ICON} Join Blocks Command"]
+                    [:p "There are blocks that have properties (command can't handle them): "
+                        [:ul ${html}]
+                    ]
+                    [:p "Remove properties or select only blocks without them."]
+                ]`,
+                'warning',
+                {timeout: 20000},
+            )
+            noWarnings = false
+        }
+    }
+    if (!noWarnings)
+        return
+
 
     function reduceTree(block: IBatchBlock, { startLevel }: { startLevel: number }) {
         const preparedTree = walkBlockTree(block, (b, level, p, data) => {
@@ -513,23 +539,25 @@ export async function joinBlocksCommand(
             if (!block.children || block.children.length === 0)
                 continue  // nothing to join
 
-            const reducedContent = reduceTree(block as IBatchBlock, {startLevel: 0})
+            const content = reduceTree(block as IBatchBlock, {startLevel: 0})
+            const properties = PropertiesUtils.fromCamelCaseAll(block.properties)
 
             if (block._rootHasReferences) {
-                await logseq.Editor.updateBlock(block.uuid, reducedContent)
+                await logseq.Editor.updateBlock(block.uuid, content, {properties})
                 for (const child of block.children!)
                     await logseq.Editor.removeBlock((child as BlockEntity).uuid)
             } else {
-                await insertBatchBlockBefore(block, {content: reducedContent})
+                await insertBatchBlockBefore(block, {content, properties})
                 await logseq.Editor.removeBlock(block.uuid)
             }
         }
     } else {
         const top = blocks[0]
         const pseudoRoot: IBatchBlock = {content: '', children: blocks as IBatchBlock[]}
-        const reducedContent = reduceTree(pseudoRoot, {startLevel: 0})
+        const content = reduceTree(pseudoRoot, {startLevel: 0})
+        const properties = PropertiesUtils.fromCamelCaseAll(top.properties)
 
-        await insertBatchBlockBefore(top, {content: reducedContent})
+        await insertBatchBlockBefore(top, {content, properties})
         for (const block of blocks)
             await logseq.Editor.removeBlock(block.uuid)
     }
@@ -608,7 +636,12 @@ export function magicJoinCommand(independentMode: boolean) {
             return content
         },
         (content, level, block, parent) => {
-            const isOrdered = (block.properties ?? {})['logseq.orderListType'] === 'number'
+            const properties = block.properties ?? {}
+            const isOrdered = properties[PropertiesUtils.numberingProperty] === 'number'
+
+            // there shouldn't be a numbering after joining
+            delete properties[PropertiesUtils.numberingProperty]
+
             if (isOrdered) {
                 const type = (
                     (parent?._numberingType + 1) || 0

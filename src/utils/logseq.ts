@@ -66,6 +66,15 @@ export function setEditingCursorSelection(start: number, end: number) {
 export class PropertiesUtils {
     static readonly idProperty = 'id'
     static readonly headingProperty = 'heading'
+    static readonly numberingProperty = 'logseq.orderListType'
+
+    // source: https://github.com/logseq/logseq/blob/master/deps/graph-parser/src/logseq/graph_parser/property.cljs#L81
+    // logseq.* prefix need to be checked separately
+    static readonly systemBlockProperties = [
+        'id', 'heading', 'collapsed',
+        'created-at', 'created_at',
+        'updated-at', 'last-modified-at', 'last_modified_at',
+    ]
 
     static propertyContentFormat = f`\n?^[^\\S]*${'name'}::.*$`
     static propertyRestrictedChars = '\\s:;,^@#~"`/|\\(){}[\\]'
@@ -79,6 +88,18 @@ export class PropertiesUtils {
         if (text)
             text = text[0].toLowerCase() + text.slice(1)
         return text
+    }
+    static fromCamelCase(text: string): string {
+        return text.replaceAll(
+            /\p{Uppercase_Letter}\p{Lowercase_Letter}/gu,
+            (m) => '-' + m.toLowerCase(),
+        )
+    }
+    static fromCamelCaseAll(properties: Record<string, any> | undefined) {
+        return Object.fromEntries(
+            Object.entries(properties ?? {})
+                .map(([k, v]) => [PropertiesUtils.fromCamelCase(k), v])
+        )
     }
 
     static hasProperty(blockContent: string, name: string): boolean {
@@ -321,6 +342,25 @@ export function findPropertyInTree(tree: IBatchBlock, propertyName: string): IBa
         if (PropertiesUtils.hasProperty(node.content, propertyName))
             found.push(node)
     })
+    return found
+}
+export function checkPropertyExistenceInTree(
+    tree: IBatchBlock,
+    {skipRoot = false, onlyUser = true }: { skipRoot?: boolean, onlyUser?: boolean },
+): string[] {
+    const found: string[] = []
+    walkBlockTree(tree, (node, level) => {
+        if (skipRoot && level === 0)
+            return
+        for (const name of Object.keys(node.properties ?? {})) {
+            if (!found.includes(name))
+                found.push(name)
+        }
+    })
+    if (onlyUser)
+        return found
+            .filter((p) => !PropertiesUtils.systemBlockProperties.includes(p))
+            .filter((p) => !/^logseq\..*/.test(p))
     return found
 }
 
