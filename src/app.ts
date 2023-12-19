@@ -95,14 +95,14 @@ async function main() {
 
     // Decoration
     logseq.App.registerCommandPalette({
-        label: ICON + ' Toggle auto heading', key: '1-auto-heading',
+        label: ICON + ' Toggle auto heading', key: 'mc-1-auto-heading',
         keybinding: {mac: 'mod+1', binding: 'ctrl+1', mode: 'global'},
     }, (e) => toggleAutoHeadingCommand({togglingBasedOnFirstBlock: true}) )
 
 
     // Splitting
     logseq.App.registerCommandPalette({
-        label: ICON + ' Split by words', key: '5-split-1-by-words',
+        label: ICON + ' Split by words', key: 'mc-5-split-1-by-words',
         // @ts-expect-error
         keybinding: {},
     }, (e) => splitBlocksCommand(
@@ -110,7 +110,7 @@ async function main() {
         settings.storeChildBlocksIn === settingsValues.storeChildBlocksIn.enumChoices[0],
     ))
     logseq.App.registerCommandPalette({
-        label: ICON + ' Split by words (with nested)', key: '5-split-2-by-words-nested',
+        label: ICON + ' Split by words (with nested)', key: 'mc-5-split-2-by-words-nested',
         // @ts-expect-error
         keybinding: {},
     }, (e) => splitBlocksCommand(
@@ -120,7 +120,7 @@ async function main() {
     ))
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Split by lines', key: '5-split-3-by-lines',
+        label: ICON + ' Split by lines', key: 'mc-5-split-3-by-lines',
         // @ts-expect-error
         keybinding: {},
     }, (e) => splitBlocksCommand(
@@ -128,7 +128,7 @@ async function main() {
         settings.storeChildBlocksIn === settingsValues.storeChildBlocksIn.enumChoices[0],
     ))
     logseq.App.registerCommandPalette({
-        label: ICON + ' Split by lines (with nested)', key: '5-split-4-by-lines-nested',
+        label: ICON + ' Split by lines (with nested)', key: 'mc-5-split-4-by-lines-nested',
         // @ts-expect-error
         keybinding: {},
     }, (e) => splitBlocksCommand(
@@ -138,7 +138,7 @@ async function main() {
     ))
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Magic Split', key: '5-split-5-magic',
+        label: ICON + ' Magic Split', key: 'mc-5-split-5-magic',
         // @ts-expect-error
         keybinding: {},
     }, (e) => splitBlocksCommand(
@@ -147,7 +147,7 @@ async function main() {
         false,
     ) )
     logseq.App.registerCommandPalette({
-        label: ICON + ' Magic Split (with nested)', key: '5-split-6-magic-nested',
+        label: ICON + ' Magic Split (with nested)', key: 'mc-5-split-6-magic-nested',
         // @ts-expect-error
         keybinding: {},
     }, (e) => splitBlocksCommand(
@@ -159,7 +159,7 @@ async function main() {
 
     // Joining
     logseq.App.registerCommandPalette({
-        label: ICON + ' Join via spaces', key: '6-join-1-spaces',
+        label: ICON + ' Join via spaces', key: 'mc-6-join-1-spaces',
         // @ts-expect-error
         keybinding: {},
     }, (e) => joinBlocksCommand(
@@ -168,7 +168,7 @@ async function main() {
     ))
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Join selected together via commas (with respect to root block)', key: '6-join-2-commas',
+        label: ICON + ' Join selected together via commas (with respect to root block)', key: 'mc-6-join-2-commas',
         // @ts-expect-error
         keybinding: {},
     }, (e) => joinBlocksCommand(
@@ -179,7 +179,7 @@ async function main() {
         },
     ))
     logseq.App.registerCommandPalette({
-        label: ICON + ' Join selected independently via commas (with respect to root block)', key: '6-join-3-commas-independently',
+        label: ICON + ' Join selected independently via commas (with respect to root block)', key: 'mc-6-join-3-commas-independently',
         // @ts-expect-error
         keybinding: {},
     }, (e) => joinBlocksCommand(
@@ -191,7 +191,7 @@ async function main() {
     ))
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Join via new lines', key: '6-join-4-lines',
+        label: ICON + ' Join via new lines', key: 'mc-6-join-4-lines',
         // @ts-expect-error
         keybinding: {},
     }, (e) => joinBlocksCommand(
@@ -199,7 +199,7 @@ async function main() {
         (content, level, children) => (content ? content + '\n' : '') + children.join('\n'),
     ))
     logseq.App.registerCommandPalette({
-        label: ICON + ' Join via new lines (keep nested structure)', key: '6-join-5-lines-nested',
+        label: ICON + ' Join via new lines (keep nested structure)', key: 'mc-6-join-5-lines-nested',
         // @ts-expect-error
         keybinding: {},
     }, (e) => joinBlocksCommand(
@@ -215,12 +215,12 @@ async function main() {
     ))
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Magic Join selected together', key: '6-join-6-magic',
+        label: ICON + ' Magic Join selected together', key: 'mc-6-join-6-magic',
         // @ts-expect-error
         keybinding: {},
     }, (e) => magicJoinCommand(false))
     logseq.App.registerCommandPalette({
-        label: ICON + ' Magic Join selected independently', key: '6-join-7-magic-independently',
+        label: ICON + ' Magic Join selected independently', key: 'mc-6-join-7-magic-independently',
         // @ts-expect-error
         keybinding: {},
     }, (e) => magicJoinCommand(true))
@@ -228,7 +228,7 @@ async function main() {
 
     // Navigation
     logseq.App.registerCommandPalette({
-        label: ICON + ' Go to (↖︎) parent block', key: '2-edit-block-1-deep-dive-out',
+        label: ICON + ' Go to (↖︎) parent block', key: 'mc-2-edit-block-1-deep-dive-out',
         keybinding: {mac: 'mod+alt+left', binding: 'ctrl+alt+left', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
@@ -244,7 +244,7 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Go to (↘︎) last child block', key: '2-edit-block-2-deep-dive-in',
+        label: ICON + ' Go to (↘︎) last child block', key: 'mc-2-edit-block-2-deep-dive-in',
         keybinding: {mac: 'mod+alt+right', binding: 'ctrl+alt+right', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
@@ -261,7 +261,7 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Go to |↑| previous sibling block', key: '2-edit-block-5-prev-sibling',
+        label: ICON + ' Go to |↑| previous sibling block', key: 'mc-2-edit-block-5-prev-sibling',
         keybinding: {mac: 'ctrl+shift+up', binding: 'meta+alt+up', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
@@ -281,7 +281,7 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Go to |↓| next sibling block', key: '2-edit-block-6-next-sibling',
+        label: ICON + ' Go to |↓| next sibling block', key: 'mc-2-edit-block-6-next-sibling',
         keybinding: {mac: 'ctrl+shift+down', binding: 'meta+alt+down', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
@@ -301,19 +301,19 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Go to (↑) previous block', key: '2-edit-block-3-step-up',
+        label: ICON + ' Go to (↑) previous block', key: 'mc-2-edit-block-3-step-up',
         keybinding: {mac: 'mod+alt+up', binding: 'ctrl+alt+up', mode: 'global'},
     }, async (e) => editPreviousBlockCommand() )
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Go to (↓) next block', key: '2-edit-block-4-step-down',
+        label: ICON + ' Go to (↓) next block', key: 'mc-2-edit-block-4-step-down',
         keybinding: {mac: 'mod+alt+down', binding: 'ctrl+alt+down', mode: 'global'},
     }, async (e) => editNextBlockCommand() )
 
 
     // Movements
     logseq.App.registerCommandPalette({
-        label: ICON + ' Move block (⤒) on top of siblings', key: '3-move-block-1-on-top',
+        label: ICON + ' Move block (⤒) on top of siblings', key: 'mc-3-move-block-1-on-top',
         keybinding: {mac: 'mod+alt+shift+up', binding: 'ctrl+alt+shift+up', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
@@ -338,7 +338,7 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Move block (⤓) on bottom of siblings', key: '3-move-block-2-on-bottom',
+        label: ICON + ' Move block (⤓) on bottom of siblings', key: 'mc-3-move-block-2-on-bottom',
         keybinding: {mac: 'mod+alt+shift+down', binding: 'ctrl+alt+shift+down', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
@@ -363,7 +363,7 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Outdent (⇤) children of the block', key: '3-move-block-0-outdent-children',
+        label: ICON + ' Outdent (⇤) children of the block', key: 'qwe',
         keybinding: {mac: 'ctrl+shift+tab', binding: 'ctrl+shift+tab', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
@@ -385,7 +385,7 @@ async function main() {
 
     // Transformations
     logseq.App.registerCommandPalette({
-        label: ICON + ' Sort blocks', key: '4-transform-1-sort-blocks',
+        label: ICON + ' Sort blocks', key: 'mc-4-transform-1-sort-blocks',
         // @ts-expect-error
         keybinding: {},
     }, (e) => sortBlocksCommand() )
@@ -393,7 +393,7 @@ async function main() {
         ICON + ' Sort blocks', async (e) => sortBlocksCommand(e.uuid) )
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Reverse blocks', key: '4-transform-2-reverse-blocks',
+        label: ICON + ' Reverse blocks', key: 'mc-4-transform-2-reverse-blocks',
         // @ts-expect-error
         keybinding: {},
     }, (e) => reverseBlocksCommand() )
@@ -401,7 +401,7 @@ async function main() {
         ICON + ' Reverse blocks', async (e) => reverseBlocksCommand(e.uuid) )
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Shuffle blocks', key: '4-transform-3-shuffle-blocks',
+        label: ICON + ' Shuffle blocks', key: 'mc-4-transform-3-shuffle-blocks',
         // @ts-expect-error
         keybinding: {},
     }, (e) => shuffleBlocksCommand() )

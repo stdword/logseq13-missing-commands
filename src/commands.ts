@@ -402,7 +402,7 @@ export async function splitBlocksCommand(
                     block.uuid, head.content,
                     {properties: Object.assign(block.properties ?? {}, head.properties ?? {})})
 
-            if (head.children!.length !== 0)
+            if (head.children && head.children.length !== 0)
                 await logseq.Editor.insertBatchBlock(
                     block.uuid, head.children!, {sibling: false})
 
