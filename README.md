@@ -65,23 +65,31 @@ Without accessing block context menu.
 </details>
 
 
-### _Fast blocks navigation_
+## 3) _Commands_: Fast blocks navigation
+
+<p >
 <details><summary><h4>Go to (↑) previous block / (↓) next block</h3></summary>
 Instantly goes to next / prev block. Even with multiline blocks.
-**Note**: cursor position saves from block to block
+
+
+<b>Note</b>: cursor position saves from block to block.
+
 <p align="center">
-  <b>before & after</b> <br>
-  <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/d9920377-dc70-423a-a4ac-dd7807221ac6" width=45% />
-  <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/42489113-574c-4c22-ab19-07f132e2216f" width=45% />
+  <b>before     &     after</b> <br>
+  <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/d9920377-dc70-423a-a4ac-dd7807221ac6" width=46.5% />
+  <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/5933e5f0-6b80-451b-a151-a5f806579356" width=45% />
 </p>
 </details>
+
 <details><summary><h4>Go to (↖︎) parent block / (↘︎) last child block</h3></summary>
-TBD
-<br/>
+Navigating whole block tree throught diagonal — jumping between the parent and the last child block.
+<br/><br/>
+<img width="700px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/e5ae84d3-ff58-4342-ba24-6a02c72ec5a8"/>
 </details>
+</p>
 
 
-## 3) Views
+## 4) Views
 TBD
 
 
