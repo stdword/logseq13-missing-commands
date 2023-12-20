@@ -32,9 +32,16 @@ Missing, but helpful _commands_, _views_ & _features_ for [Logseq](https://logse
 _Designed to be very productive with keyboard_  ❤️
 
 
+
 <p> </p>
 
-> ⚠️ GitHub may need some time to load all demo animations on this page (in GIF format).
+> ⚠️ Some commands has default shortcut and some not.
+> 
+> To find out the shortcut for the particular command (or bind your own) use [this](https://github.com/stdword/logseq13-missing-commands/tree/main?tab=readme-ov-file#how-to-change-default-shortcut-for-the-particular-command) instruction.
+
+<p> </p>
+
+> ⚠️ GitHub may need some time to load all demo animations (GIF) in collapsed blocks on this page.
 
 <p> </p>
 
@@ -61,7 +68,6 @@ Just like in Sublime Text editor. MacOS's <kbd>⌘ ←</kbd> / <kbd>⌘ →</kbd
 
 
 ## 2) Commands: _Transformations_
-To find out the shortcut for the particular command use [this](https://github.com/stdword/logseq13-missing-commands/tree/main?tab=readme-ov-file#how-to-change-default-shortcut-for-the-particular-command) instruction.
 
 <table>
 <tr><td><details><summary><b>Toggle auto heading</b></summary>
