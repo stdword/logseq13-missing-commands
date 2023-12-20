@@ -383,7 +383,7 @@ export function splitByLines(text: string): IBatchBlock[] {
 }
 
 export function splitByWords(text: string): IBatchBlock[] {
-    const textBlocks = text.split(/[^\w-]+/)
+    const textBlocks = text.split(/[^\p{Lowercase_Letter}'-_]+/iu)
     return textBlocks.filter((tb) => !!tb).map((tb) => {return {content: tb}})
 }
 
@@ -562,12 +562,20 @@ export function joinViaNewLines_Attach(content, level, children): string {
     return content + (childrenContent ? '\n' + childrenContent : '')
 }
 
-export function joinViaNewLines_Map(content, level) {
+export function joinViaNewLines_Map(content, level): string {
     if (level <= 1)
         return content
     const prefix = '* '
     const shift = '  '.repeat(level - 1)
     return shift + prefix + content.replaceAll(/\n^/gm, '\n' + shift + ' '.repeat(prefix.length))
+}
+
+export function joinViaCommas_Attach(content, level, children): string {
+    if (children.length === 0)
+        return content
+
+    const prefix = content ? content + (level === 0 ? ': ' : ', ') : ''
+    return prefix + children.join(', ')
 }
 
 export async function joinBlocksCommand(

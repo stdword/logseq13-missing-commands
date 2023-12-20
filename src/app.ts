@@ -2,6 +2,7 @@ import { BlockEntity, SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin.user'
 
 import {
     ICON, editNextBlockCommand, editPreviousBlockCommand, joinBlocksCommand,
+    joinViaCommas_Attach,
     joinViaNewLines_Attach,
     joinViaNewLines_Map,
     lastChildBlockCommand, magicJoinCommand, magicSplit,
@@ -69,7 +70,7 @@ const settingsSchema: SettingSchemaDesc[] = [
         default: 'In the Last block',
     },
 ]
-const settingsValues: any = settingsSchema.reduce((r, v) => ({ ...r, [v.key]: v}), {})
+const settings_: any = settingsSchema.reduce((r, v) => ({ ...r, [v.key]: v}), {})
 
 
 async function onAppSettingsChanged() {
@@ -84,7 +85,7 @@ async function init() {
         )
     }
 
-    logseq.useSettingsSchema(settingsSchema)
+    // logseq.useSettingsSchema(settingsSchema)
 
     console.info(p`Loaded`)
 }
@@ -102,6 +103,11 @@ async function main() {
         await onAppSettingsChanged()
     })
 
+    function setting_storeChildBlocksIn() {
+        return false
+        // return settings.storeChildBlocksIn === settings_.storeChildBlocksIn.enumChoices[0]
+    }
+
     // Decoration
     logseq.App.registerCommandPalette({
         label: ICON + ' Toggle auto heading', key: 'mc-1-auto-heading',
@@ -114,56 +120,35 @@ async function main() {
         label: ICON + ' Split by words', key: 'mc-5-split-1-by-words',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => splitBlocksCommand(
-        splitByWords,
-        settings.storeChildBlocksIn === settingsValues.storeChildBlocksIn.enumChoices[0],
-    ))
+    }, (e) => splitBlocksCommand(splitByWords, setting_storeChildBlocksIn()))
     logseq.App.registerCommandPalette({
         label: ICON + ' Split by words (with nested)', key: 'mc-5-split-2-by-words-nested',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => splitBlocksCommand(
-        splitByWords,
-        settings.storeChildBlocksIn === settingsValues.storeChildBlocksIn.enumChoices[0],
-        true,
-    ))
+    }, (e) => splitBlocksCommand(splitByWords, setting_storeChildBlocksIn(), true))
 
     logseq.App.registerCommandPalette({
         label: ICON + ' Split by lines', key: 'mc-5-split-3-by-lines',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => splitBlocksCommand(
-        splitByLines,
-        settings.storeChildBlocksIn === settingsValues.storeChildBlocksIn.enumChoices[0],
-    ))
+    }, (e) => splitBlocksCommand(splitByLines, setting_storeChildBlocksIn()))
     logseq.App.registerCommandPalette({
         label: ICON + ' Split by lines (with nested)', key: 'mc-5-split-4-by-lines-nested',
         // @ts-expect-error
         keybinding: {},
     }, (e) => splitBlocksCommand(
-        splitByLines,
-        settings.storeChildBlocksIn === settingsValues.storeChildBlocksIn.enumChoices[0],
-        true,
-    ))
+        splitByLines, setting_storeChildBlocksIn(), true))
 
     logseq.App.registerCommandPalette({
         label: ICON + ' Magic Split', key: 'mc-5-split-5-magic',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => splitBlocksCommand(
-        magicSplit,
-        settings.storeChildBlocksIn === settingsValues.storeChildBlocksIn.enumChoices[0],
-        false,
-    ) )
+    }, (e) => splitBlocksCommand(magicSplit, setting_storeChildBlocksIn(), false) )
     logseq.App.registerCommandPalette({
         label: ICON + ' Magic Split (with nested)', key: 'mc-5-split-6-magic-nested',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => splitBlocksCommand(
-        magicSplit,
-        settings.storeChildBlocksIn === settingsValues.storeChildBlocksIn.enumChoices[0],
-        true,
-    ) )
+    }, (e) => splitBlocksCommand(magicSplit, setting_storeChildBlocksIn(), true) )
 
 
     // Joining
@@ -180,24 +165,12 @@ async function main() {
         label: ICON + ' Join selected together via commas (with respect to root block)', key: 'mc-6-join-2-commas',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => joinBlocksCommand(
-        false,
-        (content, level, children) => {
-            const prefix = content ? content + (level === 0 ? ': ' : ', ') : ''
-            return prefix + children.join(', ')
-        },
-    ))
+    }, (e) => joinBlocksCommand(false, joinViaCommas_Attach))
     logseq.App.registerCommandPalette({
         label: ICON + ' Join selected independently via commas (with respect to root block)', key: 'mc-6-join-3-commas-independently',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => joinBlocksCommand(
-        true,
-        (content, level, children) => {
-            const prefix = content ? content + (level === 0 ? ': ' : ', ') : ''
-            return prefix + children.join(', ')
-        },
-    ))
+    }, (e) => joinBlocksCommand(true, joinViaCommas_Attach))
 
     logseq.App.registerCommandPalette({
         label: ICON + ' Join via new lines', key: 'mc-6-join-4-lines',
