@@ -72,15 +72,16 @@ Just like in Sublime Text editor. MacOS's <kbd>⌘ ←</kbd> / <kbd>⌘ →</kbd
 <table>
 <tr><td><details><summary><b>Toggle auto heading</b></summary>
   <p>Without accessing block context menu.</p>
-  <p><img width="250px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/0f63fb09-d873-45a4-aa50-f4f9c414d3be"/></p>
+  <p><img width="270px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/9c3295ff-1386-4cbd-a527-4cfd7c37211b"/></p>
 </details></td></tr>
 
 <tr><td><details><summary><b>Sort / reverse / shuffle blocks</b></summary>
   <p><b>Note</b>: To sort in descending order use _sort_ and then _reverse_ commands.</p>
   <p><b>Note</b>: _Sort_ and _reverse_ commands available via block context menu. Shuffle command only via **Command Palette**</p>
-  <p><img width="250px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/5e5873d8-7ef7-431b-8f9b-f8a34d8a4809"/></p>
+  <p><img width="230px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/9404b18a-75a4-47bc-a40b-a3869f1ab7a7"/></p>
 </details></td></tr>
 </table>
+
 
 
 ## 3) Commands: _Fast blocks navigation_
