@@ -487,7 +487,6 @@ export function magicSplit(text: string): IBatchBlock[] {
     return results
 }
 
-
 export async function splitBlocksCommand(
     splitCallback: (content: string) => IBatchBlock[],
     keepChildrenInFirstBlock: boolean = true,

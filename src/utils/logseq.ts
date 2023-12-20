@@ -435,9 +435,18 @@ export async function insertBatchBlockBefore(
     }
 
     const prev = await logseq.Editor.getPreviousSiblingBlock(srcBlock.uuid)
-    if (prev)
-        return await logseq.Editor.insertBatchBlock(
+    if (prev) {
+        // special handling for empty block
+        // issue: https://github.com/logseq/logseq/issues/10729
+        const emptyParent = !prev.content
+        if (emptyParent)
+            await logseq.Editor.updateBlock(prev.uuid, 'ø')
+        const result = await logseq.Editor.insertBatchBlock(
             prev.uuid, blocks, {before: false, sibling: true, ...opts})
+        if (emptyParent)
+            await logseq.Editor.updateBlock(prev.uuid, '')
+        return result
+    }
 
     // first block for parent
     const parent: BlockEntity | null | {uuid: string} = ( await logseq.Editor.getBlock(srcBlock.parent.id) )!
