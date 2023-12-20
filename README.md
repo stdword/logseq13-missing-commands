@@ -32,6 +32,11 @@ Missing, but helpful _commands_, _views_ & _features_ for [Logseq](https://logse
 _Designed to be very productive with keyboard_  ❤️
 
 
+<p> </p>
+
+> ⚠️ GitHub may need some time to load all demo animations on this page (in GIF format).
+
+<p> </p>
 
 ## 1) Features
 TBD
@@ -55,14 +60,19 @@ Just like in Sublime Text editor. MacOS's <kbd>⌘ ←</kbd> / <kbd>⌘ →</kbd
 -->
 
 
-## 2) Commands
+## 2) Commands: _Transformations_
 To find out the shortcut for the particular command use [this](https://github.com/stdword/logseq13-missing-commands/tree/main?tab=readme-ov-file#how-to-change-default-shortcut-for-the-particular-command) instruction.
 
 <table>
 <tr><td><details><summary><b>Toggle auto heading</b></summary>
-Without accessing block context menu.
-<br/>
-<img width="250px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/0f63fb09-d873-45a4-aa50-f4f9c414d3be"/>
+  <p>Without accessing block context menu.</p>
+  <p><img width="250px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/0f63fb09-d873-45a4-aa50-f4f9c414d3be"/></p>
+</details></td></tr>
+
+<tr><td><details><summary><b>Sort / reverse / shuffle blocks</b></summary>
+  <p><b>Note</b>: To sort in descending order use _sort_ and then _reverse_ commands.</p>
+  <p><b>Note</b>: _Sort_ and _reverse_ commands available via block context menu. Shuffle command only via **Command Palette**</p>
+  <p><img width="250px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/5e5873d8-7ef7-431b-8f9b-f8a34d8a4809"/></p>
 </details></td></tr>
 </table>
 
@@ -71,34 +81,25 @@ Without accessing block context menu.
 
 <table>
 <tr><td><details><summary><b>Go to (↑) previous / (↓) next block</b></summary>
-Instantly goes to next / prev block. Even with multiline blocks.
-
-
-<b>Note</b>: cursor position saves from block to block.
-
-<p align="center">
-  <b>before     &     after</b> <br>
-  <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/d9920377-dc70-423a-a4ac-dd7807221ac6" width=46.5% />
-  <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/5933e5f0-6b80-451b-a151-a5f806579356" width=45% />
-</p>
+  <p>Instantly goes to next / prev block. Even with multiline blocks.</p>
+  <p><b>Note</b>: cursor position saves from block to block.</p>
+  <p align="center">
+    <b>before     &     after</b> <br>
+    <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/d9920377-dc70-423a-a4ac-dd7807221ac6" width=46.5% />
+    <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/5933e5f0-6b80-451b-a151-a5f806579356" width=45% />
+  </p>
 </details></td></tr>
 
 <tr><td><details><summary><b>Go to (↖︎) parent / (↘︎) last child block</b></summary>
-Navigating whole block tree throught diagonal — jumping between the parent and the last child block.
-  <br/><br/>
-  <img width="700px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/e5ae84d3-ff58-4342-ba24-6a02c72ec5a8"/>
+  <p>Navigating whole block tree throught diagonal — jumping between the parent and the last child block.</p>
+  <p><img width="700px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/e5ae84d3-ff58-4342-ba24-6a02c72ec5a8"/></p>
 </details></td></tr>
 
 <tr><td><details><summary><b>Go to |↑| previous / |↓| next sibling block</b></summary>
   <p>Junming between sibling blocks only.</p>
-
-  <p><b>Note</b>: cursor position saves from block to block.
-  
-  <b>Note</b>: we cannot leave current parent.</p>
-  
-  <br/><br/>
-  
-  <img width="400px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/dc06e983-0aee-4d3d-ae9d-27ebb263c1c5"/>
+  <p><b>Note</b>: cursor position saves from block to block.</p>
+  <p><b>Note</b>: we cannot leave current parent.</p>
+  <p><img width="400px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/dc06e983-0aee-4d3d-ae9d-27ebb263c1c5"/></p>
 </details></td></tr>
 </table>
 
