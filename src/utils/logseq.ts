@@ -412,6 +412,7 @@ export async function insertBatchBlockBefore(
 ) {
     // logseq bug: two space cut off from 2, 3, ... lines of all inserting blocks
     //    so add fake two spaces to every line
+    // issue: https://github.com/logseq/logseq/issues/10730
     let tree = blocks
     if (Array.isArray(blocks))
         tree = {content: '', children: blocks}
@@ -421,6 +422,7 @@ export async function insertBatchBlockBefore(
     // first block in a page
     if (srcBlock.left.id === srcBlock.page.id) {
         // there is no batch way: use pseudo block
+        // issue: https://github.com/logseq/logseq/issues/10729
         const first = ( await logseq.Editor.insertBlock(
             srcBlock.uuid, '', {before: true, sibling: true}) )!
         const result = await logseq.Editor.insertBatchBlock(
@@ -428,6 +430,7 @@ export async function insertBatchBlockBefore(
         // due to logseq bug: empty first block overrides with next insertion
         //    there is no reason to remove pseudo block
         // await logseq.Editor.removeBlock(first.uuid)
+        // issue: https://github.com/logseq/logseq/issues/10729
         return result
     }
 
@@ -437,7 +440,17 @@ export async function insertBatchBlockBefore(
             prev.uuid, blocks, {before: false, sibling: true, ...opts})
 
     // first block for parent
-    const parent = ( await logseq.Editor.getBlock(srcBlock.parent.id) )!
-    return await logseq.Editor.insertBatchBlock(
+    const parent: BlockEntity | null | {uuid: string} = ( await logseq.Editor.getBlock(srcBlock.parent.id) )!
+    let inserted = await logseq.Editor.insertBatchBlock(
         parent.uuid, blocks, {sibling: false, ...opts})
+    if (!inserted) {
+        const children = ( await logseq.Editor.getBlock(parent.uuid) )!.children!
+        inserted = {uuid: children[0][1]}
+    }
+    if (inserted)
+        await logseq.Editor.removeBlockProperty(
+            inserted.uuid,
+            PropertiesUtils.fromCamelCase(PropertiesUtils.numberingProperty),
+        )
+    return inserted
 }

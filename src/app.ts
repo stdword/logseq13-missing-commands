@@ -363,7 +363,7 @@ async function main() {
     } )
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Outdent (⇤) children of the block', key: 'qwe',
+        label: ICON + ' Outdent (⇤) children of the block', key: 'mc-3-move-block-3-outdent',
         keybinding: {mac: 'ctrl+shift+tab', binding: 'ctrl+shift+tab', mode: 'global'},
     }, async (e) => {
         const [blocks] = await getChosenBlocks()
