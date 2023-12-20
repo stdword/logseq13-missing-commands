@@ -127,11 +127,11 @@ TBD
 
 ## Installation
 ### From Logseq Marketplace (recommended way):
-<span>    </span><img width="403px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/71c268a1-e752-416f-9364-45e47c89d6e7" />
+<span>    </span><img width="403px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/9081b654-07b7-4b8d-8409-10deea696d05" />
 
 - Click «...» and open the «Plugins» section (or press `t p`)
 - Click on the «Marketplace»
-- On the «Plugins» tab search for «Missing Commands for Logseq» plugin and click install
+- On the «Plugins» tab search for «Missing Commands & Views» plugin and click install
 - If you want to change default shortcuts commands — go to «Keymap» (`g s`)
 
 ### Manual way (in case of any troubles with recommended way)
@@ -147,7 +147,7 @@ TBD
 ### How to change default shortcut for the particular command?
 1. Open «Settings» → «Keymap» (or press `g s`).
 2. Copy this emoji «🪚» (for Windows use «🔪») and insert it to search input.
-3. Change any shortcut you want <br/><img width="700px" src="https://github.com/stdword/logseq13-shorten-my-links/assets/1984175/76d23bb5-f7fb-4ed5-acee-ddb138cbd334"/>
+3. Change any shortcut you want <br/><img width="700px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/93946ce3-b2e3-49ba-9be0-d9cd59835fed"/>
 
 
 
