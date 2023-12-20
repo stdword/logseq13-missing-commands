@@ -126,9 +126,41 @@ Just like in Sublime Text editor. MacOS's <kbd>⌘ ←</kbd> / <kbd>⌘ →</kbd
 </details></td></tr>
 </table>
 
+## 5) Commands: _Splitting & Joining blocks_
+
+<table>
+<tr><td><details><summary><b>Magic Split & Magic Join</b></summary>
+  <p>Parse block contents for ordered / unordered lists</p>
+  <p><b>Note</b>: supported numeration style: <code>1.</code> <code>1)</code> <code>(1)</code> <code>1.2)</code> for arabic & roman numbers and english alphabet</p>
+  <p><b>Note</b>: supported bullets style: <code>-</code> <code>+</code> <code>*</code></p>
+  <p align="center">
+    <b>Split     &     Join</b> <br>
+    <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/1a06af26-cf38-4262-8cc1-fae645b1a8b8" width=46% />
+    <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/c6e56583-b87c-4802-9f29-d36af848b902" width=45% />
+  </p>
+</details></td></tr>
+
+<tr><td><details><summary><b>Split by lines / Join via new lines</b></summary>
+  <p></p>
+  
+  <p><img width="250px" src="" /></p>
+</details></td></tr>
+
+<tr><td><details><summary><b>Split by words / Join by spaces</b></summary>
+  <p></p>
+  
+  <p><img width="250px" src=""/></p>
+</details></td></tr>
+
+<tr><td><details><summary><b>Join by commas</b></summary>
+  <p></p>
+  
+  <p><img width="250px" src=""/></p>
+</details></td></tr>
+</table>
 
 
-## 5) Views
+## 6) Views
 TBD
 
 
