@@ -554,6 +554,22 @@ export async function splitBlocksCommand(
     }
 }
 
+
+export function joinViaNewLines_Attach(content, level, children): string {
+    const childrenContent = children.join('\n')
+    if (!content)
+        return childrenContent
+    return content + (childrenContent ? '\n' + childrenContent : '')
+}
+
+export function joinViaNewLines_Map(content, level) {
+    if (level <= 1)
+        return content
+    const prefix = '* '
+    const shift = '  '.repeat(level - 1)
+    return shift + prefix + content.replaceAll(/\n^/gm, '\n' + shift + ' '.repeat(prefix.length))
+}
+
 export async function joinBlocksCommand(
     independentMode: boolean,
     joinAttachCallback: (root: string, level: number, children: string[], block?: BlockEntity) => string,

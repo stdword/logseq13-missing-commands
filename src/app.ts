@@ -2,6 +2,8 @@ import { BlockEntity, SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin.user'
 
 import {
     ICON, editNextBlockCommand, editPreviousBlockCommand, joinBlocksCommand,
+    joinViaNewLines_Attach,
+    joinViaNewLines_Map,
     lastChildBlockCommand, magicJoinCommand, magicSplit,
     moveToBottomOfSiblingsCommand,
     moveToTopOfSiblingsCommand,
@@ -201,25 +203,12 @@ async function main() {
         label: ICON + ' Join via new lines', key: 'mc-6-join-4-lines',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => joinBlocksCommand(
-        false,
-        (content, level, children) => (content ? content + '\n' : '') + children.join('\n'),
-    ))
+    }, (e) => joinBlocksCommand(false, joinViaNewLines_Attach))
     logseq.App.registerCommandPalette({
         label: ICON + ' Join via new lines (keep nested structure)', key: 'mc-6-join-5-lines-nested',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => joinBlocksCommand(
-        false,
-        (content, level, children) => (content ? content + '\n' : '') + children.join('\n'),
-        (content, level) => {
-            if (level <= 1)
-                return content
-            const prefix = '* '
-            const shift = '  '.repeat(level - 1)
-            return shift + prefix + content.replaceAll(/\n^/gm, '\n' + shift + ' '.repeat(prefix.length))
-        },
-    ))
+    }, (e) => joinBlocksCommand(false, joinViaNewLines_Attach, joinViaNewLines_Map))
 
     logseq.App.registerCommandPalette({
         label: ICON + ' Magic Join selected together', key: 'mc-6-join-6-magic',
