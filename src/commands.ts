@@ -3,9 +3,11 @@ import '@logseq/libs'
 import markdownit from 'markdown-it'
 
 import {
-    PropertiesUtils, checkPropertyExistenceInTree, ensureChildrenIncluded, escapeForRegExp, filterOutChildBlocks, getBlocksWithReferences,
-    getChosenBlocks, insertBatchBlockBefore, isWindows, lettersToNumber, numberToLetters, numberToRoman, p, reduceBlockTree,
-    reduceTextWithLength, sleep, transformBlocksTreeByReplacing,
+    PropertiesUtils, checkPropertyExistenceInTree, ensureChildrenIncluded,
+    escapeForRegExp, filterOutChildBlocks, getBlocksWithReferences,
+    getChosenBlocks, insertBatchBlockBefore, isWindows, lettersToNumber,
+    numberToLetters, numberToRoman, p, reduceBlockTree,
+    reduceTextWithLength, scrollToBlock, sleep, transformBlocksTreeByReplacing,
     transformSelectedBlocksWithMovements, unique, walkBlockTree, walkBlockTreeAsync,
 } from './utils'
 import { BlockEntity, IBatchBlock } from '@logseq/libs/dist/LSPlugin'
@@ -165,6 +167,67 @@ export async function shuffleBlocksCommand(contextBlockUUID: string | null = nul
 }
 
 
+export async function parentBlockCommand() {
+    const [blocks] = await getChosenBlocks()
+    const [first] = blocks
+    if (!first)
+        return
+
+    if (first.parent.id === first.page.id)
+        return
+
+    const parentBlock = await logseq.Editor.getBlock(first.parent.id) as BlockEntity
+    await logseq.Editor.editBlock(parentBlock.uuid)
+}
+
+export async function lastChildBlockCommand() {
+    const [blocks] = await getChosenBlocks()
+    const [first] = blocks
+    if (!first)
+        return
+
+    const tree = await logseq.Editor.getBlock(first.uuid, {includeChildren: true}) as BlockEntity
+    if (!tree.children || tree.children.length === 0)
+        return
+
+    const lastChild = tree.children!.at(-1)! as BlockEntity
+    await logseq.Editor.editBlock(lastChild.uuid)
+}
+
+export async function previousSiblingBlockCommand() {
+    const [blocks] = await getChosenBlocks()
+    const [first] = blocks
+    if (!first)
+        return
+
+    const prevBlock = await logseq.Editor.getPreviousSiblingBlock(first.uuid)
+    if (!prevBlock)
+        return
+
+    const cursorPosition = (await logseq.Editor.getEditingCursorPosition())?.pos
+    await logseq.Editor.editBlock(
+        prevBlock.uuid,
+        cursorPosition ? {pos: cursorPosition} : undefined
+    )
+}
+
+export async function nextSiblingBlockCommand() {
+    const [blocks] = await getChosenBlocks()
+    const [first] = blocks
+    if (!first)
+        return
+
+    const nextBlock = await logseq.Editor.getNextSiblingBlock(first.uuid)
+    if (!nextBlock)
+        return
+
+    const cursorPosition = (await logseq.Editor.getEditingCursorPosition())?.pos
+    await logseq.Editor.editBlock(
+        nextBlock.uuid,
+        cursorPosition ? {pos: cursorPosition} : undefined
+    )
+}
+
 export async function editPreviousBlockCommand() {
     const [blocks] = await getChosenBlocks()
     let [current] = blocks
@@ -249,6 +312,68 @@ export async function editNextBlockCommand() {
         (nextBlock as BlockEntity).uuid,
         cursorPosition ? {pos: cursorPosition} : undefined
     )
+}
+
+
+export async function moveToTopOfSiblingsCommand() {
+    const [blocks] = await getChosenBlocks()
+    const [first] = blocks
+    if (!first)
+        return
+
+    // already on top
+    if (first.parent.id === first.left.id || first.left.id === first.page.id)
+        return
+
+    let topmost = first
+    while (true) {
+        const prev = await logseq.Editor.getPreviousSiblingBlock(topmost.uuid)
+        if (!prev)
+            break
+        topmost = prev
+    }
+
+    await logseq.Editor.moveBlock(first.uuid, topmost.uuid, {before: true, children: false})
+    await scrollToBlock(first)
+}
+
+export async function moveToBottomOfSiblingsCommand() {
+    const [blocks] = await getChosenBlocks()
+    const [first] = blocks
+    if (!first)
+        return
+
+    let bottommost = first
+    while (true) {
+        const next = await logseq.Editor.getNextSiblingBlock(bottommost.uuid)
+        if (!next)
+            break
+        bottommost = next
+    }
+
+    // already on bottom
+    if (first.id === bottommost.id)
+        return
+
+    await logseq.Editor.moveBlock(first.uuid, bottommost.uuid, {before: false, children: false})
+    await scrollToBlock(first)
+}
+
+export async function outdentChildrenCommand() {
+    const [blocks] = await getChosenBlocks()
+    for (const block of blocks) {
+        const tree = await logseq.Editor.getBlock(block.uuid, {includeChildren: true})
+        if (!tree)
+            continue
+
+        for (const child of (tree.children ?? []).toReversed()) {
+            await logseq.Editor.moveBlock(
+                (child as BlockEntity).uuid,
+                block.uuid,
+                {before: false, children: false},
+            )
+        }
+    }
 }
 
 
