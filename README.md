@@ -67,7 +67,7 @@ Just like in Sublime Text editor. MacOS's <kbd>⌘ ←</kbd> / <kbd>⌘ →</kbd
 -->
 
 
-## 2) Commands: _Transformations_
+## 2) Commands: _Blocks reordering_
 
 <table>
 <tr><td><details><summary><b>Toggle auto heading</b></summary>
@@ -76,15 +76,15 @@ Just like in Sublime Text editor. MacOS's <kbd>⌘ ←</kbd> / <kbd>⌘ →</kbd
 </details></td></tr>
 
 <tr><td><details><summary><b>Sort / reverse / shuffle blocks</b></summary>
-  <p><b>Note</b>: To sort in descending order use _sort_ and then _reverse_ commands.</p>
-  <p><b>Note</b>: _Sort_ and _reverse_ commands available via block context menu. Shuffle command only via **Command Palette**</p>
+  <p><b>Note</b>: To sort in descending order use <i>sort</i> and then <i>reverse</i> commands.</p>
+  <p><b>Note</b>: <i>Sort</i> and <i>reverse</i> commands available via block context menu. Shuffle command only via **Command Palette**</p>
   <p><img width="230px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/9404b18a-75a4-47bc-a40b-a3869f1ab7a7"/></p>
 </details></td></tr>
 </table>
 
 
 
-## 3) Commands: _Fast blocks navigation_
+## 3) Commands: _Fast navigation_
 
 <table>
 <tr><td><details><summary><b>Go to (↑) previous / (↓) next block</b></summary>
@@ -110,9 +110,19 @@ Just like in Sublime Text editor. MacOS's <kbd>⌘ ←</kbd> / <kbd>⌘ →</kbd
 </details></td></tr>
 </table>
 
+## 4) Commands: _Blocks movements_
+
+<table>
+<tr><td><details><summary><b>Move block (⤒) on top / (⤓) on bottom of siblings</b></summary>
+  <p>Instantly makes block the first (or the last) child of the parent</p>
+  <p><b>Note</b>: standard Logseq commands <code>⌘⇧↑</code> or <code>⌘⇧↓</code> can acheive this, but it require one step at a time.</p>
+  <p><img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/ce70ad72-48c0-4925-8a5e-40fb2d50e2c6" width="250px" /></p>
+</details></td></tr>
+</table>
 
 
-## 4) Views
+
+## 5) Views
 TBD
 
 
