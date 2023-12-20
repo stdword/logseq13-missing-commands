@@ -39,7 +39,7 @@ _Designed to be very productive with keyboard_  ❤️
 > 
 > To find out the shortcut for the particular command (or bind your own) use [this](https://github.com/stdword/logseq13-missing-commands/tree/main?tab=readme-ov-file#how-to-change-default-shortcut-for-the-particular-command) instruction.
 >
-> Any command could be called from <b>Commands Palette</b>
+> Any command could be called from <i>Commands Palette</i>
 
 <p> </p>
 
@@ -125,7 +125,7 @@ Just like in Sublime Text editor. MacOS's <kbd>⌘ ←</kbd> / <kbd>⌘ →</kbd
 <tr><td><details><summary><b>Move block (⤒) on top / (⤓) on bottom of siblings</b></summary>
   <p>Instantly makes block the first (or the last) child of the parent.</p>
   <p><b>Note</b>: standard Logseq commands <code>⌘⇧↑</code> or <code>⌘⇧↓</code> can acheive this, but via one step at a time.</p>
-  <p><img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/ce70ad72-48c0-4925-8a5e-40fb2d50e2c6" width="250px" /></p>
+  <p><img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/ce70ad72-48c0-4925-8a5e-40fb2d50e2c6" width="200px" /></p>
 </details></td></tr>
 </table>
 
