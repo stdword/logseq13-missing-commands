@@ -113,6 +113,12 @@ Just like in Sublime Text editor. MacOS's <kbd>⌘ ←</kbd> / <kbd>⌘ →</kbd
 ## 4) Commands: _Blocks movements_
 
 <table>
+<tr><td><details><summary><b>Outdent (⇤) children of the block</b></summary>
+  <p>Perform outdent (indent to the left) for every child of the particular block</p>
+  <p><b>Note</b>: standard Logseq commands <code>⇧⇥</code> can acheive this, but it required to select all child blocks manually one by one before using it.</p>
+  <p><img width="200px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/0d6934d9-0098-4870-b96b-685672b09160"/></p>
+</details></td></tr>
+
 <tr><td><details><summary><b>Move block (⤒) on top / (⤓) on bottom of siblings</b></summary>
   <p>Instantly makes block the first (or the last) child of the parent</p>
   <p><b>Note</b>: standard Logseq commands <code>⌘⇧↑</code> or <code>⌘⇧↓</code> can acheive this, but it require one step at a time.</p>
