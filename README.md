@@ -38,6 +38,8 @@ _Designed to be very productive with keyboard_  ❤️
 > ⚠️ Some commands has default shortcut and some not.
 > 
 > To find out the shortcut for the particular command (or bind your own) use [this](https://github.com/stdword/logseq13-missing-commands/tree/main?tab=readme-ov-file#how-to-change-default-shortcut-for-the-particular-command) instruction.
+>
+> Any command could be called from <b>Commands Palette</b>
 
 <p> </p>
 
@@ -77,7 +79,7 @@ Just like in Sublime Text editor. MacOS's <kbd>⌘ ←</kbd> / <kbd>⌘ →</kbd
 
 <tr><td><details><summary><b>Sort / reverse / shuffle blocks</b></summary>
   <p><b>Note</b>: To sort in descending order use <i>sort</i> and then <i>reverse</i> commands.</p>
-  <p><b>Note</b>: <i>Sort</i> and <i>reverse</i> commands available via block context menu. Shuffle command only via **Command Palette**</p>
+  <p><b>Note</b>: <i>Sort</i> and <i>reverse</i> commands available via block context menu. Shuffle command only via <b>Command Palette</b></p>
   <p><img width="230px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/9404b18a-75a4-47bc-a40b-a3869f1ab7a7"/></p>
 </details></td></tr>
 </table>
@@ -103,9 +105,10 @@ Just like in Sublime Text editor. MacOS's <kbd>⌘ ←</kbd> / <kbd>⌘ →</kbd
 </details></td></tr>
 
 <tr><td><details><summary><b>Go to |↑| previous / |↓| next sibling block</b></summary>
-  <p>Junming between sibling blocks only.</p>
+  <p>Jumping between sibling blocks only.</p>
   <p><b>Note</b>: cursor position saves from block to block.</p>
   <p><b>Note</b>: we cannot leave current parent.</p>
+  <p><b>Note</b>: the difference from prevous command is skipping all child blocks.</p>
   <p><img width="400px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/dc06e983-0aee-4d3d-ae9d-27ebb263c1c5"/></p>
 </details></td></tr>
 </table>
@@ -114,14 +117,14 @@ Just like in Sublime Text editor. MacOS's <kbd>⌘ ←</kbd> / <kbd>⌘ →</kbd
 
 <table>
 <tr><td><details><summary><b>Outdent (⇤) children of the block</b></summary>
-  <p>Perform outdent (indent to the left) for every child of the particular block</p>
+  <p>Perform outdent (indent to the left) for every child of the particular block.</p>
   <p><b>Note</b>: standard Logseq commands <code>⇧⇥</code> can acheive this, but it required to select all child blocks manually one by one before using it.</p>
   <p><img width="200px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/0d6934d9-0098-4870-b96b-685672b09160"/></p>
 </details></td></tr>
 
 <tr><td><details><summary><b>Move block (⤒) on top / (⤓) on bottom of siblings</b></summary>
-  <p>Instantly makes block the first (or the last) child of the parent</p>
-  <p><b>Note</b>: standard Logseq commands <code>⌘⇧↑</code> or <code>⌘⇧↓</code> can acheive this, but it require one step at a time.</p>
+  <p>Instantly makes block the first (or the last) child of the parent.</p>
+  <p><b>Note</b>: standard Logseq commands <code>⌘⇧↑</code> or <code>⌘⇧↓</code> can acheive this, but via one step at a time.</p>
   <p><img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/ce70ad72-48c0-4925-8a5e-40fb2d50e2c6" width="250px" /></p>
 </details></td></tr>
 </table>
@@ -130,9 +133,9 @@ Just like in Sublime Text editor. MacOS's <kbd>⌘ ←</kbd> / <kbd>⌘ →</kbd
 
 <table>
 <tr><td><details><summary><b>Magic Split & Magic Join</b></summary>
-  <p>Parse block contents for ordered / unordered lists</p>
-  <p><b>Note</b>: supported numeration style: <code>1.</code> <code>1)</code> <code>(1)</code> <code>1.2)</code> for arabic & roman numbers and english alphabet</p>
-  <p><b>Note</b>: supported bullets style: <code>-</code> <code>+</code> <code>*</code></p>
+  <p>Search block content for ordered / unordered lists and split it to corresponding blocks structure.</p>
+  <p><b>Note</b>: supported numeration style: <code>1.</code> <code>1)</code> <code>(1)</code> <code>1.2)</code> for arabic & roman numbers and letters from alphabet.</p>
+  <p><b>Note</b>: supported bullets style: <code>-</code> <code>+</code> <code>*</code>.</p>
   <p align="center">
     <b>Split     &     Join</b> <br>
     <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/1a06af26-cf38-4262-8cc1-fae645b1a8b8" width=46% />
@@ -141,21 +144,31 @@ Just like in Sublime Text editor. MacOS's <kbd>⌘ ←</kbd> / <kbd>⌘ →</kbd
 </details></td></tr>
 
 <tr><td><details><summary><b>Split by lines / Join via new lines</b></summary>
-  <p></p>
-  
-  <p><img width="250px" src="" /></p>
+  <p>Simple command to pick out each line of block to separate block (and vica-versa).</p>
+  <p><b>Note</b>: There are two types of join command: with respect to block structure and without it.</p>
+  <p align="center">
+    <b>Split     &                     Join</b> <br>
+    <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/6b50341e-7457-4044-bd65-efb77eff3fa7" width=42% />
+    <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/b935872f-9527-4b2b-89a7-5b8cdb9006e9" width=49% />
+  </p>
 </details></td></tr>
 
-<tr><td><details><summary><b>Split by words / Join by spaces</b></summary>
-  <p></p>
-  
-  <p><img width="250px" src=""/></p>
+<tr><td><details><summary><b>Split by words / Join via spaces</b></summary>
+  <p>Get all words from the text and place it at the separate blocks (and vice-versa).</p>
+  <p><b>Note</b>: Words could contain letters, <code>'</code>, <code>_</code> & <code>-</code> characters.</p>
+  <p align="center">
+    <b>Split     &                     Join</b> <br>
+    <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/6a61a73d-cbbf-45c3-baa4-cfea10c315a0" width=42.5% />
+    <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/2493f70c-94c7-4914-a24d-8550784f4294" width=47.5% />
+  </p>
 </details></td></tr>
 
-<tr><td><details><summary><b>Join by commas</b></summary>
-  <p></p>
-  
-  <p><img width="250px" src=""/></p>
+<tr><td><details><summary><b>Split comma-separated words / Join via commas</b></summary>
+  <p>Get all words from the comma-separated text and place it at the separate blocks (and vice-versa).</p>
+  <p><b>Note</b>: Use previous <i>Split by words</i> command to split.</p>
+  <p><b>Note</b>: Joinig respects the root node with colon «:».</p>
+  <p><img width="450px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/6ee64586-7ecd-4a61-bc82-b60b2756af97" /></p>
+  <p><img width="450px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/1fb4f3ab-31f4-40ff-a617-ea8f74fb7567" /></p>
 </details></td></tr>
 </table>
 
