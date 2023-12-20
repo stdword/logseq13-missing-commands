@@ -210,6 +210,9 @@ export async function transformBlocksTreeByReplacing(
         return null  // blocks removal cannot be used
 
     const transformedBlocks = transformChildrenCallback(root.children as BlockEntity[])
+    walkBlockTree({content: '', children: transformedBlocks as IBatchBlock[]}, (b, level) => {
+        b.properties = PropertiesUtils.fromCamelCaseAll(b.properties ?? {})
+    })
 
     // root is the first block in page
     if (root.left.id === root.page.id) {
@@ -218,15 +221,16 @@ export async function transformBlocksTreeByReplacing(
 
         // logseq bug: cannot use sibling next to root to insert whole tree to a page
         //  so insert root of a tree separately from children
+        const properties = PropertiesUtils.fromCamelCaseAll(root.properties)
         let prepended = await logseq.Editor.insertBlock(
             page!.uuid, root.content,
-            {properties: root.properties, before: true, customUUID: root.uuid},
+            {properties, before: true, customUUID: root.uuid},
         )
         if (!prepended) {
             // logseq bug: for empty pages need to change `before: true → false`
             prepended = (await logseq.Editor.insertBlock(
                 page!.uuid, root.content,
-                {properties: root.properties, before: false, customUUID: root.uuid},
+                {properties, before: false, customUUID: root.uuid},
             ))!
         }
 
