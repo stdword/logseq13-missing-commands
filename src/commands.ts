@@ -265,15 +265,15 @@ export function splitByWords(text: string): IBatchBlock[] {
 export function magicSplit(text: string): IBatchBlock[] {
     // add special types of ordered lists for parser to recognize it
     // (1)  → 1)
-    text = text.replaceAll(/^(\s*)\((\d+\)\s)/gm, '$1$2')
-    // (1.2.3) → 1) and 1.2.3) → 1)
-    text = text.replaceAll(/^(\s*)\(?(\d+\.)+\d+\)\s/gm, '$11) ')
+    text = text.replaceAll(/^(\s*)\((\d{1,3}\)\s)/gm, '$1$2')
     // 1.2.3. → 1)
-    text = text.replaceAll(/^(\s*)(\d+\.)+\d+\.\s/gm, '$11) ')
+    text = text.replaceAll(/^(\s*)((\d|\p{Lowercase_Letter}){1,3}\.){2,10}\s/gmiu, '$11) ')  // $11 means $1 and 1
+    // (1.2.3) → 1) and 1.2.3) → 1)
+    text = text.replaceAll(/^(\s*)\(?((\d|\p{Lowercase_Letter}){1,3}\.){1,10}(\d|\p{Lowercase_Letter}){1,3}\)\s/gmiu, '$11) ')
     // a) → 1) and (a) → 1)
-    text = text.replaceAll(/^(\s*)\(?([a-z]+)\)\s/gmi, '$11) ')
+    text = text.replaceAll(/^(\s*)\(?(\p{Lowercase_Letter}{1,3})\)\s/gmiu, '$11) ')
     // a. → 1)
-    text = text.replaceAll(/^(\s*)([a-z]+)\.\s/gmi, '$11) ')
+    text = text.replaceAll(/^(\s*)(\p{Lowercase_Letter}{1,3})\.\s/gmiu, '$11) ')
 
     const tokens = md.parse(text, {})
     console.debug(p`Parsed tokens`, Array.from(tokens))
