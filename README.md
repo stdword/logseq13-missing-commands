@@ -1,8 +1,8 @@
 <h1 align="center">
 <span align="left" height="30">                  </span>
-Missing Commands for Logseq
+Missing Commands, Views & Features
 <a href="https://www.buymeacoffee.com/stdword">
-  <img align="right" src="https://github.com/stdword/logseq13-missing-commands/blob/main/assets/coffee.png?raw=true" height="30px"/>
+  <img align="right" src=" https://github.com/stdword/logseq13-missing-commands/blob/main/assets/coffee.png?raw=true" height="30px"/>
 </a>
 </h1>
 
@@ -48,25 +48,25 @@ _Designed to be very productive with keyboard_  ❤️
 <p> </p>
 
 ## 1) Features
-TBD
 
-<!--
-### TAB-trigger on Search
-To fill the input with selected search item. Just press the <kbd>tab</kbd> key to speed up the input values.
+> ❗️ This section will be available in the NEXT release
 
-<img width="600px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/bf27f3a6-8464-4e1f-b967-e5e9efe46e21"/>
+<table>
+<tr><td><details><summary><b>TAB-trigger on Search</b></summary>
+  <p>To fill the input with selected search item. Just press the <code>tab</code> key to speed up the input values.</p>
+  <p><img width="600px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/bf27f3a6-8464-4e1f-b967-e5e9efe46e21"/></p>
+</details></td></tr>
 
-### Fast access to current page name on Search
-Helpfull, when you need to access subpages of the current page. Just press the <kbd>←</kbd> arrow key <u>on empty search input</u>.
+<tr><td><details><summary><b>Fast access to current page name on Search</b></summary>
+  <p>Helpfull, when you need to access subpages of the current page. Just press the <code>←</code> arrow key <u>on empty search input</u>.</p>
+  <p><img width="600px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/3289dae9-6391-40ed-8198-7e957cd029eb"/></p>
+</details></td></tr>
 
-<img width="600px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/3289dae9-6391-40ed-8198-7e957cd029eb"/>
-
-### Go to block _start_ (_end_) with double-pressing the «Home» («End») key
-Just like in Sublime Text editor. MacOS's <kbd>⌘ ←</kbd> / <kbd>⌘ →</kbd> and Windows's <kbd>fn ←</kbd> / <kbd>fn →</kbd> are also supported.
-
-<img width="200px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/4773523a-5900-4b48-b196-f6cb39799548"/>
-
--->
+<tr><td><details><summary><b>Go to the block <i>start</i> (<i>end</i>) with double-pressing the «Home» («End») key</b></summary>
+  <p>Just like in Sublime Text editor. MacOS's <code>⌘ ←</code> / <code>⌘ →</code> and Windows's <code>fn ←</code> / <code>fn →</code> are also supported.</p>
+  <p><img width="200px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/4773523a-5900-4b48-b196-f6cb39799548"/></p>
+</details></td></tr>
+</table>
 
 
 ## 2) Commands: _Blocks reordering_
@@ -174,7 +174,7 @@ Just like in Sublime Text editor. MacOS's <kbd>⌘ ←</kbd> / <kbd>⌘ →</kbd
 
 
 ## 6) Views
-TBD
+> ❗️ Tabular view will be available in the next releases. Stay tuned.
 
 
 
