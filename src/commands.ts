@@ -418,7 +418,7 @@ export function magicSplit(text: string): IBatchBlock[] {
     function createBlock(content: string, opts: { numbering: boolean } = { numbering: false }) {
         const properties: {[name: string]: string} = {}
         if (opts.numbering)
-            properties['logseq.order-list-type'] = 'number'
+            properties[PropertiesUtils.numberingProperty_] = 'number'
         return {content, children: [], properties}
     }
 

@@ -67,6 +67,7 @@ export class PropertiesUtils {
     static readonly idProperty = 'id'
     static readonly headingProperty = 'heading'
     static readonly numberingProperty = 'logseq.orderListType'
+    static readonly numberingProperty_ = 'logseq.order-list-type'
 
     // source: https://github.com/logseq/logseq/blob/master/deps/graph-parser/src/logseq/graph_parser/property.cljs#L81
     // logseq.* prefix need to be checked separately
@@ -424,42 +425,68 @@ export async function insertBatchBlockBefore(
         // there is no batch way: use pseudo block
         // issue: https://github.com/logseq/logseq/issues/10729
         const first = ( await logseq.Editor.insertBlock(
-            srcBlock.uuid, '', {before: true, sibling: true}) )!
+            srcBlock.uuid, 'ø', {before: true, sibling: true}) )!
         const result = await logseq.Editor.insertBatchBlock(
             first.uuid, blocks, {before: false, sibling: true, ...opts})
-        // due to logseq bug: empty first block overrides with next insertion
-        //    there is no reason to remove pseudo block
-        // await logseq.Editor.removeBlock(first.uuid)
-        // issue: https://github.com/logseq/logseq/issues/10729
+        await logseq.Editor.removeBlock(first.uuid)
         return result
     }
 
     const prev = await logseq.Editor.getPreviousSiblingBlock(srcBlock.uuid)
     if (prev) {
-        // special handling for empty block
+        // special handling for empty block & numbering
         // issue: https://github.com/logseq/logseq/issues/10729
-        const emptyParent = !prev.content
-        if (emptyParent)
-            await logseq.Editor.updateBlock(prev.uuid, 'ø')
-        const result = await logseq.Editor.insertBatchBlock(
+        const empty = !PropertiesUtils.deleteAllProperties(prev.content)
+
+        let numbering = undefined
+        let properties = {}
+        if (prev.properties) {
+            numbering = prev.properties[PropertiesUtils.numberingProperty]
+            delete prev.properties[PropertiesUtils.numberingProperty]
+            properties = PropertiesUtils.fromCamelCaseAll(prev.properties)
+        }
+        if (numbering)
+            await logseq.Editor.removeBlockProperty(prev.uuid, PropertiesUtils.numberingProperty_)
+        if (empty)
+            await logseq.Editor.updateBlock(prev.uuid, 'ø', {properties})
+
+        const inserted = await logseq.Editor.insertBatchBlock(
             prev.uuid, blocks, {before: false, sibling: true, ...opts})
-        if (emptyParent)
-            await logseq.Editor.updateBlock(prev.uuid, '')
-        return result
+
+        if (empty)
+            await logseq.Editor.updateBlock(prev.uuid, '', {properties})
+        if (numbering)
+            await logseq.Editor.upsertBlockProperty(prev.uuid, PropertiesUtils.numberingProperty_, numbering)
+
+        return inserted
     }
 
     // first block for parent
-    const parent: BlockEntity | null | {uuid: string} = ( await logseq.Editor.getBlock(srcBlock.parent.id) )!
-    let inserted = await logseq.Editor.insertBatchBlock(
-        parent.uuid, blocks, {sibling: false, ...opts})
-    if (!inserted) {
-        const children = ( await logseq.Editor.getBlock(parent.uuid) )!.children!
-        inserted = {uuid: children[0][1]}
+    const parent = ( await logseq.Editor.getBlock(srcBlock.parent.id) )!
+
+    // special handling for empty block & numbering
+    // issue: https://github.com/logseq/logseq/issues/10729
+    const empty = !PropertiesUtils.deleteAllProperties(parent.content)
+
+    let numbering = undefined
+    let properties = {}
+    if (parent.properties) {
+        numbering = parent.properties[PropertiesUtils.numberingProperty]
+        delete parent.properties[PropertiesUtils.numberingProperty]
+        properties = PropertiesUtils.fromCamelCaseAll(parent.properties)
     }
-    if (inserted)
-        await logseq.Editor.removeBlockProperty(
-            inserted.uuid,
-            PropertiesUtils.fromCamelCase(PropertiesUtils.numberingProperty),
-        )
+    if (numbering)
+        await logseq.Editor.removeBlockProperty(parent.uuid, PropertiesUtils.numberingProperty_)
+    if (empty)
+        await logseq.Editor.updateBlock(parent.uuid, 'ø', {properties})
+
+    const inserted = await logseq.Editor.insertBatchBlock(
+        parent.uuid, blocks, {sibling: false, ...opts})
+
+    if (empty)
+        await logseq.Editor.updateBlock(parent.uuid, '', {properties})
+    if (numbering)
+        await logseq.Editor.upsertBlockProperty(parent.uuid, PropertiesUtils.numberingProperty_, numbering)
+
     return inserted
 }
