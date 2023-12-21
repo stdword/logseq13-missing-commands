@@ -15,7 +15,7 @@ Missing Commands for Logseq
 
 <div align="center">
 
-[![](https://img.shields.io/badge/status-not_ready-ca966c)](https://github.com/stdword/logseq13-missing-commands/releases)
+[![](https://img.shields.io/badge/status-in_development-ca966c)](https://github.com/stdword/logseq13-missing-commands/releases)
 [![Version](https://img.shields.io/github/v/release/stdword/logseq13-missing-commands?color=b3c5d0)](https://github.com/stdword/logseq13-missing-commands/releases)
 [![Downloads](https://img.shields.io/github/downloads/stdword/logseq13-missing-commands/total.svg?color=ca966c)](https://github.com/stdword/logseq13-missing-commands#from-logseq-marketplace-recommended-way)
 
