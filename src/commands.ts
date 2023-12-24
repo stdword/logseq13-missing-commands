@@ -387,6 +387,13 @@ export function splitByWords(text: string): IBatchBlock[] {
     return textBlocks.filter((tb) => !!tb).map((tb) => {return {content: tb}})
 }
 
+export function splitBySentences(text: string): IBatchBlock[] {
+    const textBlocks = text.split(/(?<=[.!?…])\s+/)
+    return textBlocks
+        .map((tb) => tb.endsWith('.') ? tb.slice(0, -1) : tb)
+        .map((tb) => {return {content: tb}})
+}
+
 export function magicSplit(text: string): IBatchBlock[] {
     // add special types of ordered lists for parser to recognize it
     // (1)  → 1)
@@ -554,6 +561,12 @@ export async function splitBlocksCommand(
 }
 
 
+export function joinAsSentences_Map(content, level): string {
+    if (content && /(?<![.!?…])$/.test(content))
+        content += '.'
+    return content
+}
+
 export function joinViaNewLines_Attach(content, level, children): string {
     const childrenContent = children.join('\n')
     if (!content)
@@ -577,10 +590,19 @@ export function joinViaCommas_Attach(content, level, children): string {
     return prefix + children.join(', ')
 }
 
+export function joinViaSpaces_Attach(content, level, children): string {
+    if (children.length === 0)
+        return content
+
+    const prefix = content ? content + ' ' : ''
+    return prefix + children.join(' ')
+}
+
 export async function joinBlocksCommand(
     independentMode: boolean,
     joinAttachCallback: (root: string, level: number, children: string[], block?: BlockEntity) => string,
     joinMapCallback?: (content: string, level: number, block: BlockEntity, parent?: BlockEntity) => string,
+    opts: {shouldHandleSingleBlock: boolean} = {shouldHandleSingleBlock: false},
 ) {
     let [ blocks, isSelectedState ] = await getChosenBlocks()
     if (blocks.length === 0)
@@ -598,9 +620,11 @@ export async function joinBlocksCommand(
 
     if (blocks.length === 0)
         return
-    if (blocks.length === 1)
-        if (!blocks[0].children || blocks[0].children.length === 0)
-            return  // nothing to join
+
+    // ensure .children always is array
+    for (const block of blocks)
+        if (!block.children)
+            block.children = []
 
     independentMode = independentMode || blocks.length === 1
 
@@ -640,6 +664,7 @@ export async function joinBlocksCommand(
     }
     if (!noWarnings)
         return
+
 
     // check for properties
     for (const block of blocks) {
@@ -684,15 +709,22 @@ export async function joinBlocksCommand(
 
     if (independentMode) {
         for (const block of blocks) {
-            if (!block.children || block.children.length === 0)
-                continue  // nothing to join
+            // fix tsc error: non-undefined
+            block.children = block.children!
+
+            if (block.children.length === 0) {
+                if (!opts.shouldHandleSingleBlock)
+                    continue  // nothing to join
+                else
+                    block.children = []  // ensure non-null
+            }
 
             const content = reduceTree(block as IBatchBlock, {startLevel: 0})
             const properties = PropertiesUtils.fromCamelCaseAll(block.properties)
 
-            if (block._rootHasReferences) {
+            if (block._rootHasReferences || block.children.length === 0) {
                 await logseq.Editor.updateBlock(block.uuid, content, {properties})
-                for (const child of block.children!)
+                for (const child of block.children)
                     await logseq.Editor.removeBlock((child as BlockEntity).uuid)
             } else {
                 await insertBatchBlockBefore(block, {content, properties})

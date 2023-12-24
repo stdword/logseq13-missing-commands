@@ -1,10 +1,11 @@
 import { BlockEntity, SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin.user'
 
 import {
-    ICON, editNextBlockCommand, editPreviousBlockCommand, joinBlocksCommand,
+    ICON, editNextBlockCommand, editPreviousBlockCommand, joinAsSentences_Map, joinBlocksCommand,
     joinViaCommas_Attach,
     joinViaNewLines_Attach,
     joinViaNewLines_Map,
+    joinViaSpaces_Attach,
     lastChildBlockCommand, magicJoinCommand, magicSplit,
     moveToBottomOfSiblingsCommand,
     moveToTopOfSiblingsCommand,
@@ -13,7 +14,7 @@ import {
     parentBlockCommand,
     previousSiblingBlockCommand,
     reverseBlocksCommand, shuffleBlocksCommand, sortBlocksCommand, splitBlocksCommand,
-    splitByLines, splitByWords, toggleAutoHeadingCommand,
+    splitByLines, splitBySentences, splitByWords, toggleAutoHeadingCommand,
 } from './commands'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
 
@@ -150,24 +151,33 @@ async function main() {
         keybinding: {},
     }, (e) => splitBlocksCommand(magicSplit, setting_storeChildBlocksIn(), true) )
 
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Split by sentences', key: 'mc-5-split-7-by-sentences',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => splitBlocksCommand(splitBySentences, setting_storeChildBlocksIn()))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Split by sentences (with nested)', key: 'mc-5-split-8-by-sentences-nested',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => splitBlocksCommand(
+        splitBySentences, setting_storeChildBlocksIn(), true))
+
 
     // Joining
     logseq.App.registerCommandPalette({
         label: ICON + ' Join via spaces', key: 'mc-6-join-1-spaces',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => joinBlocksCommand(
-        false,
-        (content, level, children) => (content ? content + ' ' : '') + children.join(' '),
-    ))
+    }, (e) => joinBlocksCommand(false, joinViaSpaces_Attach))
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Join selected together via commas (with respect to root block)', key: 'mc-6-join-2-commas',
+        label: ICON + ' Join together via commas (with respect to root block)', key: 'mc-6-join-2-commas',
         // @ts-expect-error
         keybinding: {},
     }, (e) => joinBlocksCommand(false, joinViaCommas_Attach))
     logseq.App.registerCommandPalette({
-        label: ICON + ' Join selected independently via commas (with respect to root block)', key: 'mc-6-join-3-commas-independently',
+        label: ICON + ' Join independently via commas (with respect to root block)', key: 'mc-6-join-3-commas-independently',
         // @ts-expect-error
         keybinding: {},
     }, (e) => joinBlocksCommand(true, joinViaCommas_Attach))
@@ -184,15 +194,27 @@ async function main() {
     }, (e) => joinBlocksCommand(false, joinViaNewLines_Attach, joinViaNewLines_Map))
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Magic Join selected together', key: 'mc-6-join-6-magic',
+        label: ICON + ' Magic Join', key: 'mc-6-join-6-magic',
         // @ts-expect-error
         keybinding: {},
     }, (e) => magicJoinCommand(false))
     logseq.App.registerCommandPalette({
-        label: ICON + ' Magic Join selected independently', key: 'mc-6-join-7-magic-independently',
+        label: ICON + ' Magic Join (independently)', key: 'mc-6-join-7-magic-independently',
         // @ts-expect-error
         keybinding: {},
     }, (e) => magicJoinCommand(true))
+
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Join as sentences', key: 'mc-6-join-8-sentences',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => joinBlocksCommand(false, joinViaSpaces_Attach, joinAsSentences_Map, {shouldHandleSingleBlock: true}))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Join as sentences (independently)', key: 'mc-6-join-9-sentences-independently',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => joinBlocksCommand(true, joinViaSpaces_Attach, joinAsSentences_Map, {shouldHandleSingleBlock: true}))
+
 
 
     // Navigation
