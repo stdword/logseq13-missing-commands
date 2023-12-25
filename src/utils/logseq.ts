@@ -299,15 +299,17 @@ export async function transformSelectedBlocksWithMovements(
 }
 
 export async function walkBlockTreeAsync(
-    root: IBatchBlock,
-    callback: (b: IBatchBlock, lvl: number) => Promise<string | void>,
+    root: WalkBlock,
+    callback: (b: WalkBlock, lvl: number, data?: any) => Promise<string | void>,
     level: number = 0,
-): Promise<IBatchBlock> {
+): Promise<WalkBlock> {
+    const data = {node: root as IBatchBlock}
     return {
-        content: (await callback(root, level)) ?? '',
+        data,
+        content: (await callback(root, level, data)) ?? '',
         children: await Promise.all(
             (root.children || []).map(
-                async (b) => await walkBlockTreeAsync(b as IBatchBlock, callback, level + 1)
+                async (b) => await walkBlockTreeAsync(b, callback, level + 1)
         ))
     }
 }
@@ -325,7 +327,7 @@ export function walkBlockTree(
         data,
         content,
         children: (root.children || []).map(
-            (b) => walkBlockTree(b as WalkBlock, callback, level + 1, root)
+            (b) => walkBlockTree(b, callback, level + 1, root)
         ),
     }
 }

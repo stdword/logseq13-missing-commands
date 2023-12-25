@@ -1,20 +1,23 @@
 import { BlockEntity, SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin.user'
 
 import {
-    ICON, editNextBlockCommand, editPreviousBlockCommand, joinAsSentences_Map, joinBlocksCommand,
-    joinViaCommas_Attach,
-    joinViaNewLines_Attach,
-    joinViaNewLines_Map,
-    joinViaSpaces_Attach,
-    lastChildBlockCommand, magicJoinCommand, magicSplit,
-    moveToBottomOfSiblingsCommand,
-    moveToTopOfSiblingsCommand,
-    nextSiblingBlockCommand,
+    ICON,
+
+    toggleAutoHeadingCommand,
     outdentChildrenCommand,
-    parentBlockCommand,
-    previousSiblingBlockCommand,
-    reverseBlocksCommand, shuffleBlocksCommand, sortBlocksCommand, splitBlocksCommand,
-    splitByLines, splitBySentences, splitByWords, toggleAutoHeadingCommand,
+    editNextBlockCommand, editPreviousBlockCommand,
+    parentBlockCommand, lastChildBlockCommand,
+    moveToBottomOfSiblingsCommand, moveToTopOfSiblingsCommand,
+    nextSiblingBlockCommand, previousSiblingBlockCommand,
+    reverseBlocksCommand, shuffleBlocksCommand, sortBlocksCommand,
+
+    joinBlocksCommand, splitBlocksCommand, updateBlocksCommand,
+
+    magicJoinCommand, magicSplit,
+    joinAsSentences_Map, joinViaCommas_Attach, joinViaSpaces_Attach,
+    joinViaNewLines_Attach, joinViaNewLines_Map,
+
+    splitByLines, splitBySentences, splitByWords,
 } from './commands'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
 
@@ -215,6 +218,13 @@ async function main() {
         keybinding: {},
     }, (e) => joinBlocksCommand(true, joinViaSpaces_Attach, joinAsSentences_Map, {shouldHandleSingleBlock: true}))
 
+
+    // Updates
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Remove new lines', key: 'mc-6-update-1-remove-new-lines',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand((content, level, block, parent) => content.replaceAll('\n', '')))
 
 
     // Navigation

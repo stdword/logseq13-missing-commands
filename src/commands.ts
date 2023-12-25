@@ -3,7 +3,7 @@ import '@logseq/libs'
 import markdownit from 'markdown-it'
 
 import {
-    PropertiesUtils, checkPropertyExistenceInTree, ensureChildrenIncluded,
+    PropertiesUtils, WalkBlock, checkPropertyExistenceInTree, ensureChildrenIncluded,
     escapeForRegExp, filterOutChildBlocks, getBlocksWithReferences,
     getChosenBlocks, insertBatchBlockBefore, isWindows, lettersToNumber,
     numberToLetters, numberToRoman, p, reduceBlockTree,
@@ -621,11 +621,6 @@ export async function joinBlocksCommand(
     if (blocks.length === 0)
         return
 
-    // ensure .children always is array
-    for (const block of blocks)
-        if (!block.children)
-            block.children = []
-
     independentMode = independentMode || blocks.length === 1
 
 
@@ -709,14 +704,13 @@ export async function joinBlocksCommand(
 
     if (independentMode) {
         for (const block of blocks) {
-            // fix tsc error: non-undefined
-            block.children = block.children!
+            // ensure .children always is array
+            if (!block.children)
+                block.children = []
 
             if (block.children.length === 0) {
                 if (!opts.shouldHandleSingleBlock)
                     continue  // nothing to join
-                else
-                    block.children = []  // ensure non-null
             }
 
             const content = reduceTree(block as IBatchBlock, {startLevel: 0})
@@ -847,36 +841,66 @@ export function magicJoinCommand(independentMode: boolean) {
     )
 }
 
-// export async function removeNumbering() {
-//     function repeatedCharsWithSpaces(chars) {
-//         chars = chars.replaceAll('[', '\\[')
-//         chars = chars.replaceAll(']', '\\]')
-//         chars = chars.replaceAll('-', '\\-')
-//         const spaces = '  ' // with &nbsp;
-//         return '[' + spaces + chars + ']*'
-//     }
 
-//     for (const block of blocks) {
-//         const lines = block.content.split(/\n/gm)
+export async function updateBlocksCommand(
+    callback: (content: string, level: number, block: BlockEntity, parent?: BlockEntity) => string,
+) {
+    let [ blocks, isSelectedState ] = await getChosenBlocks()
+    if (blocks.length === 0)
+        return
 
-//         var trimStart = null
-//         if (c.args['trim-numbering'])
-//             trimStart = /^\s*\d+\s*\.\s*/
-//         else if (c.args['trim-start'])
-//             trimStart = trimStart = new RegExp('^' + repeatedCharsWithSpaces(c.args['trim-start']))
+    blocks = unique(blocks, (b) => b.uuid)
+    blocks = await Promise.all(
+        blocks.map(async (b) => {
+            return (
+                await logseq.Editor.getBlock(b.uuid, {includeChildren: true})
+            )!
+        })
+    )
+    blocks = filterOutChildBlocks(blocks)
 
-//         var trimEnd = new RegExp(repeatedCharsWithSpaces(c.args['trim-end']) + '$')
+    if (blocks.length === 0)
+        return
 
-//         lines.forEach((line, i) => {
-//             if (trimStart)
-//                 line = line.replace(trimStart, '')
-//             if (trimEnd)
-//                 line = line.replace(trimEnd, '')
 
-//             if (i === 0 && line === '')
-//                 return
+    // it is important to check if any block in the tree has references
+    // (Logseq replaces references with it's text)
+    for (const block of blocks) {
+        const blocksWithReferences = await getBlocksWithReferences(block)
+        block._treeHasReferences = blocksWithReferences.length !== 0
+    }
 
-//             top.logseq.api.insert_block(c.block.uuid, line, {focus: false, sibling: true})
-//         })
-//     }
-// }
+
+    for (const block of blocks) {
+        // ensure .children always is array
+        if (!block.children)
+            block.children = []
+
+        const newTree = walkBlockTree(block as WalkBlock, (b, level, p, data) => {
+            const properties = PropertiesUtils.fromCamelCaseAll(data.node.properties)
+            const propertiesOrder = PropertiesUtils.getPropertyNames(b.content)
+
+            let content = PropertiesUtils.deleteAllProperties(b.content)
+            content = callback(content, level, data.node, p as BlockEntity | undefined)
+
+            for (const property of propertiesOrder)
+                content += `\n${property}:: ${properties[property]}`
+
+            return content
+        })
+
+        if (block._treeHasReferences || block.children.length === 0) {
+            walkBlockTreeAsync(newTree, async (b, level) => {
+                await logseq.Editor.updateBlock(b.data.node.uuid, b.content)
+            })
+        } else {
+            await insertBatchBlockBefore(block, newTree)
+            await logseq.Editor.removeBlock(block.uuid)
+        }
+    }
+
+    if (isSelectedState) {
+        await sleep(20)
+        await logseq.Editor.exitEditingMode()
+    }
+}
