@@ -35,7 +35,7 @@ _Designed to be very productive with keyboard_  ❤️
 
 <p> </p>
 
-> ⚠️ Some commands has default shortcut and some not.
+> ℹ️ Some commands has default shortcut and some not.
 > 
 > To find out the shortcut for the particular command (or bind your own) use [this](https://github.com/stdword/logseq13-missing-commands/tree/main?tab=readme-ov-file#how-to-change-default-shortcut-for-the-particular-command) instruction.
 >
