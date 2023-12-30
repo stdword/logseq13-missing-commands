@@ -492,3 +492,17 @@ export async function insertBatchBlockBefore(
 
     return inserted
 }
+
+export function setNativeValue(element, value, needToDispatch) {
+    const valueSetter = Object.getOwnPropertyDescriptor(element, 'value')!.set!
+    const prototype = Object.getPrototypeOf(element)
+    const prototypeValueSetter = Object.getOwnPropertyDescriptor(prototype, 'value')!.set!
+
+    if (valueSetter && valueSetter !== prototypeValueSetter)
+        prototypeValueSetter.call(element, value)
+    else
+        valueSetter.call(element, value)
+
+    if (needToDispatch)
+        element.dispatchEvent(new Event('input', {bubbles: true}))
+}

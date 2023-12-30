@@ -19,6 +19,7 @@ import {
 
     splitByLines, splitBySentences, splitByWords,
 } from './commands'
+import { improveCursorMovement_KeyDownListener, improveSearch_KeyDownListener } from './features'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
 
 
@@ -26,59 +27,37 @@ const DEV = process.env.NODE_ENV === 'development'
 
 const settingsSchema: SettingSchemaDesc[] = [
     {
-        key: 'splittingHeading',
-        title: '⛓️ Split & Join',
-        description: '',
-        type: 'heading',
-        default: null
-    },
-    {
-        key: 'storeChildBlocksIn',
-        title: 'Where to store nested blocks when splitting the block?',
+        key: 'enableHomeEnd',
+        title: 'Enable improved «Home» / «End» keys processing?',
         description: `
-            <span style="display: flex; gap: 1rem; align-items: center;">
-                <div>
-                    <ul>
-                        <li>First Last</li>
-                        <ul>
-                            <li>nested</li>
-                        </ul>
-                    </ul>
-                    <p style="margin: 0px"> </p>
-                </div>
-                <div>→</div>
-                <div>
-                    <ul>
-                        <li>First</li>
-                        <ul>
-                            <li>nested</li>
-                        </ul>
-                        <li>Last</li>
-                    </ul>
-                </div>
-                <div>OR</div>
-                <div>
-                    <ul>
-                        <li>First</li>
-                        <li>Last</li>
-                        <ul>
-                            <li>nested</li>
-                        </ul>
-                    </ul>
-                </div>
-            </span>
+            Double-press the <code>Home</code> / <code>End</code> key (in edit mode) to go to the block start / end. <br/>
+            MacOS's <code>⌘ ←</code> / <code>⌘ →</code> and Windows's <code>fn ←</code> / <code>fn →</code> are also supported. <br/>
+            <p><img width="200px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/4773523a-5900-4b48-b196-f6cb39799548"/></p>
+            <i>Restriction</i>: This feature only works for natural lines of block, which have a «new line» character («\\n»). It does not work with lines created due to the size of the layout. In such cases, the only way to proceed is to press <code>Esc</code> to exit edit mode and then use the <code>←</code> or <code>→</code> arrow key to re-enter it. <br/>
         `.trim(),
         type: 'enum',
         enumPicker: 'radio',
-        enumChoices: ['In the First block', 'In the Last block'],
-        default: 'In the Last block',
+        enumChoices: ['Yes', 'No'],
+        default: 'Yes',
+    },
+    {
+        key: 'enableSearchImprovements',
+        title: 'Enable improved keys processing on Search?',
+        description: `
+            1) Press <code>Tab</code> to fill the input with selected search item.<br/>
+            <p><img width="600px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/bf27f3a6-8464-4e1f-b967-e5e9efe46e21"/></p>
+            `.trim() + '\n' + `
+            2) Press <code>←</code> arrow (with empty input) to fill the input with the current page name.<br/>
+            <p><img width="600px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/a083c0c1-604a-4514-8732-41b6a8c7b1ba"/></p>
+        `.trim(),
+        type: 'enum',
+        enumPicker: 'radio',
+        enumChoices: ['Yes', 'No'],
+        default: 'Yes',
     },
 ]
 const settings_: any = settingsSchema.reduce((r, v) => ({ ...r, [v.key]: v}), {})
 
-
-async function onAppSettingsChanged() {
-}
 
 async function init() {
     if (DEV) {
@@ -89,28 +68,49 @@ async function init() {
         )
     }
 
-    // logseq.useSettingsSchema(settingsSchema)
+    logseq.useSettingsSchema(settingsSchema)
 
     console.info(p`Loaded`)
 }
-
-async function postInit() {
-    await onAppSettingsChanged()
+async function postInit(settings) {
+    await onAppSettingsChanged(settings, undefined)
 }
+async function onAppSettingsChanged(current, old) {
+    if (!old || current.enableHomeEnd !== old.enableHomeEnd) {
+        parent.document.removeEventListener('keydown', improveCursorMovement_KeyDownListener)
+        if (current.enableHomeEnd === 'Yes')
+            parent.document.addEventListener('keydown', improveCursorMovement_KeyDownListener)
+    }
+
+    if (!old || current.enableSearchImprovements !== old.enableSearchImprovements) {
+        parent.document.removeEventListener('keydown', improveSearch_KeyDownListener, true)
+        if (current.enableSearchImprovements === 'Yes')
+            parent.document.addEventListener('keydown', improveSearch_KeyDownListener, true)
+    }
+}
+
+const _emptyStyle = '/**/'
+function provideStyle(key: string, style: string = _emptyStyle) {
+    logseq.provideStyle({key, style})
+    return () => {logseq.provideStyle({key, style: _emptyStyle})}
+}
+
 
 async function main() {
     await init()
 
     const settings = logseq.settings!
+    const settingsOff = logseq.onSettingsChanged(onAppSettingsChanged)
 
-    logseq.onSettingsChanged(async (old, new_) => {
-        await onAppSettingsChanged()
+    logseq.beforeunload(async () => {
+        settingsOff()
     })
 
+
     function setting_storeChildBlocksIn() {
-        return false
-        // return settings.storeChildBlocksIn === settings_.storeChildBlocksIn.enumChoices[0]
+        return false  // the last one
     }
+
 
     // Decoration
     logseq.App.registerCommandPalette({
@@ -300,7 +300,7 @@ async function main() {
     }, (e) => shuffleBlocksCommand() )
 
 
-    await postInit()
+    await postInit(settings)
 }
 
 
