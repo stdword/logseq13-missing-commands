@@ -1,3 +1,13 @@
+# [1.3.0](https://github.com/stdword/logseq13-missing-commands/compare/v1.2.0...v1.3.0) (2023-12-30)
+
+
+### Features
+
+* **commands:** remove new lines ([277bcf8](https://github.com/stdword/logseq13-missing-commands/commit/277bcf86754f0b7b3a3a99d48469d13096df1d69))
+* **commands:** split & join by sentences ([d30801e](https://github.com/stdword/logseq13-missing-commands/commit/d30801e1073b8733c9df5e9aaf6f9127362e81e2))
+* **features:** home-End processings for edit mode & Tab-trigger + access to page name on Search ([eb9476b](https://github.com/stdword/logseq13-missing-commands/commit/eb9476b139add07993444f1cf58560da3ee66520))
+* support • as bullet list ([b006d3f](https://github.com/stdword/logseq13-missing-commands/commit/b006d3fcb2f7ee36d0b89f99010780846aeb0e49))
+
 # [1.2.0](https://github.com/stdword/logseq13-missing-commands/compare/v1.1.0...v1.2.0) (2023-12-21)
 
 
