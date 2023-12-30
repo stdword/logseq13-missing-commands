@@ -89,12 +89,6 @@ async function onAppSettingsChanged(current, old) {
     }
 }
 
-const _emptyStyle = '/**/'
-function provideStyle(key: string, style: string = _emptyStyle) {
-    logseq.provideStyle({key, style})
-    return () => {logseq.provideStyle({key, style: _emptyStyle})}
-}
-
 
 async function main() {
     await init()

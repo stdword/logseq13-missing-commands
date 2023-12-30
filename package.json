@@ -1,7 +1,7 @@
 {
     "name": "logseq13-missing-commands",
     "version": "1.2.0",
-    "description": "🪚 Sorting blocks, tabular view, auto complete in search, split by sentences, remove numbering, etc.",
+    "description": "Sort blocks, TAB-trigger on search, split by sentences, parse text structure, blocks navigation, etc.",
     "author": "stdword",
     "repository": "https://github.com/stdword/logseq13-missing-commands.git",
     "license": "MIT",

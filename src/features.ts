@@ -40,7 +40,6 @@ export function improveCursorMovement_KeyDownListener(e: KeyboardEvent) {
     target.scrollIntoViewIfNeeded()
 }
 
-
 /**
  * TAB-trigger and access current page name on Search
  */

@@ -506,3 +506,12 @@ export function setNativeValue(element, value, needToDispatch) {
     if (needToDispatch)
         element.dispatchEvent(new Event('input', {bubbles: true}))
 }
+
+export function provideStyle(key: string, style: string = '') {
+    const emptyStyle = '/**/'
+    if (!style)
+        style = emptyStyle
+
+    logseq.provideStyle({key, style})
+    return () => {logseq.provideStyle({key, style: emptyStyle})}
+}
