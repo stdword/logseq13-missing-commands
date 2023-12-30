@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/stdword/logseq13-missing-commands/compare/v1.3.0...v1.3.1) (2023-12-30)
+
+
+### Bug Fixes
+
+* **commands:** remove new lines command improve: add spaces ([f47b19d](https://github.com/stdword/logseq13-missing-commands/commit/f47b19db34dd1301250ffe0a7b588a1320887995))
+
 # [1.3.0](https://github.com/stdword/logseq13-missing-commands/compare/v1.2.0...v1.3.0) (2023-12-30)
 
 
