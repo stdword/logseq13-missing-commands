@@ -407,6 +407,10 @@ export function magicSplit(text: string): IBatchBlock[] {
     // a. → 1)
     text = text.replaceAll(/^(\s*)(\p{Lowercase_Letter}{1,3})\.\s/gmiu, '$11) ')
 
+    // add special types of unordered lists for parser to recognize it
+    // • → -
+    text = text.replaceAll(/^(\s*)•\s*/gmu, '$1- ')
+
     const tokens = md.parse(text, {})
     console.debug(p`Parsed tokens`, Array.from(tokens))
     console.debug(p`HTML-view`, md.renderer.render(tokens, {}, {}))
