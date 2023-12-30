@@ -59,8 +59,9 @@ _Designed to be very productive with keyboard_  ❤️
 
 <tr><td><details><summary><b>Fast access to current page name on Search</b></summary>
   <p>Helpfull, when you need to access subpages of the current page. Just press the <code>←</code> arrow key <u>on empty search input</u>.</p>
-  <p><img width="600px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/3289dae9-6391-40ed-8198-7e957cd029eb"/></p>
+  <p><img width="600px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/a083c0c1-604a-4514-8732-41b6a8c7b1ba"/></p>
 </details></td></tr>
+
 
 <tr><td><details><summary><b>Go to the block <i>start</i> (<i>end</i>) with double-pressing the «Home» («End») key</b></summary>
   <p>Just like in Sublime Text editor. MacOS's <code>⌘ ←</code> / <code>⌘ →</code> and Windows's <code>fn ←</code> / <code>fn →</code> are also supported.</p>
