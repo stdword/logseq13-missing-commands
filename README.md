@@ -169,10 +169,31 @@ _Designed to be very productive with keyboard_  ❤️
   <p><img width="450px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/6ee64586-7ecd-4a61-bc82-b60b2756af97" /></p>
   <p><img width="450px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/1fb4f3ab-31f4-40ff-a617-ea8f74fb7567" /></p>
 </details></td></tr>
+
+<tr><td><details><summary><b>Split / Join sentences</b></summary>
+  <p>Split paragraph of text by sentences (one block = one sentence). And join the blocks to single paragraph.</p>
+  <p><b>Note</b>: Split removes the dots at the end. Join returns the dots back.</p>
+  <p align="center">
+    <b>Split     &     Join</b> <br>
+    <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/306b0e6a-38de-43af-a72c-8292660e46fb" width=45% />
+    <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/8fcfa94a-eefb-4197-a8dd-60e0b679f258" width=45% />
+  </p>
+</details></td></tr>
 </table>
 
 
-## 6) Views
+## 6) Commands: _Updating blocks_
+
+<table>
+<tr><td><details><summary><b>Remove new lines</b></summary>
+  <p>Remove all «new line» characters from text. Helpful for work with OCR texts.</p>
+  <p><b>Note</b>: command adds spaces when it's necessary.</p>
+  <p><img width="400px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/770ae2d1-1cc7-4c27-9054-45849ddd4127"/></p>
+</details></td></tr>
+</table>
+
+
+## 7) Views
 > ❗️ Tabular view will be available in the next releases. Stay tuned.
 
 
