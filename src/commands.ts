@@ -908,3 +908,12 @@ export async function updateBlocksCommand(
         await logseq.Editor.exitEditingMode()
     }
 }
+
+export function removeNewLinesCommand() {
+    return updateBlocksCommand((content, level, block, parent) => {
+        return content
+            .replaceAll(/\n+/g, '\n')
+            .replaceAll(/(?<=[^\S\n])\n/g, '')  // remove \n when there are spaces before
+            .replaceAll(/(?<![^\S])\n/g, ' ')   // replace \n to space when there are no spaces before
+    })
+}

@@ -17,7 +17,7 @@ import {
     joinAsSentences_Map, joinViaCommas_Attach, joinViaSpaces_Attach,
     joinViaNewLines_Attach, joinViaNewLines_Map,
 
-    splitByLines, splitBySentences, splitByWords,
+    splitByLines, splitBySentences, splitByWords, removeNewLinesCommand,
 } from './commands'
 import { improveCursorMovement_KeyDownListener, improveSearch_KeyDownListener } from './features'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
@@ -218,7 +218,7 @@ async function main() {
         label: ICON + ' Remove new lines', key: 'mc-6-update-1-remove-new-lines',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => updateBlocksCommand((content, level, block, parent) => content.replaceAll('\n', '')))
+    }, (e) => removeNewLinesCommand())
 
 
     // Navigation
