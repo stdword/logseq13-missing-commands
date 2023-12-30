@@ -65,11 +65,10 @@ _Designed to be very productive with keyboard_  ❤️
 
 <tr><td><details><summary><b>Go to the block <i>start</i> (<i>end</i>) with double-pressing the «Home» («End») key</b></summary>
   <p>Just like in Sublime Text editor. MacOS's <code>⌘ ←</code> / <code>⌘ →</code> and Windows's <code>fn ←</code> / <code>fn →</code> are also supported.</p>
-  <p><b>Restriction</b>: This works only for natural lines of block (with «new line» character or «\n»). And don't work with lines, created due to size of the layout. In this case the only way is to press <code>Esc</code> to exit edit mode and then <code>←</code> or <code>→</code> arrow to enter it again.</p>
+  <p><b>Restriction</b>: This feature only works for natural lines of block, which have a «new line» character or «\n». It does not work with lines created due to the size of the layout. In such cases, the only way to proceed is to press <code>Esc</code> to exit edit mode and then use the <code>←</code> or <code>→</code> arrow key to re-enter it.</p>
   <p><img width="200px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/4773523a-5900-4b48-b196-f6cb39799548"/></p>
 </details></td></tr>
 </table>
-
 
 ## 2) Commands: _Blocks reordering_
 
