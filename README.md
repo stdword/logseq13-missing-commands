@@ -49,8 +49,6 @@ _Designed to be very productive with keyboard_  ❤️
 
 ## 1) Features
 
-> ❗️ This section will be available in the NEXT release
-
 <table>
 <tr><td><details><summary><b>TAB-trigger on Search</b></summary>
   <p>To fill the input with selected search item. Just press the <code>tab</code> key to speed up the input values.</p>
