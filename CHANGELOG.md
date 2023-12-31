@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/stdword/logseq13-missing-commands/compare/v1.3.1...v1.3.2) (2023-12-31)
+
+
+### Bug Fixes
+
+* **commands:** add non-nested version for remove new lines command ([790066b](https://github.com/stdword/logseq13-missing-commands/commit/790066b8ec2940a19c3aeda37c5585ac20028224))
+
 ## [1.3.1](https://github.com/stdword/logseq13-missing-commands/compare/v1.3.0...v1.3.1) (2023-12-30)
 
 
