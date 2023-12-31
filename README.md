@@ -231,6 +231,11 @@ _Designed to be very productive with keyboard_  ❤️
 2. Copy this emoji «🪚» (for Windows use «🔪») and insert it to search input.
 3. Change any shortcut you want <br/><img width="700px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/b08bd56b-cac3-4531-8b1b-5444852cb602"/>
 
+### Why there is strange «ø» charactear appears sometimes during _Undo_ command?
+<p><img width="200px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/74c428b4-7680-4b3b-bff1-3d32c9357898"/></p>
+
+The reason is [this](https://github.com/logseq/logseq/issues/10729) bug in Logseq plugin API. The plugin uses «ø» character intentionally as a workaround for this issue.
+
 
 
 ## Credits
