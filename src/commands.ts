@@ -848,36 +848,42 @@ export function magicJoinCommand(independentMode: boolean) {
 
 export async function updateBlocksCommand(
     callback: (content: string, level: number, block: BlockEntity, parent?: BlockEntity) => string,
+    recursive: boolean = false,
 ) {
     let [ blocks, isSelectedState ] = await getChosenBlocks()
     if (blocks.length === 0)
         return
 
     blocks = unique(blocks, (b) => b.uuid)
-    blocks = await Promise.all(
-        blocks.map(async (b) => {
-            return (
-                await logseq.Editor.getBlock(b.uuid, {includeChildren: true})
-            )!
-        })
-    )
-    blocks = filterOutChildBlocks(blocks)
+    if (recursive) {
+        blocks = await Promise.all(
+            blocks.map(async (b) => {
+                return (
+                    await logseq.Editor.getBlock(b.uuid, {includeChildren: true})
+                )!
+            })
+        )
+        blocks = filterOutChildBlocks(blocks)
+    }
 
     if (blocks.length === 0)
         return
 
-
     // it is important to check if any block in the tree has references
     // (Logseq replaces references with it's text)
-    for (const block of blocks) {
-        const blocksWithReferences = await getBlocksWithReferences(block)
-        block._treeHasReferences = blocksWithReferences.length !== 0
-    }
+    if (recursive)
+        for (const block of blocks) {
+            const blocksWithReferences = await getBlocksWithReferences(block)
+            block._treeHasReferences = blocksWithReferences.length !== 0
+        }
 
-
     for (const block of blocks) {
-        // ensure .children always is array
+        // ensure .children is always an array
         if (!block.children)
+            block.children = []
+
+        // skip child nodes in non-recursive mode
+        if (!recursive)
             block.children = []
 
         const newTree = walkBlockTree(block as WalkBlock, (b, level, p, data) => {
@@ -909,11 +915,9 @@ export async function updateBlocksCommand(
     }
 }
 
-export function removeNewLinesCommand() {
-    return updateBlocksCommand((content, level, block, parent) => {
-        return content
-            .replaceAll(/\n+/g, '\n')
-            .replaceAll(/(?<=[^\S\n])\n/g, '')  // remove \n when there are spaces before
-            .replaceAll(/(?<![^\S])\n/g, ' ')   // replace \n to space when there are no spaces before
-    })
+export function removeNewLines(content, level, block, parent) {
+    return content
+        .replaceAll(/\n+/g, '\n')
+        .replaceAll(/(?<=[^\S\n])\n/g, '')  // remove \n when there are spaces before
+        .replaceAll(/(?<![^\S])\n/g, ' ')   // replace \n to space when there are no spaces before
 }

@@ -17,7 +17,7 @@ import {
     joinAsSentences_Map, joinViaCommas_Attach, joinViaSpaces_Attach,
     joinViaNewLines_Attach, joinViaNewLines_Map,
 
-    splitByLines, splitBySentences, splitByWords, removeNewLinesCommand,
+    splitByLines, splitBySentences, splitByWords, removeNewLines,
 } from './commands'
 import { improveCursorMovement_KeyDownListener, improveSearch_KeyDownListener } from './features'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
@@ -215,10 +215,15 @@ async function main() {
 
     // Updates
     logseq.App.registerCommandPalette({
-        label: ICON + ' Remove new lines', key: 'mc-6-update-1-remove-new-lines',
+        label: ICON + ' Remove new lines', key: 'mc-7-update-1-remove-new-lines',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => removeNewLinesCommand())
+    }, (e) => updateBlocksCommand(removeNewLines))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Remove new lines (with nested)', key: 'mc-7-update-2-remove-new-lines-nested',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(removeNewLines, true))
 
 
     // Navigation
