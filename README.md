@@ -234,7 +234,7 @@ _Designed to be very productive with keyboard_  ❤️
 ### Why there is strange «ø» charactear appears sometimes during _Undo_ command?
 <p><img width="200px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/74c428b4-7680-4b3b-bff1-3d32c9357898"/></p>
 
-The reason is [this](https://github.com/logseq/logseq/issues/10729) bug in Logseq plugin API. The plugin uses «ø» character intentionally as a workaround for this issue.
+The reason is [this](https://github.com/logseq/logseq/issues/10729) bug in Logseq plugin API. The plugin uses «ø» character intentionally as a workaround for this issue. When the bug is resolved, this workaround will no longer be necessary.
 
 
 
