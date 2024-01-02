@@ -21,6 +21,7 @@ import {
 } from './commands'
 import { improveCursorMovement_KeyDownListener, improveSearch_KeyDownListener, spareBlocksFeature } from './features'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
+import { tabularView } from './views'
 
 
 const DEV = process.env.NODE_ENV === 'development'
@@ -92,6 +93,15 @@ const settingsSchema: SettingSchemaDesc[] = [
         description: 'TODO',
         default: null,
     },
+    {
+        key: 'enableTabularView',
+        title: 'Enable tabular view?',
+        description: `With <code>#.tabular</code> & <code>#.tabular0</code> references.`.trim(),
+        type: 'enum',
+        enumPicker: 'radio',
+        enumChoices: ['Yes', 'No'],
+        default: 'Yes',
+    },
 ]
 const settings_: any = settingsSchema.reduce((r, v) => ({ ...r, [v.key]: v}), {})
 
@@ -127,6 +137,9 @@ async function onAppSettingsChanged(current, old) {
 
     if (!old || current.enableSpareBlocks !== old.enableSpareBlocks)
         spareBlocksFeature(current.enableSpareBlocks === 'Yes')
+
+    if (!old || current.enableTabularView !== old.enableTabularView)
+        tabularView(current.enableTabularView === 'Yes')
 }
 
 

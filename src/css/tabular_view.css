@@ -1,0 +1,89 @@
+/* Tana-like tabular view */
+/* based on «Tabular Journals» by nmartin84 */
+
+/* header */
+.ls-block[data-refs-self*=".tabular"] > .block-main-container > .block-content-wrapper > div > div > .block-content > .block-content-inner > div > :is(h1,h2) {
+    border-bottom: none;
+    margin: 0px;
+    padding: 0px;
+}
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block > .block-main-container.items-baseline {
+    align-items: center;
+}
+/* table */
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children {
+    border-left: 0px;
+}
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block:first-child {
+    border-top: 1px solid var(--ls-guideline-color);
+}
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block {
+    display: flex;
+    border-bottom: 1px solid var(--ls-guideline-color);
+    padding: 0px;
+}
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block > .block-main-container {
+    padding: 2px 0px;
+}
+/* left: size & header */
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block > .block-main-container > .block-content-wrapper > div > div > .block-content > .block-content-inner {
+    font-weight: 500;
+}
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block > .block-main-container > .block-content-wrapper > div > div > .block-content > .block-content-inner,
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block > .block-main-container > .editor-wrapper > .editor-inner {
+    min-width: 165px;
+    max-width: 165px;
+}
+/* left: plain text */
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block > .block-main-container > .block-content-wrapper > div > div > .block-content > .block-body {
+    font-size: 85%;
+    opacity: 0.7;
+    font-weight: 400;
+}
+/* left: hide brackets */
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block > .block-main-container > .block-content-wrapper .page-reference .bracket {
+    display: none;
+}
+/* right: adapt margins */
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block > .block-children-container {
+    margin-left: 0px;
+    width: 100%;
+}
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block > .block-children-container > .block-children {
+    padding-bottom: 10px;
+}
+
+/* sub tabular */
+/* table */
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children {
+    border-left: 1px solid var(--ls-guideline-color);
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block:first-child {
+    border-top: 0px;
+}
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block:last-child {
+    margin-bottom: -1px;
+}
+/* left: size */
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block > .block-main-container > .block-content-wrapper > div > div > .block-content > .block-content-inner,
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block > .block-main-container > .editor-wrapper > .editor-inner {
+    min-width: 115px;
+    max-width: 115px;
+}
+/* right: adapt margins */
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block > .block-children-container > .block-children {
+    padding-bottom: 7px;
+}
+
+/* zero sub tabular */
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block[data-refs-self*=".tabular0"] > .block-children-container > .block-children-left-border {
+    display: none;
+}
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block[data-refs-self*=".tabular0"] > .block-children-container > .block-children {
+    border-left: 0px;
+}
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block[data-refs-self*=".tabular0"] > .block-children-container > .block-children > .ls-block > .block-main-container {
+    display: none;
+}

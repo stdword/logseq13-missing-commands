@@ -97,11 +97,10 @@ export async function improveSearch_KeyDownListener(e: KeyboardEvent) {
             setNativeValue(target, text, true)
 }
 
-
 /**
  * CSS: Make spare space between 1-level blocks
  */
-export async function spareBlocksFeature(toggle: boolean) {
+export function spareBlocksFeature(toggle: boolean) {
     const key = 'spare-blocks'
     if (toggle)
         provideStyle(key, spareBlocksStyle)
