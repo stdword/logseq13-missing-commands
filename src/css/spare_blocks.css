@@ -1,0 +1,26 @@
+/* make a spare space between 1-level blocks */
+.page:has(> div > div > div > .page-title) div.ls-block[level="1"]:not(:first-child),
+.page:has(> div > div > div > div > .journal-title) div.ls-block[level="1"]:not(:first-child) {
+    margin-top: 20px;
+}
+.whiteboard div.ls-block[level="1"]:not(:first-child) {
+    margin-top: 0px !important;
+}
+[data-refs-self*=".tabular"] > .block-children-container > .block-children > div.ls-block[level="1"]:not(:first-child) {
+    margin-top: 0px !important;
+}
+.embed-page div.ls-block[level="1"]:not(:first-child) {
+    margin-top: 0px !important;
+}
+.embed-block div.ls-block[level="1"]:not(:first-child) {
+    margin-top: 0px !important;
+}
+#right-sidebar-container div.ls-block[level="1"]:not(:first-child) {
+    margin-top: 0px !important;
+}
+.references-blocks div.ls-block[level="1"]:not(:first-child) {
+    margin-top: 0px !important;
+}
+.references.page-unlinked div.ls-block[level="1"]:not(:first-child) {
+    margin-top: 0px !important;
+}

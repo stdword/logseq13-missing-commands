@@ -19,7 +19,7 @@ import {
 
     splitByLines, splitBySentences, splitByWords, removeNewLines,
 } from './commands'
-import { improveCursorMovement_KeyDownListener, improveSearch_KeyDownListener } from './features'
+import { improveCursorMovement_KeyDownListener, improveSearch_KeyDownListener, spareBlocksFeature } from './features'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
 
 
@@ -77,6 +77,15 @@ const settingsSchema: SettingSchemaDesc[] = [
         default: 'Yes',
     },
     {
+        key: 'enableSpareBlocks',
+        title: 'Enable spare space between 1-level blocks?',
+        description: ``.trim(),
+        type: 'enum',
+        enumPicker: 'radio',
+        enumChoices: ['Yes', 'No'],
+        default: 'Yes',
+    },
+    {
         key: 'headingViews',
         type: 'heading',
         title: '🔭 Views',
@@ -115,6 +124,9 @@ async function onAppSettingsChanged(current, old) {
         if (current.enableSearchImprovements === 'Yes')
             parent.document.addEventListener('keydown', improveSearch_KeyDownListener, true)
     }
+
+    if (!old || current.enableSpareBlocks !== old.enableSpareBlocks)
+        spareBlocksFeature(current.enableSpareBlocks === 'Yes')
 }
 
 

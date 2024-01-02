@@ -1,4 +1,6 @@
-import { setNativeValue } from './utils'
+import { provideStyle, setNativeValue } from './utils'
+
+import spareBlocksStyle from './css/spare_blocks.css?inline'
 
 
 /**
@@ -93,4 +95,16 @@ export async function improveSearch_KeyDownListener(e: KeyboardEvent) {
     if (e.key === 'Tab')
         if (target.value.toLowerCase() !== text.toLowerCase())
             setNativeValue(target, text, true)
+}
+
+
+/**
+ * CSS: Make spare space between 1-level blocks
+ */
+export async function spareBlocksFeature(toggle: boolean) {
+    const key = 'spare-blocks'
+    if (toggle)
+        provideStyle(key, spareBlocksStyle)
+    else
+        provideStyle(key)
 }
