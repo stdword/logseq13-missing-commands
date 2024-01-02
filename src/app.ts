@@ -27,6 +27,27 @@ const DEV = process.env.NODE_ENV === 'development'
 
 const settingsSchema: SettingSchemaDesc[] = [
     {
+        key: 'headingCommands',
+        type: 'heading',
+        title: '🔧 Commands',
+        description: `
+            <p><i>To change shortcut for the particular command:</i></p>
+            <p><ol>
+                <li>Open «Settings» → «Keymap».</li>
+                <li>Copy this emoji «🪚» (for Windows use «🔪») and insert it to search input.</li>
+                <li>Change any shortcut you want</li>
+            </ol></p>
+        `.trim(),
+        default: null,
+    },
+    {
+        key: 'headingFeatures',
+        type: 'heading',
+        title: '⛓️ Features',
+        description: '',
+        default: null,
+    },
+    {
         key: 'enableHomeEnd',
         title: 'Enable improved «Home» / «End» keys processing?',
         description: `
@@ -54,6 +75,13 @@ const settingsSchema: SettingSchemaDesc[] = [
         enumPicker: 'radio',
         enumChoices: ['Yes', 'No'],
         default: 'Yes',
+    },
+    {
+        key: 'headingViews',
+        type: 'heading',
+        title: '🔭 Views',
+        description: 'TODO',
+        default: null,
     },
 ]
 const settings_: any = settingsSchema.reduce((r, v) => ({ ...r, [v.key]: v}), {})
