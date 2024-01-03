@@ -31,7 +31,9 @@ Missing, but helpful _commands_, _views_ & _features_ for [Logseq](https://logse
 
 _Designed to be very productive with keyboard_  ❤️
 
+<p> </p>
 
+> ❗️ Some parts of this plugin heavily rely on Logseq's Document Object Model (DOM) structure. This means that every Logseq update could potentially break specific plugin functions. If you notice anything unusual, please create an issue with details.
 
 <p> </p>
 
@@ -231,6 +233,9 @@ _Designed to be very productive with keyboard_  ❤️
 2. Copy this emoji «🪚» (for Windows use «🔪») and insert it to search input.
 3. Change any shortcut you want <br/><img width="700px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/b08bd56b-cac3-4531-8b1b-5444852cb602"/>
 
+### Why I cannot revert the result of particular command with one _Undo_ action?
+This is a restriction of the Logseq API: there is no way to execute complex commands in a single _Undo_. Therefore, the plugin attempts (when it makes sense) to minimize the count of _Undo_ actions by removing the entire block tree instead of removing each block independently.
+
 ### Why there is strange «ø» charactear appears sometimes during _Undo_ command?
 <p><img width="200px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/74c428b4-7680-4b3b-bff1-3d32c9357898"/></p>
 
@@ -238,10 +243,20 @@ The reason is [this](https://github.com/logseq/logseq/issues/10729) bug in Logse
 
 
 
+## Additional helpful plugins
+- [Shallow Copy](https://github.com/MateuszMyalski/logseq-plugin-shallow-copy) by `MateuszMyalski`
+- [Side Block](https://github.com/YU000jp/logseq-plugin-side-block) by `YU000jp`
+- [Custom Files](https://github.com/cannibalox/logseq-custom-files) by `cannibalox`
+
+
+
 ## Credits
-- *Inspiration*:
-  - [Another Embed](https://github.com/sethyuan/logseq-plugin-another-embed) by sethyuan
+- Auto heading & table resizer based on [Another Embed](https://github.com/sethyuan/logseq-plugin-another-embed) by `sethyuan`
+- Tabular view based on _«Tabular Journals»_ by `nmartin84` (there is no such repo anymore)
+- Table resizer based on [Custom Files](https://github.com/cannibalox/logseq-custom-files) by `cannibalox`
+- Some views based on [LogTools](https://github.com/cannibalox/logtools) by `cannibalox`
 - Icon created by <a href="https://www.flaticon.com/free-icon/hand-saw_10476972" title="Flaticon">Nuricon</a>
+
 
 
 ## License
