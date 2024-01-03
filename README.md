@@ -33,15 +33,15 @@ _Designed to be very productive with keyboard_  ❤️
 
 <p> </p>
 
-> ❗️ Some parts of this plugin heavily rely on Logseq's Document Object Model (DOM) structure. This means that every Logseq update could potentially break specific plugin functions. If you notice anything unusual, please create an issue with details.
-
-<p> </p>
-
 > ℹ️ Some commands has default shortcut and some not.
 > 
 > To find out the shortcut for the particular command (or bind your own) use [this](https://github.com/stdword/logseq13-missing-commands/tree/main?tab=readme-ov-file#how-to-change-default-shortcut-for-the-particular-command) instruction.
 >
 > Any command could be called from <i>Commands Palette</i>
+
+<p> </p>
+
+> ❗️ Some parts of this plugin heavily rely on Logseq's Document Object Model (DOM) structure. This means that every Logseq update could potentially break specific plugin functions. If you notice anything unusual, please create an issue with details.
 
 <p> </p>
 
