@@ -1,7 +1,7 @@
 /* make a spare space between 1-level blocks */
 .page:has(> div > div > div > .page-title) div.ls-block[level="1"]:not(:first-child),
 .page:has(> div > div > div > div > .journal-title) div.ls-block[level="1"]:not(:first-child) {
-    margin-top: 20px;
+    margin-top: ${size}px;
 }
 .whiteboard div.ls-block[level="1"]:not(:first-child) {
     margin-top: 0px !important;

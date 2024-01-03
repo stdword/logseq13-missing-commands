@@ -78,29 +78,28 @@ const settingsSchema: SettingSchemaDesc[] = [
         default: 'Yes',
     },
     {
-        key: 'enableSpareBlocks',
-        title: 'Enable spare space between 1-level blocks?',
-        description: ``.trim(),
-        type: 'enum',
-        enumPicker: 'radio',
-        enumChoices: ['Yes', 'No'],
-        default: 'Yes',
+        key: 'spareBlocksSpace',
+        title: 'Spare space between 1-level blocks',
+        description: `
+            <p>In pixels. Default is <i>20px</i>.</p>
+            <p>Set to <i>0</i> to disable.</p>
+        `.trim(),
+        type: 'number',
+        default: 20,
     },
     {
         key: 'headingViews',
         type: 'heading',
         title: '🔭 Views',
-        description: 'TODO',
+        description: '',
         default: null,
     },
     {
         key: 'enableTabularView',
         title: 'Enable tabular view?',
-        description: `With <code>#.tabular</code> & <code>#.tabular0</code> references.`.trim(),
-        type: 'enum',
-        enumPicker: 'radio',
-        enumChoices: ['Yes', 'No'],
-        default: 'Yes',
+        description: `Use it via <code>#.tabular</code> & <code>#.tabular0</code> references`.trim(),
+        type: 'boolean',
+        default: true,
     },
 ]
 const settings_: any = settingsSchema.reduce((r, v) => ({ ...r, [v.key]: v}), {})
@@ -139,7 +138,7 @@ async function onAppSettingsChanged(current, old) {
         spareBlocksFeature(current.enableSpareBlocks === 'Yes')
 
     if (!old || current.enableTabularView !== old.enableTabularView)
-        tabularView(current.enableTabularView === 'Yes')
+        tabularView(current.enableTabularView)
 }
 
 
