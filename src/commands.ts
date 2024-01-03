@@ -921,3 +921,32 @@ export function removeNewLines(content, level, block, parent) {
         .replaceAll(/(?<=[^\S\n])\n/g, '')  // remove \n when there are spaces before
         .replaceAll(/(?<![^\S])\n/g, ' ')   // replace \n to space when there are no spaces before
 }
+
+export function lowerCase(content, level, block, parent) {
+    return content.toLowerCase()
+}
+
+export function upperCase(content, level, block, parent) {
+    return content.toUpperCase()
+}
+
+export function titleCaseWords(content, level, block, parent) {
+    return content
+        .replaceAll(
+            /[\p{Lowercase_Letter}'-_]+/giu,
+            (m) => m[0].toUpperCase() + m.slice(1).toLowerCase(),
+        )
+}
+
+export function titleCaseSentences(content, level, block, parent) {
+    return content
+        .toLowerCase()
+        .replace(  // first letter of text
+            /^([^\p{Lowercase_Letter}]*)(\p{Lowercase_Letter})/iu,
+            (m, gap, letter) => gap + letter.toUpperCase(),
+        )
+        .replaceAll(  // first letter after end of sentence
+            /(?<=[.!?…]\s+)\p{Lowercase_Letter}/giu,
+            (m) => m.toUpperCase(),
+        )
+}

@@ -17,7 +17,7 @@ import {
     joinAsSentences_Map, joinViaCommas_Attach, joinViaSpaces_Attach,
     joinViaNewLines_Attach, joinViaNewLines_Map,
 
-    splitByLines, splitBySentences, splitByWords, removeNewLines,
+    splitByLines, splitBySentences, splitByWords, removeNewLines, lowerCase, upperCase, titleCaseWords, titleCaseSentences,
 } from './commands'
 import { improveCursorMovement_KeyDownListener, improveSearch_KeyDownListener, spareBlocksFeature } from './features'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
@@ -277,6 +277,50 @@ async function main() {
         // @ts-expect-error
         keybinding: {},
     }, (e) => updateBlocksCommand(removeNewLines, true))
+
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Lower case', key: 'mc-7-update-3-lower-case',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(lowerCase))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Lower case (with nested)', key: 'mc-7-update-4-lower-case-nested',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(lowerCase, true))
+
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Upper case', key: 'mc-7-update-5-upper-case',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(upperCase))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Upper case (with nested)', key: 'mc-7-update-6-upper-case-nested',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(upperCase, true))
+
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Title case words', key: 'mc-7-update-7-title-case-words',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(titleCaseWords))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Title case words (with nested)', key: 'mc-7-update-8-title-case-words-nested',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(titleCaseWords, true))
+
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Title case sentences', key: 'mc-7-update-9-title-case-sentences',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(titleCaseSentences))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Title case sentences (with nested)', key: 'mc-7-update-10-title-case-sentences-nested',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(titleCaseSentences, true))
 
 
     // Navigation
