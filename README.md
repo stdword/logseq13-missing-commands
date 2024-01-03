@@ -68,6 +68,14 @@ _Designed to be very productive with keyboard_  ❤️
   <p><b>Restriction</b>: This feature only works for natural lines of block, which have a «new line» character or «\n». It does not work with lines created due to the size of the layout. In such cases, the only way to proceed is to press <code>Esc</code> to exit edit mode and then use the <code>←</code> or <code>→</code> arrow key to re-enter it.</p>
   <p><img width="200px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/4773523a-5900-4b48-b196-f6cb39799548"/></p>
 </details></td></tr>
+
+<!--
+<tr><td><details><summary><b>Spare space between 1-level blocks</b></summary>
+  <p>Increase the space between 1-level blocks in order to <u>clearly separate</u> them from each other.</p>
+  <p><b>Motivation</b>: blocks on the first level represent the most general parts of the information, which usually stand separately: headings, categories, clients, code snippets, links, etc.</p>
+  <p><img width="300px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/7a3ab5be-8f97-4538-9cc5-5af2d76d4b31"/></p>
+</details></td></tr>
+-->
 </table>
 
 ## 2) Commands: _Blocks reordering_
@@ -197,6 +205,31 @@ _Designed to be very productive with keyboard_  ❤️
 
 ## 7) Views
 > ❗️ Tabular view will be available in the next releases. Stay tuned.
+
+
+<table>
+<!--
+<tr><td><details><summary><b>Hide references started with «.»</b></summary>
+  <p>Hide any page and tag references that start with the dot: «.», assuming that these are special reserved references that do not need to be shown.</p>
+  <p><b>Note</b>: there are two ways of hiding:</p>
+  <p align="center">
+    <b>Hide by wrapping to «…» only                     &   Hide completely and show on block hover</b> <br>
+    <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/e93f9d52-bdd4-4983-a674-1fd42956193e" width="250px" />
+    <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/7c163104-51f4-4bbf-b8fd-8abf734c59a9" width="260px" />
+  </p>
+</details></td></tr>
+-->
+<!--
+<tr><td><details><summary><b>Tabular view</b></summary>
+  <p>Use <code>#.tabular</code> reference in block to apply Tana-like tabular view for all it's children.<br/>
+  <b>Note</b>: could be subsequent — <code>#.tabular</code> inside another <code>#.tabular</code>. But only two subsequent levels are supported.</p>
+  
+  <p>Use <code>#.tabular0</code> reference in another tabular row to skip the immediate children.<br/>
+  <b>Note</b>: <code>#.tabular0</code> always need to be subsequent.</p>
+  <p><img width="400px" src=""/></p>
+</details></td></tr>
+-->
+</table>
 
 
 
