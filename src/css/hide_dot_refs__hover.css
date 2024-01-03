@@ -1,0 +1,10 @@
+/* hide tags, started with "." and show on hover */
+
+
+a.tag[data-ref^="."] {
+    display: none;
+}
+
+.block-main-container:hover a.tag[data-ref^="."] {
+    display: unset;
+}

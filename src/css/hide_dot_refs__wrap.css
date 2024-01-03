@@ -1,0 +1,35 @@
+/* hide tags, started with "." */
+/* (based on logtools plugin) */
+
+a.tag[data-ref^="."]::before {
+    content: "…";
+    font-size: 0.7rem;
+    line-height: 1.0rem;
+}
+
+a.tag[data-ref^="."]:hover::before {
+    content: "";
+    padding-right: 0.7rem;
+}
+
+a.tag[data-ref^="."]:hover {
+    line-height: 1.3rem;
+    font-size: 1.0rem !important;
+    transition: 0s;
+
+    color: var(--ls-primary-text-color) !important;
+    border: 1px solid var(--ls-primary-text-color);
+}
+
+a.tag[data-ref^="."] {
+    font-family: monospace;
+    font-size: 0px !important;
+    transition: 0s;
+
+    color: var(--ls-primary-text-color) !important;
+    background-color: unset !important;
+
+    border: none;
+    border-radius: 3px;
+    padding: 0 2px;
+}

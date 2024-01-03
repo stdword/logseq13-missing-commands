@@ -21,7 +21,7 @@ import {
 } from './commands'
 import { improveCursorMovement_KeyDownListener, improveSearch_KeyDownListener, spareBlocksFeature } from './features'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
-import { tabularView } from './views'
+import { hideDotRefs, tabularView } from './views'
 
 
 const DEV = process.env.NODE_ENV === 'development'
@@ -95,6 +95,15 @@ const settingsSchema: SettingSchemaDesc[] = [
         default: null,
     },
     {
+        key: 'hideDotRefs',
+        title: 'Hide references started with «.»?',
+        description: '',
+        type: 'enum',
+        enumPicker: 'select',
+        enumChoices: ['Hide completely and show on block hover', 'Hide by wrapping to «…» only', 'No'],
+        default: 'Hide by wrapping to «…» only',
+    },
+    {
         key: 'enableTabularView',
         title: 'Enable tabular view?',
         description: `Use it via <code>#.tabular</code> & <code>#.tabular0</code> references`.trim(),
@@ -134,8 +143,16 @@ async function onAppSettingsChanged(current, old) {
             parent.document.addEventListener('keydown', improveSearch_KeyDownListener, true)
     }
 
-    if (!old || current.enableSpareBlocks !== old.enableSpareBlocks)
-        spareBlocksFeature(current.enableSpareBlocks === 'Yes')
+    if (!old || current.spareBlocksSpace !== old.spareBlocksSpace)
+        spareBlocksFeature(current.spareBlocksSpace)
+
+    if (!old || current.hideDotRefs !== old.hideDotRefs)
+        if (current.hideDotRefs === 'No')
+            hideDotRefs(false)
+        else if (current.hideDotRefs === settings_.hideDotRefs.default)
+            hideDotRefs(true, false)  // wrap only
+        else
+            hideDotRefs(true, true)   // wrap & hide
 
     if (!old || current.enableTabularView !== old.enableTabularView)
         tabularView(current.enableTabularView)
