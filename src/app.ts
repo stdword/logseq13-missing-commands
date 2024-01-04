@@ -32,6 +32,10 @@ const settingsSchema: SettingSchemaDesc[] = [
         type: 'heading',
         title: '🔧 Commands',
         description: `
+            <p>See detailed description about every command in
+                <a href="https://github.com/stdword/logseq13-missing-commands#readme">
+                documentation</a>.
+            </p><br/>
             <p><i>To change shortcut for the particular command:</i></p>
             <p><ol>
                 <li>Open «Settings» → «Keymap».</li>
@@ -45,17 +49,21 @@ const settingsSchema: SettingSchemaDesc[] = [
         key: 'headingFeatures',
         type: 'heading',
         title: '⛓️ Features',
-        description: '',
+        description: `
+            <p>See detailed description about every feature in
+                <a href="https://github.com/stdword/logseq13-missing-commands?tab=readme-ov-file#1-features">
+                documentation</a>.
+            </p>
+        `.trim(),
         default: null,
     },
     {
         key: 'enableHomeEnd',
         title: 'Enable improved «Home» / «End» keys processing?',
         description: `
-            Double-press the <code>Home</code> / <code>End</code> key (in edit mode) to go to the block start / end. <br/>
-            MacOS's <code>⌘ ←</code> / <code>⌘ →</code> and Windows's <code>fn ←</code> / <code>fn →</code> are also supported. <br/>
-            <p><img width="200px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/4773523a-5900-4b48-b196-f6cb39799548"/></p>
-            <i>Restriction</i>: This feature only works for natural lines of block, which have a «new line» character («\\n»). It does not work with lines created due to the size of the layout. In such cases, the only way to proceed is to press <code>Esc</code> to exit edit mode and then use the <code>←</code> or <code>→</code> arrow key to re-enter it. <br/>
+            <p>1. Double-press the <code>Home</code> / <code>End</code> key (in edit mode) to go to the block start / end.</p>
+            <p>2. MacOS's <code>⌘ ←</code> / <code>⌘ →</code> and Windows's <code>fn ←</code> / <code>fn →</code> are also supported.</p>
+            <p><i>Restriction</i>: This feature only works for natural lines of block, which have a «new line» character («\\n»). It does not work with lines created due to the size of the layout. In such cases, the only way to proceed is to press <code>Esc</code> to exit edit mode and then use the <code>←</code> or <code>→</code> arrow key to re-enter it.</p>
         `.trim(),
         type: 'enum',
         enumPicker: 'radio',
@@ -66,11 +74,8 @@ const settingsSchema: SettingSchemaDesc[] = [
         key: 'enableSearchImprovements',
         title: 'Enable improved keys processing on Search?',
         description: `
-            1) Press <code>Tab</code> to fill the input with selected search item.<br/>
-            <p><img width="600px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/bf27f3a6-8464-4e1f-b967-e5e9efe46e21"/></p>
-            `.trim() + '\n' + `
-            2) Press <code>←</code> arrow (with empty input) to fill the input with the current page name.<br/>
-            <p><img width="600px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/a083c0c1-604a-4514-8732-41b6a8c7b1ba"/></p>
+            <p>1. Press <code>Tab</code> to fill the input with selected search item.</p>
+            <p>2. Press <code>←</code> arrow (with empty input) to fill the input with the current page name.</p>
         `.trim(),
         type: 'enum',
         enumPicker: 'radio',
@@ -81,8 +86,9 @@ const settingsSchema: SettingSchemaDesc[] = [
         key: 'spareBlocksSpace',
         title: 'Spare space between 1-level blocks',
         description: `
-            <p>In pixels. Default is <i>20px</i>.</p>
-            <p>Set to <i>0</i> to disable.</p>
+            <p>Increase the space to clearly separate blocks from each other.</p>
+            <p><i>Motivation</i>: blocks on the 1-level represent the most general parts of the information, which usually stand separately: headings, categories, clients, code snippets, links, etc.</p>
+            <p><i>In pixels</i>: default is <code>20</code>. Set to <code>0</code> to disable.</p>
         `.trim(),
         type: 'number',
         default: 20,
@@ -91,13 +97,20 @@ const settingsSchema: SettingSchemaDesc[] = [
         key: 'headingViews',
         type: 'heading',
         title: '🔭 Views',
-        description: '',
+        description: `
+            <p>See detailed description about every view in
+                <a href="https://github.com/stdword/logseq13-missing-commands?tab=readme-ov-file#7-views">
+                documentation</a>.
+            </p>
+        `.trim(),
         default: null,
     },
     {
         key: 'hideDotRefs',
         title: 'Hide references started with «.»?',
-        description: '',
+        description: `
+            <p>Hide any page and tag references that start with the dot: «.», assuming that these are special reserved references that do not need to be shown.</p>
+        `.trim(),
         type: 'enum',
         enumPicker: 'select',
         enumChoices: ['Hide completely and show on block hover', 'Hide by wrapping to «…» only', 'No'],
@@ -106,9 +119,17 @@ const settingsSchema: SettingSchemaDesc[] = [
     {
         key: 'enableTabularView',
         title: 'Enable tabular view?',
-        description: `Use it via <code>#.tabular</code> & <code>#.tabular0</code> references`.trim(),
-        type: 'boolean',
-        default: true,
+        description: `
+            <ol>
+            <li>Use the <code>#.tabular</code> reference in a block to apply a Tana-like tabular view for all its children.
+                It could be subsequent: <code>#.tabular</code> inside another <code>#.tabular</code>. However, only <ins>two</ins> subsequent levels are supported.</li>
+            <li>Use the <code>#.tabular0</code> reference in <ins>another tabular row</ins> to skip the immediate children.</li>
+            </ol>
+        `.trim(),
+        type: 'enum',
+        enumPicker: 'radio',
+        enumChoices: ['Yes', 'No'],
+        default: 'Yes',
     },
 ]
 const settings_: any = settingsSchema.reduce((r, v) => ({ ...r, [v.key]: v}), {})
@@ -155,7 +176,7 @@ async function onAppSettingsChanged(current, old) {
             hideDotRefs(true, true)   // wrap & hide
 
     if (!old || current.enableTabularView !== old.enableTabularView)
-        tabularView(current.enableTabularView)
+        tabularView(current.enableTabularView === 'Yes')
 }
 
 
