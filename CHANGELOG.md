@@ -1,3 +1,19 @@
+# [1.4.0](https://github.com/stdword/logseq13-missing-commands/compare/v1.3.2...v1.4.0) (2024-01-04)
+
+
+### Bug Fixes
+
+* **views:** tabular view style fix ([cbdbc5d](https://github.com/stdword/logseq13-missing-commands/commit/cbdbc5d26d07dc1386cc6eb53f89a27897ab09b0))
+
+
+### Features
+
+* **commands:** change case set of commands ([7af5ffb](https://github.com/stdword/logseq13-missing-commands/commit/7af5ffb0ba381d7b5255fec8ffd290aadcb2944e))
+* **commands:** possibility to specify spare space size ([4f1e77d](https://github.com/stdword/logseq13-missing-commands/commit/4f1e77d8a3dbc2fdaad46cb9409eabae5f2e6610))
+* **feature:** cSS: spare blocks ([335eda8](https://github.com/stdword/logseq13-missing-commands/commit/335eda8b3690c6895c4830fdddb71689209ca438))
+* **views:** hide dotted refs in two styles ([68f515c](https://github.com/stdword/logseq13-missing-commands/commit/68f515c2868a3d76ae3ea8cfe9c172a462edee19))
+* **views:** tabular view ([90490a5](https://github.com/stdword/logseq13-missing-commands/commit/90490a5472ac846e2b491c63e583d1fb43e69452))
+
 ## [1.3.2](https://github.com/stdword/logseq13-missing-commands/compare/v1.3.1...v1.3.2) (2023-12-31)
 
 
