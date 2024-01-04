@@ -218,20 +218,18 @@ _Designed to be very productive with keyboard_  ❤️
     <img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/7c163104-51f4-4bbf-b8fd-8abf734c59a9" width="260px" />
   </p>
 </details></td></tr>
--->
-<!--
+
 <tr><td><details><summary><b>Tabular view</b></summary>
   <p>Use the <code>#.tabular</code> reference in a block to apply a Tana-like tabular view for all its children.<br/>
   <b>Note</b>: it could be subsequent — <code>#.tabular</code> inside another <code>#.tabular</code>. However, only two subsequent levels are supported.</p>
-  
   <p>Use the <code>#.tabular0</code> reference in another tabular row to skip the immediate children.<br/>
   <b>Note</b>: The <code>#.tabular0</code> reference always needs to be subsequent.</p>
   <p><img width="550px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/81253770-b02f-4b31-9b5c-af9dd031cad0"/></p>
   <p><img width="550px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/8e96cbcb-6779-498e-95c4-198754f8eed2"/></p>
   <p><img width="550px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/5b5e3e78-2f4b-4b62-89b9-3c8dc40a41bc"/></p>
 </details></td></tr>
-
 -->
+
 </table>
 
 
