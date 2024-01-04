@@ -200,6 +200,12 @@ _Designed to be very productive with keyboard_  ❤️
   <p><b>Note</b>: command adds spaces when it's necessary.</p>
   <p><img width="400px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/770ae2d1-1cc7-4c27-9054-45849ddd4127"/></p>
 </details></td></tr>
+<!--
+<tr><td><details><summary><b>Lower / upper / title letters case</b></summary>
+  <p><b>Note</b>: title case command has two variations — title <i>words</i> and title <i>sentences</i>.</p>
+  <p><img width="350px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/f4775d48-1a24-49ce-994a-857bd5471c70"/></p>
+</details></td></tr>
+-->
 </table>
 
 
