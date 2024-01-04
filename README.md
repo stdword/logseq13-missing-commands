@@ -69,13 +69,11 @@ _Designed to be very productive with keyboard_  ❤️
   <p><img width="200px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/4773523a-5900-4b48-b196-f6cb39799548"/></p>
 </details></td></tr>
 
-<!--
 <tr><td><details><summary><b>Spare space between 1-level blocks</b></summary>
   <p>Increase the space between 1-level blocks in order to <u>clearly separate</u> them from each other.</p>
   <p><b>Motivation</b>: blocks on the first level represent the most general parts of the information, which usually stand separately: headings, categories, clients, code snippets, links, etc.</p>
   <p><img width="300px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/7a3ab5be-8f97-4538-9cc5-5af2d76d4b31"/></p>
 </details></td></tr>
--->
 </table>
 
 ## 2) Commands: _Blocks reordering_
@@ -200,21 +198,17 @@ _Designed to be very productive with keyboard_  ❤️
   <p><b>Note</b>: command adds spaces when it's necessary.</p>
   <p><img width="400px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/770ae2d1-1cc7-4c27-9054-45849ddd4127"/></p>
 </details></td></tr>
-<!--
+
 <tr><td><details><summary><b>Lower / upper / title letters case</b></summary>
   <p><b>Note</b>: title case command has two variations — title <i>words</i> and title <i>sentences</i>.</p>
   <p><img width="350px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/f4775d48-1a24-49ce-994a-857bd5471c70"/></p>
 </details></td></tr>
--->
 </table>
 
 
 ## 7) Views
-> ❗️ Tabular view will be available in the next releases. Stay tuned.
-
 
 <table>
-<!--
 <tr><td><details><summary><b>Hide references started with «.»</b></summary>
   <p>Hide any page and tag references that start with the dot: «.», assuming that these are special reserved references that do not need to be shown.</p>
   <p><b>Note</b>: there are two ways of hiding:</p>
@@ -231,11 +225,9 @@ _Designed to be very productive with keyboard_  ❤️
   <p>Use the <code>#.tabular0</code> reference in another tabular row to skip the immediate children.<br/>
   <b>Note</b>: The <code>#.tabular0</code> reference always needs to be subsequent.</p>
   <p><img width="550px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/81253770-b02f-4b31-9b5c-af9dd031cad0"/></p>
-  <p><img width="550px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/8e96cbcb-6779-498e-95c4-198754f8eed2"/></p>
-  <p><img width="550px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/5b5e3e78-2f4b-4b62-89b9-3c8dc40a41bc"/></p>
+  <p><img width="550px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/37b0d07d-1ef3-480d-9ab0-5c6258363f45"/></p>
+  <p><img width="550px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/d25aae8f-37a1-4619-ad63-fcdf799687c3"/></p>
 </details></td></tr>
--->
-
 </table>
 
 
