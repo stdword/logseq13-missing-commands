@@ -279,7 +279,7 @@ The reason is [this](https://github.com/logseq/logseq/issues/10729) bug in Logse
 - [Shallow Copy](https://github.com/MateuszMyalski/logseq-plugin-shallow-copy) by `MateuszMyalski`
 - [Side Block](https://github.com/YU000jp/logseq-plugin-side-block) by `YU000jp`
 - [Custom Files](https://github.com/cannibalox/logseq-custom-files) by `cannibalox`
-
+- [LogTools](https://github.com/cannibalox/logtools) by `cannibalox`
 
 
 ## Credits
