@@ -24,7 +24,6 @@ Missing Commands, Views & Features
 <p align="center"><i>A part of the <a href="https://logseq.com"><img align="center" width="20px" src="https://github.com/stdword/logseq13-missing-commands/blob/main/assets/logseq.png?raw=true"/></a> <b><a href="https://github.com/search?q=owner%3Astdword+logseq13&type=repositories">Logseq13</a></b> family of plugins</i></p>
 
 
-
 ## Summary
 
 Missing, but helpful _commands_, _views_ & _features_ for [Logseq](https://logseq.com)
@@ -62,7 +61,6 @@ _Designed to be very productive with keyboard_  ❤️
   <p><img width="600px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/a083c0c1-604a-4514-8732-41b6a8c7b1ba"/></p>
 </details></td></tr>
 
-
 <tr><td><details><summary><b>Go to the block <i>start</i> (<i>end</i>) with double-pressing the «Home» («End») key</b></summary>
   <p>Just like in Sublime Text editor. MacOS's <code>⌘ ←</code> / <code>⌘ →</code> and Windows's <code>fn ←</code> / <code>fn →</code> are also supported.</p>
   <p><b>Restriction</b>: This feature only works for natural lines of block, which have a «new line» character or «\n». It does not work with lines created due to the size of the layout. In such cases, the only way to proceed is to press <code>Esc</code> to exit edit mode and then use the <code>←</code> or <code>→</code> arrow key to re-enter it.</p>
@@ -75,6 +73,7 @@ _Designed to be very productive with keyboard_  ❤️
   <p><img width="300px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/7a3ab5be-8f97-4538-9cc5-5af2d76d4b31"/></p>
 </details></td></tr>
 </table>
+
 
 ## 2) Commands: _Blocks reordering_
 
@@ -90,7 +89,6 @@ _Designed to be very productive with keyboard_  ❤️
   <p><img width="230px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/9404b18a-75a4-47bc-a40b-a3869f1ab7a7"/></p>
 </details></td></tr>
 </table>
-
 
 
 ## 3) Commands: _Fast navigation_
@@ -120,6 +118,7 @@ _Designed to be very productive with keyboard_  ❤️
 </details></td></tr>
 </table>
 
+
 ## 4) Commands: _Blocks movements_
 
 <table>
@@ -135,6 +134,7 @@ _Designed to be very productive with keyboard_  ❤️
   <p><img src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/ce70ad72-48c0-4925-8a5e-40fb2d50e2c6" width="200px" /></p>
 </details></td></tr>
 </table>
+
 
 ## 5) Commands: _Splitting & Joining blocks_
 
@@ -231,14 +231,12 @@ _Designed to be very productive with keyboard_  ❤️
 </table>
 
 
-
 ## If you ❤️ what I'm doing — consider to support my work
 <p align="left">
   <a href="https://www.buymeacoffee.com/stdword" target="_blank">
     <img src="https://github.com/stdword/logseq13-missing-commands/blob/main/assets/coffee.png?raw=true" alt="Buy Me A Coffee" height="60px" />
   </a>
 </p>
-
 
 
 ## Installation
@@ -258,7 +256,6 @@ _Designed to be very productive with keyboard_  ❤️
 6. ⚠️ The important point here is: every new plugin release should be updated manually
 
 
-
 ## FAQ
 ### How to change default shortcut for the particular command?
 1. Open «Settings» → «Keymap» (or press `g s`).
@@ -274,12 +271,12 @@ This is a restriction of the Logseq API: there is no way to execute complex comm
 The reason is [this](https://github.com/logseq/logseq/issues/10729) bug in Logseq plugin API. The plugin uses «ø» character intentionally as a workaround for this issue. When the bug is resolved, this workaround will no longer be necessary.
 
 
-
-## Additional helpful plugins
+## Additional helpful plugins with the same vibe
 - [Shallow Copy](https://github.com/MateuszMyalski/logseq-plugin-shallow-copy) by `MateuszMyalski`
 - [Side Block](https://github.com/YU000jp/logseq-plugin-side-block) by `YU000jp`
 - [Custom Files](https://github.com/cannibalox/logseq-custom-files) by `cannibalox`
 - [LogTools](https://github.com/cannibalox/logtools) by `cannibalox`
+- [Awesome Content](https://github.com/yoyurec/logseq-awesome-content) by `yoyurec`
 
 
 ## Credits
@@ -288,7 +285,6 @@ The reason is [this](https://github.com/logseq/logseq/issues/10729) bug in Logse
 - Table resizer based on [Custom Files](https://github.com/cannibalox/logseq-custom-files) by `cannibalox`
 - Some views based on [LogTools](https://github.com/cannibalox/logtools) by `cannibalox`
 - Icon created by <a href="https://www.flaticon.com/free-icon/hand-saw_10476972" title="Flaticon">Nuricon</a>
-
 
 
 ## License
