@@ -1,0 +1,69 @@
+/* columns view */
+/* (based on logtools & awesome-content) */
+
+/* .columns-N: split exactly by N columns */
+
+.ls-block[data-refs-self*='".columns-2"'] > .block-children-container > .block-children {
+    column-count: 2;
+    width: 100%;
+}
+.ls-block[data-refs-self*='".columns-3"'] > .block-children-container > .block-children {
+    column-count: 3;
+    width: 100%;
+}
+.ls-block[data-refs-self*='".columns-4"'] > .block-children-container > .block-children {
+    column-count: 4;
+    width: 100%;
+}
+.ls-block[data-refs-self*='".columns-5"'] > .block-children-container > .block-children {
+    column-count: 5;
+    width: 100%;
+}
+.ls-block[data-refs-self*='".columns-6"'] > .block-children-container > .block-children {
+    column-count: 6;
+    width: 100%;
+}
+
+
+/* .columns: split by children count */
+
+.ls-block[data-refs-self*='".columns"'] > .block-children-container {
+    width: 100%;
+}
+.ls-block[data-refs-self*='".columns"'] > .block-children-container > .block-children {
+    display: inline-flex;
+    position: relative;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+.ls-block[data-refs-self*='".columns"'] > .block-children-container > .block-children > .ls-block {
+    display: inline-block;
+    padding: 0;
+
+    width: inherit;
+    min-width: 200px;
+    margin-right: 10px;
+}
+
+/* remove left border */
+.ls-block[data-refs-self*='".columns"'] > .block-children-container > .block-children > .ls-block,
+.ls-block[data-refs-self*='".columns-fit"'] > .block-children-container > .block-children > .ls-block {
+    margin-left: 0px;
+}
+.ls-block[data-refs-self*='".columns"'] > .block-children-container > .block-children,
+.ls-block[data-refs-self*='".columns-fit"'] > .block-children-container > .block-children {
+    border-left-width: 0px !important;
+}
+
+
+/* .columns-fit: fit width of the columns */
+
+[data-refs-self*='".columns-fit"'] > .block-children-container > .block-children {
+    display: inline-flex;
+    position: relative;
+    margin: 0 10px;
+    border: 0;
+}
+[data-refs-self*='".columns-fit"'] .pr-2 {
+    padding: 0;
+}
