@@ -13,6 +13,9 @@
 /* table */
 .ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children {
     border-left: 0px;
+
+    display: flex;
+    flex-direction: column;
 }
 .ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block:first-child {
     border-top: 1px solid var(--ls-guideline-color);
@@ -21,6 +24,9 @@
     display: flex;
     border-bottom: 1px solid var(--ls-guideline-color);
     padding: 0px;
+
+    flex-grow: 1;
+    width: 100%;
 }
 .ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block > .block-main-container {
     padding: 2px 0px;
@@ -70,6 +76,7 @@
 }
 /* left: size */
 .ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block > .block-main-container > .block-content-wrapper > div > div > .block-content > .block-content-inner,
+.ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block > .block-main-container > .block-content-wrapper > div > div > .block-content > .block-body,
 .ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block[data-refs-self*=".tabular"] > .block-children-container > .block-children > .ls-block > .block-main-container > .editor-wrapper > .editor-inner {
     min-width: 115px;
     max-width: 115px;
