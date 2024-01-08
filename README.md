@@ -2,7 +2,7 @@
 <span align="left" height="30">                  </span>
 Missing Commands, Views & Features
 <a href="https://www.buymeacoffee.com/stdword">
-  <img align="right" src=" https://github.com/stdword/logseq13-missing-commands/blob/main/assets/coffee.png?raw=true" height="30px"/>
+  <img align="right" src="https://github.com/stdword/logseq13-missing-commands/blob/main/assets/coffee.png?raw=true" height="30px"/>
 </a>
 </h1>
 
@@ -228,6 +228,35 @@ _Designed to be very productive with keyboard_  ❤️
   <p><img width="550px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/37b0d07d-1ef3-480d-9ab0-5c6258363f45"/></p>
   <p><img width="550px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/d25aae8f-37a1-4619-ad63-fcdf799687c3"/></p>
 </details></td></tr>
+<!--
+<tr><td><details><summary><b>Columns view</b></summary>
+  <p>Use the <code>#.columns</code> reference to organize child blocks to columns of <i>the same</i> width.<br/>
+  <b>Note</b>: 1 column = 1 block.</p>
+
+  <p>Use the <code>#.columns-N</code> reference to organize child blocks to <code>N</code> columns of <i>the same</i> width, where N = 2…6.<br/>
+  <b>Note</b>: 1 column = 1 or more blocks.</p>
+
+  <p>Use the <code>#.columns-fit</code> reference to organize child blocks to columns with <i>different</i> width (based on content).<br/>
+  <b>Note</b>: 1 column = 1 block.</p>
+
+  <p><img width="650px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/43a88c85-262e-440d-8e1c-1bd898e0f685"/></p>
+</details></td></tr>
+
+<tr><td><details><summary><b>Gallery view</b></summary>
+  <p>Use the <code>#.gallery</code> reference to organize child blocks <i>containing images</i> to gallery.<br/>
+  <b>Note</b>: image sizes automatically fills whole space for width. There is only <ins>one row</ins> of images.</p>
+  <p><img width="550px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/c0e5b87e-e8aa-4675-963f-021bcccb6754"/></p>
+
+  <p>Use the <code>#.gallery-wN</code> reference to organize child blocks <i>containing images</i> as fixed-width (based on N) images.<br/>
+  <b>Note</b>: there can be <ins>multiple rows</ins> of images.</p>
+  <p><img width="500px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/b18dd06b-19b4-45e5-a137-20e3730ae9dd"/></p>
+
+  <p>Use the <code>#.gallery-hN</code> reference to organize child blocks <i>containing images</i> as fixed-height (based on N) images.<br/>
+  <b>Note</b>: there can be <ins>multiple rows</ins> of images.</p>
+  <p><img width="500px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/639559a5-b3e3-4967-9912-e2956eacfe61"/></p>
+</details></td></tr>
+-->
+
 </table>
 
 
@@ -280,11 +309,14 @@ The reason is [this](https://github.com/logseq/logseq/issues/10729) bug in Logse
 
 
 ## Credits
-- Auto heading & table resizer based on [Another Embed](https://github.com/sethyuan/logseq-plugin-another-embed) by `sethyuan`
+Some parts of this plugin based on reviewed and refined works of another authors:
+
+- Auto heading based on [Another Embed](https://github.com/sethyuan/logseq-plugin-another-embed) by `sethyuan`
 - Tabular view based on _«Tabular Journals»_ by `nmartin84` (there is no such repo anymore)
-- Table resizer based on [Custom Files](https://github.com/cannibalox/logseq-custom-files) by `cannibalox`
-- Some views based on [LogTools](https://github.com/cannibalox/logtools) by `cannibalox`
-- Icon created by <a href="https://www.flaticon.com/free-icon/hand-saw_10476972" title="Flaticon">Nuricon</a>
+- Gallery, box & columns views based on [LogTools](https://github.com/cannibalox/logtools) by `cannibalox`
+- Columns view based on [Awesome Content](https://github.com/yoyurec/logseq-awesome-content) by `yoyurec`
+
++ Icon created by <a href="https://www.flaticon.com/free-icon/hand-saw_10476972" title="Flaticon">Nuricon</a>
 
 
 ## License
