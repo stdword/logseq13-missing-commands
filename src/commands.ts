@@ -950,3 +950,9 @@ export function titleCaseSentences(content, level, block, parent) {
             (m) => m.toUpperCase(),
         )
 }
+
+export function removeHTML(content, level, block, parent) {
+    return content
+        .replaceAll(/<\w+\s*[^>]*>/g, '')
+        .replaceAll(/<\/\w+\s*>/g, '')
+}

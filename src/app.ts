@@ -17,7 +17,7 @@ import {
     joinAsSentences_Map, joinViaCommas_Attach, joinViaSpaces_Attach,
     joinViaNewLines_Attach, joinViaNewLines_Map,
 
-    splitByLines, splitBySentences, splitByWords, removeNewLines, lowerCase, upperCase, titleCaseWords, titleCaseSentences,
+    splitByLines, splitBySentences, splitByWords, removeNewLines, lowerCase, upperCase, titleCaseWords, titleCaseSentences, removeHTML,
 } from './commands'
 import { improveCursorMovement_KeyDownListener, improveSearch_KeyDownListener, spareBlocksFeature } from './features'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
@@ -420,6 +420,17 @@ async function main() {
         // @ts-expect-error
         keybinding: {},
     }, (e) => updateBlocksCommand(titleCaseSentences, true))
+
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Remove HTML', key: 'mc-7-update-11-remove-html',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(removeHTML))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Remove HTML (with nested)', key: 'mc-7-update-12-remove-html-nested',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(removeHTML, true))
 
 
     // Navigation
