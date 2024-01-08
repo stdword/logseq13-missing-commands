@@ -255,6 +255,12 @@ _Designed to be very productive with keyboard_  ❤️
   <b>Note</b>: there can be <ins>multiple rows</ins> of images.</p>
   <p><img width="500px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/639559a5-b3e3-4967-9912-e2956eacfe61"/></p>
 </details></td></tr>
+
+<tr><td><details><summary><b>Border view</b></summary>
+  <p>Use the <code>#.border</code> & <code>#.border-child</code> references to organize borders around the blocks.<br/>
+  <b>Note</b>: these references can be combined.</p>
+  <p><img width="400px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/114dc4eb-5bc7-49fb-8bca-eb4ef2566876"/></p>
+</details></td></tr>
 -->
 
 </table>
