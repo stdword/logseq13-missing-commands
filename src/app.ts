@@ -21,10 +21,12 @@ import {
 } from './commands'
 import { improveCursorMovement_KeyDownListener, improveSearch_KeyDownListener, spareBlocksFeature } from './features'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
-import { hideDotRefs, tabularView } from './views'
+import { borderView, columnsView, galleryView, hideDotRefs, tabularView } from './views'
 
 
 const DEV = process.env.NODE_ENV === 'development'
+
+const defaultSpareBlocksSpace = 20
 
 const settingsSchema: SettingSchemaDesc[] = [
     {
@@ -88,10 +90,10 @@ const settingsSchema: SettingSchemaDesc[] = [
         description: `
             <p>Increase the space to clearly separate blocks from each other.</p>
             <p><i>Motivation</i>: blocks on the 1-level represent the most general parts of the information, which usually stand separately: headings, categories, clients, code snippets, links, etc.</p>
-            <p><i>In pixels</i>: default is <code>20</code>. Set to <code>0</code> to disable.</p>
+            <p><i>In pixels</i>: default is <code>${defaultSpareBlocksSpace}</code>. Set to <code>0</code> to disable.</p>
         `.trim(),
         type: 'number',
-        default: 20,
+        default: defaultSpareBlocksSpace,
     },
     {
         key: 'headingViews',
@@ -125,6 +127,57 @@ const settingsSchema: SettingSchemaDesc[] = [
                 It could be subsequent: <code>#.tabular</code> inside another <code>#.tabular</code>. However, only <ins>two</ins> subsequent levels are supported.</li>
             <li>Use the <code>#.tabular0</code> reference in <ins>another tabular row</ins> to skip the immediate children.</li>
             </ol>
+        `.trim(),
+        type: 'enum',
+        enumPicker: 'radio',
+        enumChoices: ['Yes', 'No'],
+        default: 'Yes',
+    },
+    {
+        key: 'enableColumnsView',
+        title: 'Enable columns view?',
+        description: `
+            <ol>
+                <li>Use the <code>#.columns</code> reference to organize child blocks
+                    to columns of <ins>the same</ins> width.
+                    1 column = 1 block.</li>
+                <li>Use the <code>#.columns-N</code> reference to organize child blocks
+                    to N columns of <ins>the same</ins> width, where N = 2…6.
+                    1 column = 1 or more blocks.</li>
+                <li>Use the <code>#.columns-fit</code> reference to organize child blocks
+                    to columns with <ins>different</ins> width (based on content).
+                    1 column = 1 block.</li>
+            </ol>
+        `.trim(),
+        type: 'enum',
+        enumPicker: 'radio',
+        enumChoices: ['Yes', 'No'],
+        default: 'Yes',
+    },
+    {
+        key: 'enableGalleryView',
+        title: 'Enable gallery view?',
+        description: `
+            <ol>
+                <li>Use the <code>#.gallery</code> reference to organize child blocks containing images to gallery.
+                    Image sizes automatically fills whole space for width. There is only <ins>one row</ins> of images.</li>
+                <li>Use the <code>#.gallery-wN</code> reference to organize child blocks containing images as fixed-width (based on N) images.
+                    There can be <ins>multiple rows</ins> of images.</li>
+                <li>Use the <code>#.gallery-hN</code> reference to organize child blocks containing images as fixed-height (based on N) images.
+                    There can be <ins>multiple rows</ins> of images.</li>
+            </ol>
+        `.trim(),
+        type: 'enum',
+        enumPicker: 'radio',
+        enumChoices: ['Yes', 'No'],
+        default: 'Yes',
+    },
+    {
+        key: 'enableBorderView',
+        title: 'Enable border view?',
+        description: `
+            <p>Use the <code>#.border</code> & <code>#.border-child</code> references to organize borders around the blocks.<br/>
+               These references can be combined.</p>
         `.trim(),
         type: 'enum',
         enumPicker: 'radio',
@@ -177,6 +230,15 @@ async function onAppSettingsChanged(current, old) {
 
     if (!old || current.enableTabularView !== old.enableTabularView)
         tabularView(current.enableTabularView === 'Yes')
+
+    if (!old || current.enableColumnsView !== old.enableColumnsView)
+        columnsView(current.enableColumnsView === 'Yes')
+
+    if (!old || current.enableGalleryView !== old.enableGalleryView)
+        galleryView(current.enableGalleryView === 'Yes')
+
+    if (!old || current.enableBorderView !== old.enableBorderView)
+        borderView(current.enableBorderView === 'Yes')
 }
 
 

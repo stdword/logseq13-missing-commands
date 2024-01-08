@@ -1,7 +1,7 @@
 import { provideStyle } from './utils'
 
 import tabularViewStyle from './css/tabular_view.css?inline'
-import boxViewStyle from './css/box_view.css?inline'
+import borderViewStyle from './css/border_view.css?inline'
 import columnsViewStyle from './css/columns_view.css?inline'
 import galleryViewStyle from './css/gallery_view.css?inline'
 
@@ -36,10 +36,10 @@ export function tabularView(toggle: boolean) {
 /**
  * CSS: Box view
  */
-export function boxView(toggle: boolean) {
-    const key = 'box-view'
+export function borderView(toggle: boolean) {
+    const key = 'border-view'
     if (toggle)
-        provideStyle(key, boxViewStyle)
+        provideStyle(key, borderViewStyle)
     else
         provideStyle(key)
 }

@@ -1,0 +1,40 @@
+/* border view: borders around blocks */
+/* (based on logtools) */
+
+.ls-block[data-refs-self*='".border"'] {
+    box-shadow: 2px 2px 3px #0000003b;
+    border: 1px solid var(--ls-border-color);
+    border-radius: var(--ls-border-radius-medium);
+    background-color: var(--ls-primary-background-color);
+    margin-right: 0.5em !important;
+    margin-bottom: 0.2em !important;
+    margin-left: 0.5em !important;
+    padding: 0.6em 1em 0.7em 0em !important
+}
+.ls-block[data-refs-self*='".border"'].selected {
+    background-color: var(--ls-block-highlight-color);
+}
+
+.ls-block[data-refs-self*='".border"'] > .block-main-container {
+    /* - ls-block::margin-left - ls-block::border-width */
+    margin-left: calc(-0.5em - 1px) !important;
+}
+.ls-block[data-refs-self*='".border"'] > .block-children-container {
+    /* block-children-container::margin-left - ls-block::margin-left - ls-block::border-width */
+    margin-left: calc(29px - 0.5em - 1px) !important;
+}
+
+.ls-block[data-refs-self*='".border-child"'] > .block-children-container > .block-children > .ls-block {
+    box-shadow: 2px 2px 3px #0000003b;
+    border: 1px solid var(--ls-border-color);
+    border-radius: var(--ls-border-radius-low);
+    background-color: var(--ls-tertiary-background-color);
+    margin: 0.5em 1em 0.5em 0em !important;
+    padding: 0.5em 1em 0.5em 0em !important;
+}
+.ls-block[data-refs-self*='".border-child"'] > .block-children-container > .block-children > .ls-block.selected {
+    background-color: var(--ls-block-highlight-color);
+}
+.ls-block[data-refs-self*='".border-child"'] > .block-children-container > .block-children {
+    border-left-width: 0px !important;
+}

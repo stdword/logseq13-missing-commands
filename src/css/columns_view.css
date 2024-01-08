@@ -58,10 +58,12 @@
 
 /* .columns-fit: fit width of the columns */
 
+.ls-block[data-refs-self*='".columns-fit"'] > .block-children-container > .block-children > .ls-block {
+    min-width: 100px;
+}
 [data-refs-self*='".columns-fit"'] > .block-children-container > .block-children {
     display: inline-flex;
     position: relative;
-    margin: 0 10px;
     border: 0;
 }
 [data-refs-self*='".columns-fit"'] .pr-2 {
