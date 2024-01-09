@@ -956,3 +956,28 @@ export function removeHTML(content, level, block, parent) {
         .replaceAll(/<\w+\s*[^>]*>/g, '')
         .replaceAll(/<\/\w+\s*>/g, '')
 }
+
+export function parseYoutubeTimestamp(content, level, block, parent) {
+    function fromTimestamp(ts) {
+        const time = parseInt(ts)
+
+        const iso = new Date(time * 1000).toISOString()
+        // '1970-01-01T00:14:25.000Z'
+
+        if (time < 3600)  //    MM:SS
+            return iso.substring(14, 19)
+        else              // HH:MM:SS
+            return iso.substring(11, 19)
+    }
+
+    const replacer = (m, h, ts) => `{{youtube-timestamp ${fromTimestamp(ts)}}}`
+    return content
+        .replaceAll(
+            /\[(\d+:)?\d+:\d+\]\(https:\/\/www\.youtube\.com\/watch\?.+?&t=(\d+)s\)/g,
+            replacer,
+        )
+        .replaceAll(
+            /\[(\d+:)?\d+:\d+\]\(https:\/\/www\.youtube\.com\/watch\?t=(\d+)s.*?\)/g,
+            replacer,
+        )
+}

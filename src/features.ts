@@ -6,7 +6,7 @@ import spareBlocksStyle from './css/spare_blocks.css?inline'
 /**
  * Sublime Text-like double ⌘→ or ⌘← to move cursor to the end / start of the text area
  */
-export function improveCursorMovement_KeyDownListener(e: KeyboardEvent) {
+function improveCursorMovement_KeyDownListener(e: KeyboardEvent) {
     if (!e.target)
         return
 
@@ -41,11 +41,17 @@ export function improveCursorMovement_KeyDownListener(e: KeyboardEvent) {
     // @ts-expect-error
     target.scrollIntoViewIfNeeded()
 }
+export function improveCursorMovementFeature(toggle: boolean) {
+    if (toggle)
+        parent.document.addEventListener('keydown', improveCursorMovement_KeyDownListener)
+    else
+        parent.document.removeEventListener('keydown', improveCursorMovement_KeyDownListener)
+}
 
 /**
  * TAB-trigger and access current page name on Search
  */
-export async function improveSearch_KeyDownListener(e: KeyboardEvent) {
+async function improveSearch_KeyDownListener(e: KeyboardEvent) {
     if (!e.target)
         return
 
@@ -95,6 +101,12 @@ export async function improveSearch_KeyDownListener(e: KeyboardEvent) {
     if (e.key === 'Tab')
         if (target.value.toLowerCase() !== text.toLowerCase())
             setNativeValue(target, text, true)
+}
+export function improveSearchFeature(toggle: boolean) {
+    if (toggle)
+        parent.document.addEventListener('keydown', improveSearch_KeyDownListener, true)
+    else
+        parent.document.removeEventListener('keydown', improveSearch_KeyDownListener, true)
 }
 
 /**

@@ -17,11 +17,13 @@ import {
     joinAsSentences_Map, joinViaCommas_Attach, joinViaSpaces_Attach,
     joinViaNewLines_Attach, joinViaNewLines_Map,
 
-    splitByLines, splitBySentences, splitByWords, removeNewLines, lowerCase, upperCase, titleCaseWords, titleCaseSentences, removeHTML,
+    splitByLines, splitBySentences, splitByWords,
+    removeNewLines, removeHTML, parseYoutubeTimestamp,
+    lowerCase, upperCase, titleCaseWords, titleCaseSentences,
 } from './commands'
-import { improveCursorMovement_KeyDownListener, improveSearch_KeyDownListener, spareBlocksFeature } from './features'
-import { getChosenBlocks, p, scrollToBlock } from './utils'
+import { improveCursorMovementFeature, improveSearchFeature, spareBlocksFeature } from './features'
 import { borderView, columnsView, galleryView, hideDotRefs, tabularView } from './views'
+import { getChosenBlocks, p, scrollToBlock } from './utils'
 
 
 const DEV = process.env.NODE_ENV === 'development'
@@ -206,15 +208,15 @@ async function postInit(settings) {
 }
 async function onAppSettingsChanged(current, old) {
     if (!old || current.enableHomeEnd !== old.enableHomeEnd) {
-        parent.document.removeEventListener('keydown', improveCursorMovement_KeyDownListener)
+        improveCursorMovementFeature(false)
         if (current.enableHomeEnd === 'Yes')
-            parent.document.addEventListener('keydown', improveCursorMovement_KeyDownListener)
+            improveCursorMovementFeature(true)
     }
 
     if (!old || current.enableSearchImprovements !== old.enableSearchImprovements) {
-        parent.document.removeEventListener('keydown', improveSearch_KeyDownListener, true)
+        improveSearchFeature(false)
         if (current.enableSearchImprovements === 'Yes')
-            parent.document.addEventListener('keydown', improveSearch_KeyDownListener, true)
+            improveSearchFeature(true)
     }
 
     if (!old || current.spareBlocksSpace !== old.spareBlocksSpace)
@@ -249,6 +251,8 @@ async function main() {
     const settingsOff = logseq.onSettingsChanged(onAppSettingsChanged)
 
     logseq.beforeunload(async () => {
+        improveCursorMovementFeature(false)
+        improveSearchFeature(false)
         settingsOff()
     })
 
@@ -431,6 +435,12 @@ async function main() {
         // @ts-expect-error
         keybinding: {},
     }, (e) => updateBlocksCommand(removeHTML, true))
+
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Parse YouTube timestamps (with nested)', key: 'mc-7-update-13-parse-yt-ts',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(parseYoutubeTimestamp, true))
 
 
     // Navigation
