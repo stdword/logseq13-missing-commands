@@ -19,7 +19,7 @@ import {
 
     splitByLines, splitBySentences, splitByWords,
     removeNewLines, removeHTML, parseYoutubeTimestamp,
-    lowerCase, upperCase, titleCaseWords, titleCaseSentences,
+    lowerCase, upperCase, titleCaseWords, titleCaseSentences, magicBold,
 } from './commands'
 import { improveCursorMovementFeature, improveSearchFeature, spareBlocksFeature } from './features'
 import { borderView, columnsView, galleryView, hideDotRefs, tabularView } from './views'
@@ -441,6 +441,12 @@ async function main() {
         // @ts-expect-error
         keybinding: {},
     }, (e) => updateBlocksCommand(parseYoutubeTimestamp, true))
+
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Magic bold', key: 'mc-7-update-14-magic-bold',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(magicBold, false, false))
 
 
     // Navigation

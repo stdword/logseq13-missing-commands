@@ -90,12 +90,12 @@ async function improveSearch_KeyDownListener(e: KeyboardEvent) {
 
     const label = active!.querySelector('.text-sm.font-medium')!.childNodes[0] as HTMLElement
 
-    let text
+    let text: string = ''
     if (label.tagName === 'DIV') {  // page with alias
         const walker = document.createTreeWalker(label, NodeFilter.SHOW_TEXT, null)!
-        text = walker.nextNode()!.textContent
+        text = walker.nextNode()!.textContent!
     } else if (label.tagName === 'SPAN') {  // normal page, command, create command
-        text = label.textContent
+        text = label.textContent!
     }
 
     if (e.key === 'Tab')

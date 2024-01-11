@@ -62,6 +62,20 @@ export function setEditingCursorSelection(start: number, end: number) {
     return true
 }
 
+export function getEditingCursorSelection() {
+    const editorElement = top!.document.getElementsByClassName('editor-wrapper')[0] as HTMLDivElement
+    if (!editorElement)
+        return null
+
+    const textAreaElement = top!.document.getElementById(
+        editorElement.id.replace(/^editor-/, '')
+    ) as HTMLTextAreaElement
+    if (!textAreaElement)
+        return null
+
+    return [textAreaElement.selectionStart, textAreaElement.selectionEnd]
+}
+
 
 export class PropertiesUtils {
     static readonly idProperty = 'id'

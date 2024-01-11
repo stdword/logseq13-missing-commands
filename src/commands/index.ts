@@ -1,16 +1,18 @@
 import '@logseq/libs'
+import { BlockEntity, IBatchBlock } from '@logseq/libs/dist/LSPlugin'
 
 import markdownit from 'markdown-it'
 
 import {
     PropertiesUtils, WalkBlock, checkPropertyExistenceInTree, ensureChildrenIncluded,
     escapeForRegExp, filterOutChildBlocks, getBlocksWithReferences,
-    getChosenBlocks, insertBatchBlockBefore, isWindows, lettersToNumber,
+    getChosenBlocks, getEditingCursorSelection, insertBatchBlockBefore, isWindows, lettersToNumber,
     numberToLetters, numberToRoman, p, reduceBlockTree,
-    reduceTextWithLength, scrollToBlock, sleep, transformBlocksTreeByReplacing,
+    reduceTextWithLength, scrollToBlock, setEditingCursorSelection, sleep, transformBlocksTreeByReplacing,
     transformSelectedBlocksWithMovements, unique, walkBlockTree, walkBlockTreeAsync,
-} from './utils'
-import { BlockEntity, IBatchBlock } from '@logseq/libs/dist/LSPlugin'
+} from '../utils'
+
+import { magicBold } from './magic_markup'
 
 
 // there is no `saw` emoji in Windows — use `kitchen knife`: it has the same colors
@@ -849,6 +851,7 @@ export function magicJoinCommand(independentMode: boolean) {
 export async function updateBlocksCommand(
     callback: (content: string, level: number, block: BlockEntity, parent?: BlockEntity) => string,
     recursive: boolean = false,
+    cleanPropertiesBefore: boolean = false,
 ) {
     let [ blocks, isSelectedState ] = await getChosenBlocks()
     if (blocks.length === 0)
@@ -868,6 +871,10 @@ export async function updateBlocksCommand(
 
     if (blocks.length === 0)
         return
+
+    let position = -1
+    if (!isSelectedState)
+        blocks[0]._selectPosition = getEditingCursorSelection()!
 
     // it is important to check if any block in the tree has references
     // (Logseq replaces references with it's text)
@@ -890,18 +897,25 @@ export async function updateBlocksCommand(
             const properties = PropertiesUtils.fromCamelCaseAll(data.node.properties)
             const propertiesOrder = PropertiesUtils.getPropertyNames(b.content)
 
-            let content = PropertiesUtils.deleteAllProperties(b.content)
-            content = callback(content, level, data.node, p as BlockEntity | undefined)
+            let content = b.content
+            if (cleanPropertiesBefore)
+                content = PropertiesUtils.deleteAllProperties(content)
+            const newContent = callback(content, level, data.node, p as BlockEntity | undefined)
+            if (content === newContent)
+                data.leftIntact = true
+            content = newContent
 
-            for (const property of propertiesOrder)
-                content += `\n${property}:: ${properties[property]}`
+            if (cleanPropertiesBefore)
+                for (const property of propertiesOrder)
+                    content += `\n${property}:: ${properties[property]}`
 
             return content
         })
 
         if (block._treeHasReferences || block.children.length === 0) {
             walkBlockTreeAsync(newTree, async (b, level) => {
-                await logseq.Editor.updateBlock(b.data.node.uuid, b.content)
+                if (!b.data.leftIntact)
+                    await logseq.Editor.updateBlock(b.data.node.uuid, b.content)
             })
         } else {
             await insertBatchBlockBefore(block, newTree)
@@ -912,6 +926,10 @@ export async function updateBlocksCommand(
     if (isSelectedState) {
         await sleep(20)
         await logseq.Editor.exitEditingMode()
+    } else {
+        await sleep(20)
+        const sole = blocks[0]
+        setEditingCursorSelection(sole._selectPosition[0], sole._selectPosition[1])
     }
 }
 
@@ -981,3 +999,5 @@ export function parseYoutubeTimestamp(content, level, block, parent) {
             replacer,
         )
 }
+export { magicBold }
+
