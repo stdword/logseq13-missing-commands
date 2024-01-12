@@ -239,11 +239,7 @@ function expand(line: string, markup: MarkUp, selectPosition: [number, number]) 
     })
 }
 
-function applyMarkup(
-    line: string,
-    markup: MarkUp,
-    selectPosition?: [number, number],
-): string {
+function applyMarkup(line: string, markup: MarkUp, selectPosition?: [number, number]): string {
     if (!line && !selectPosition)
         return ''
 
