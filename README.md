@@ -195,9 +195,10 @@ _Designed to be very productive with keyboard_  ❤️
 <table>
 <!--
 <tr><td><details><summary><b>Magic Bold / Italics / Underlne / Hightlight / Code</b></summary>
-  <p>.</p>
-  <p><b>Note</b>: it uses «_» for italics due to [this issue](https://github.com/logseq/logseq/issues/8790).</p>
-  <p><img width="400px" src=""/></p>
+  <p>Apply various formatting in a smart way: auto-select whole words, recognize Logseq special syntax, smart undo formatting, and work out of editing mode.</p>
+  <p><b>Note</b>: command uses «_» for italics to prevent <a href="https://github.com/logseq/logseq/issues/8790">this</a> cases.</p>
+  <p><img width="400px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/dc632eca-8887-4f42-99d0-17ded489034f"/></p>
+  <p><img width="300px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/6f8c08e2-f248-409d-9af9-76d859075472"/></p>
 </details></td></tr>
 -->
 
