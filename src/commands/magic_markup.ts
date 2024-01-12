@@ -4,7 +4,7 @@ import { BlockEntity } from '@logseq/libs/dist/LSPlugin'
 
 const MARKUP: {[type: string]: [string, string]} = {
     bold: ['**', '**'],
-    italics: ['*', '*'],
+    italics: ['_', '_'],
     strikethrough: ['~~', '~~'],
     hightlight: ['==', '=='],
     underline: ['<ins>', '</ins>'],
