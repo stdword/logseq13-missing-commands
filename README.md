@@ -213,6 +213,12 @@ _Designed to be very productive with keyboard_  ❤️
 </details></td></tr>
 
 <!--
+<tr><td><details><summary><b>Remove HTML tags</b></summary>
+  <p>Remove all HTML tags from the block, leaving only the text content.</p>
+  <p><b>Note</b>: there is no exceptions — everything between «<» and «>» will be removed.</p>
+  <p><img width="450px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/4dea3e1f-1b73-4b70-8a2a-a106e3649160"/></p>
+</details></td></tr>
+
 <tr><td><details><summary><b>Parse YouTube timestamps</b></summary>
   <p>Transform copied from YouTube timestamps to Logseq format.</p>
   <p><img width="400px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/def32ac9-1d2e-424d-a269-e228d64e394d"/></p>
