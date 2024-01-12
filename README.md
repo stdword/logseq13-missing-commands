@@ -196,6 +196,10 @@ _Designed to be very productive with keyboard_  ❤️
 <!--
 <tr><td><details><summary><b>Magic Bold / Italics / Underlne / Hightlight / Code</b></summary>
   <p>Apply various formatting in a smart way: auto-select whole words, recognize Logseq special syntax, smart undo formatting, and work out of editing mode.</p>
+  <p>To use it in edit mode:<ol>
+    <li>Go to the <i>Keymap</i> (<code>g s</code>) → <i>Formatting</i> section and replace standard Logseq commands (Bold, Highlight, Italics, Strikethrough) with magic ones.</li>
+    <li>Bind <i>Magic underline</i> and <i>Magic `code`</i> commands to shortcuts of your choice (e.g. <kbd>⌘U</kbd> and <kbd>⌥~</kbd>).</li>
+  </ol></p>
   <p><b>Note</b>: command uses «_» for italics to prevent <a href="https://github.com/logseq/logseq/issues/8790">this</a> cases.</p>
   <p><img width="400px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/dc632eca-8887-4f42-99d0-17ded489034f"/></p>
   <p><img width="300px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/6f8c08e2-f248-409d-9af9-76d859075472"/></p>
