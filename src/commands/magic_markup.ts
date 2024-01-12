@@ -2,13 +2,15 @@ import '@logseq/libs'
 import { BlockEntity } from '@logseq/libs/dist/LSPlugin'
 
 
-const MARKUP: {[type: string]: [string, string]} = {
-    bold: ['**', '**'],
-    italics: ['_', '_'],
-    strikethrough: ['~~', '~~'],
-    hightlight: ['==', '=='],
-    underline: ['<ins>', '</ins>'],
-    code: ['`', '`'],
+type MarkUp = [string, string][] & {wrappedWith?: string}
+const MARKUP: {[type: string]: MarkUp } = {
+    // first pair is for wrapping, others — for unwrapping
+    bold:          [['**', '**'],        ['<b>', '</b>']],
+    italics:        [['_', '_'],           ['*', '*'],       ['<i>', '</i>']],
+    strikethrough: [['~~', '~~'],        ['<s>', '</s>']],
+    hightlight:    [['==', '=='],     ['<mark>', '</mark>']],
+    underline:  [['<ins>', '</ins>'],    ['<u>', '</u>']],
+    code:           [['`', '`'],      ['<code>', '</code>']],
 }
 
 const TRIM_BEGIN = [
@@ -39,9 +41,6 @@ const TRIM_BEFORE: (string | RegExp)[] = [
     /^\(\([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\)\)/,  // block ref
     /^{{\w+.*?}}/,  // macro call
 
-    /^\"/,
-    /^\(/,
-    /^\[/,
     /^\s/,
 ]
 
@@ -49,19 +48,14 @@ const TRIM_AFTER: (string | RegExp)[] = [
     /\!\[.*?\]\(.+?\){.*?}$/,  // link to image
     /\!\[.*?\]\(.+?\)$/,       // link to image
 
-    /\]\(.+?\)$/,          // link to page
+    // /\]\(.+?\)$/,          // link to page
     /\]\(\[\[.+?\]\]\)$/,  // link to page
 
     /\]\(\(\([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\)\)\)$/,  // link to block
-
     /\(\([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\)\)$/,  // block ref
 
     /{{\w+.*?}}$/,  // macro call
 
-    /\"$/,
-    /\)$/,
-    /\($/,
-    /\]$/,
     /\s$/,
 
     /\]\($/, // to not break markdown links
@@ -91,8 +85,7 @@ const EXPAND_WHEN_OUTSIDE = [
 ]
 
 
-function trim(line: string, markup: [string, string], selectPosition: [number, number], isSelectionMode: boolean) {
-    const [frontMarkup, backMarkup] = markup
+function trim(line: string, markup: MarkUp, selectPosition: [number, number], isSelectionMode: boolean) {
     let [start, end] = selectPosition
 
     let trimBegin = TRIM_BEGIN
@@ -113,8 +106,11 @@ function trim(line: string, markup: [string, string], selectPosition: [number, n
 
     const trimBefore = Array.from(TRIM_BEFORE)
     const trimAfter = Array.from(TRIM_AFTER)
-    trimBefore.push(frontMarkup)
-    trimAfter.push(backMarkup)
+
+    for (const [frontMarkup, backMarkup] of markup) {
+        trimBefore.push(frontMarkup)
+        trimAfter.push(backMarkup)
+    }
 
     // before
     while (true) {
@@ -166,25 +162,32 @@ function trim(line: string, markup: [string, string], selectPosition: [number, n
     selectPosition[1] = end
 }
 
-function isMarkedUp(line: string, markup: [string, string], selectPosition: [number, number]) {
+function isMarkedUp(line: string, markup: MarkUp, selectPosition: [number, number]) {
+    // note: may change markup
     // assertion:: selectPosition should be already trimmed, so markup is always OUTside
 
     const [start, end] = selectPosition
-    const [frontMarkup, backMarkup] = markup
+    for (const [i, [frontMarkup, backMarkup]] of Object.entries(markup)) {
+        if (start < frontMarkup.length)
+            continue
+        if (end + backMarkup.length > line.length)
+            continue
 
-    if (start < frontMarkup.length)
-        return false
-    if (end + backMarkup.length > line.length)
-        return false
+        const charsBefore = line.slice(start - frontMarkup.length, start)
+        const charsAfter = line.slice(end, end + backMarkup.length)
+        if (charsBefore === frontMarkup && charsAfter === backMarkup) {
+            markup.wrappedWith = i
+            Object.defineProperty(markup, 'wrappedWith', {enumerable: false})
+            return true
+        }
+    }
 
-    const charsBefore = line.slice(start - frontMarkup.length, start)
-    const charsAfter = line.slice(end, end + backMarkup.length)
-    return charsBefore === frontMarkup && charsAfter === backMarkup
+    return false
 }
 
 function wordAtPosition(line: string, position: number) {
-    const wordLeftRegexp  =  /[\p{Letter}\p{Number}'_-]*$/u
-    const wordRightRegexp = /^[\p{Letter}\p{Number}'_-]*/u
+    const wordLeftRegexp  =  /(?!_)[\p{Letter}\p{Number}'_-]*$/u
+    const wordRightRegexp = /^[\p{Letter}\p{Number}'_-]*(?<!_)/u
 
     const mr = wordRightRegexp.exec(line.slice(position))!
     return [
@@ -193,8 +196,7 @@ function wordAtPosition(line: string, position: number) {
     ]
 }
 
-function expand(line: string, markup: [string, string], selectPosition: [number, number]) {
-    const [frontMarkup, backMarkup] = markup
+function expand(line: string, markup: MarkUp, selectPosition: [number, number]) {
     let [start, end] = selectPosition
 
     let wordEdge
@@ -214,12 +216,20 @@ function expand(line: string, markup: [string, string], selectPosition: [number,
     EXPAND_WHEN_OUTSIDE.forEach(group => {
         for (const pair of group) {
             const [L, R] = pair
-            if (L === frontMarkup || R === backMarkup)
-                break  // allow undoing of the syntax
+
+            let skipPair = false
+            for (const [frontMarkup, backMarkup] of markup)
+                if (L === frontMarkup || R === backMarkup) {
+                    // allow undoing of the syntax
+                    skipPair = true
+                    break
+                }
+            if (skipPair)
+                break
 
             const trimLastSpace = Boolean(pair[2])
 
-            if (isMarkedUp(line, [L, R], [start, end])) {
+            if (isMarkedUp(line, [[L, R]] as MarkUp, [start, end])) {
                 start -= L.length
                 end += R.length
                 setSelection()
@@ -231,13 +241,12 @@ function expand(line: string, markup: [string, string], selectPosition: [number,
 
 function applyMarkup(
     line: string,
-    markup: [string, string],
+    markup: MarkUp,
     selectPosition?: [number, number],
 ): string {
     if (!line && !selectPosition)
         return ''
 
-    const [frontMarkup, backMarkup] = markup
 
     const isSelectionMode = Boolean(selectPosition)
     if (!selectPosition)
@@ -259,17 +268,19 @@ function applyMarkup(
     let selection = line.slice(start, end)
 
     if (isMarkedUp(line, markup, selectPosition)) {
+        const [frontMarkup, backMarkup] = markup[markup.wrappedWith!]
         selectPosition[0] -= frontMarkup.length
         selectPosition[1] -= frontMarkup.length
         return line.slice(0, start - frontMarkup.length) + selection + line.slice(end + backMarkup.length)
     } else {
+        const [frontMarkup, backMarkup] = markup[0]
         selectPosition[0] += frontMarkup.length
         selectPosition[1] += frontMarkup.length
         return line.slice(0, start) + frontMarkup + selection + backMarkup + line.slice(end)
     }
 }
 
-function wrap(block: BlockEntity, content: string, markup: [string, string]) {
+function wrap(block: BlockEntity, content: string, markup: MarkUp) {
     if (!block._selectPosition)
         return content.split('\n').map((line) => applyMarkup(line, markup)).join('\n')
 
