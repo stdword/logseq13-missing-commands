@@ -234,7 +234,7 @@ function applyMarkup(
     markup: [string, string],
     selectPosition?: [number, number],
 ): string {
-    if (!line)
+    if (!line && !selectPosition)
         return ''
 
     const [frontMarkup, backMarkup] = markup
