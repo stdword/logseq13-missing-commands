@@ -193,6 +193,14 @@ _Designed to be very productive with keyboard_  ❤️
 ## 6) Commands: _Updating blocks_
 
 <table>
+<!--
+<tr><td><details><summary><b>Magic Bold / Italics / Underlne / Hightlight / Code</b></summary>
+  <p>.</p>
+  <p><b>Note</b>: it uses «_» for italics due to [this issue](https://github.com/logseq/logseq/issues/8790).</p>
+  <p><img width="400px" src=""/></p>
+</details></td></tr>
+-->
+
 <tr><td><details><summary><b>Remove new lines</b></summary>
   <p>Remove all «new line» characters from text. Helpful for work with OCR texts.</p>
   <p><b>Note</b>: command adds spaces when it's necessary.</p>
@@ -321,6 +329,7 @@ Some parts of this plugin based on reviewed and refined works of another authors
 - Tabular view based on _«Tabular Journals»_ by `nmartin84` (there is no such repo anymore)
 - Gallery, box & columns views based on [LogTools](https://github.com/cannibalox/logtools) by `cannibalox`
 - Columns view based on [Awesome Content](https://github.com/yoyurec/logseq-awesome-content) by `yoyurec`
+- Magic formatting based on [Obsidian: Smarter MD Hotkeys](https://github.com/chrisgrieser/obsidian-smarter-md-hotkeys) by `chrisgrieser`
 
 + Icon created by <a href="https://www.flaticon.com/free-icon/hand-saw_10476972" title="Flaticon">Nuricon</a>
 
