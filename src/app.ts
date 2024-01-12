@@ -427,12 +427,12 @@ async function main() {
     }, (e) => updateBlocksCommand(titleCaseSentences, true))
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Remove HTML', key: 'mc-7-update-11-remove-html',
+        label: ICON + ' Remove HTML tags', key: 'mc-7-update-11-remove-html',
         // @ts-expect-error
         keybinding: {},
     }, (e) => updateBlocksCommand(removeHTML))
     logseq.App.registerCommandPalette({
-        label: ICON + ' Remove HTML (with nested)', key: 'mc-7-update-12-remove-html-nested',
+        label: ICON + ' Remove HTML tags (with nested)', key: 'mc-7-update-12-remove-html-nested',
         // @ts-expect-error
         keybinding: {},
     }, (e) => updateBlocksCommand(removeHTML, true))
@@ -444,22 +444,22 @@ async function main() {
     }, (e) => updateBlocksCommand(parseYoutubeTimestamp, true))
 
     logseq.App.registerCommandPalette({
-        label: ICON + ' Magic bold', key: 'mc-7-update-14-magic-bold',
+        label: ICON + ' Magic **bold**', key: 'mc-7-update-14-magic-bold',
         // @ts-expect-error
         keybinding: {},
     }, (e) => updateBlocksCommand(magicBold, false, false))
     logseq.App.registerCommandPalette({
-        label: ICON + ' Magic italics', key: 'mc-7-update-15-magic-italics',
+        label: ICON + ' Magic _italics_', key: 'mc-7-update-15-magic-italics',
         // @ts-expect-error
         keybinding: {},
     }, (e) => updateBlocksCommand(magicItalics, false, false))
     logseq.App.registerCommandPalette({
-        label: ICON + ' Magic strikethrough', key: 'mc-7-update-16-magic-strikethrough',
+        label: ICON + ' Magic ~~strikethrough~~', key: 'mc-7-update-16-magic-strikethrough',
         // @ts-expect-error
         keybinding: {},
     }, (e) => updateBlocksCommand(magicStrikethrough, false, false))
     logseq.App.registerCommandPalette({
-        label: ICON + ' Magic hightlight', key: 'mc-7-update-17-magic-hightlight',
+        label: ICON + ' Magic ==hightlight==', key: 'mc-7-update-17-magic-hightlight',
         // @ts-expect-error
         keybinding: {},
     }, (e) => updateBlocksCommand(magicHightlight, false, false))
@@ -469,7 +469,7 @@ async function main() {
         keybinding: {},
     }, (e) => updateBlocksCommand(magicUnderline, false, false))
     logseq.App.registerCommandPalette({
-        label: ICON + ' Magic code', key: 'mc-7-update-19-magic-code',
+        label: ICON + ' Magic `code`', key: 'mc-7-update-19-magic-code',
         // @ts-expect-error
         keybinding: {},
     }, (e) => updateBlocksCommand(magicCode, false, false))
