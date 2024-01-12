@@ -3,12 +3,12 @@ import { BlockEntity } from '@logseq/libs/dist/LSPlugin'
 
 
 const MARKUP: {[type: string]: [string, string]} = {
-    code: ['`', '`'],
     bold: ['**', '**'],
     italics: ['*', '*'],
     strikethrough: ['~~', '~~'],
     hightlight: ['==', '=='],
     underline: ['<ins>', '</ins>'],
+    code: ['`', '`'],
 }
 
 const TRIM_BEGIN = [
@@ -27,55 +27,70 @@ const TRIM_BEGIN = [
     /^(CANCELED|CANCELLED) (\[#(A|B|C)\])?/,
     /^\[#(A|B|C)\]/,
 
-    /^\s*[^\s:;,^@#~"`/|\\(){}[\]]+:: /u,
+    /^\s*[^\s:;,^@#~"`/|\\(){}[\]]+:: /u,  // property without value
     /^\s*DEADLINE: <[^>]+>$/,
     /^\s*SCHEDULED: <[^>]+>$/,
 ]
 const TRIM_BEGIN_SELECTION_ADDITION = [
-    /^\s*[^\s:;,^@#~"`/|\\(){}[\]]+:: .*$/u,
+    /^\s*[^\s:;,^@#~"`/|\\(){}[\]]+:: .*$/u,  // property with value
 ]
 
 
-const TRIM_BEFORE = [
-    '\"',
-    '(',
-    '[',
-    ' ',
-    '\t',
+const TRIM_BEFORE: (string | RegExp)[] = [
+    /^\(\([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\)\)/,  // block ref
+    /^{{\w+.*?}}/,  // macro call
+
+    /^\"/,
+    /^\(/,
+    /^\[/,
+    /^\s/,
 ]
 
-const TRIM_AFTER = [
-    '\"',
-    ')',
-    ']',
-    ' ',
-    '\t',
+const TRIM_AFTER: (string | RegExp)[] = [
+    /\!\[.*?\]\(.+?\){.*?}$/,  // link to image
+    /\!\[.*?\]\(.+?\)$/,       // link to image
 
-    '](', // to not break markdown links
+    /\]\(.+?\)$/,          // link to page
+    /\]\(\[\[.+?\]\]\)$/,  // link to page
+
+    /\]\(\(\([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\)\)\)$/,  // link to block
+
+    /\(\([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\)\)$/,  // block ref
+
+    /{{\w+.*?}}$/,  // macro call
+
+    /\"$/,
+    /\)$/,
+    /\($/,
+    /\]$/,
+    /\s$/,
+
+    /\]\($/, // to not break markdown links
 ]
 
 const EXPAND_WHEN_OUTSIDE = [
-    ['#', ''],
-    ['[[', ']]'],
+    // this is OR groups
+    // order is expansion direction
 
-    ['\"', '\"'],
-    ["'", "'"],
-    ["«", "»"],
+    [ // order is exceptional priority
+        ['$', ''],
+        ['', '$'],
+        ['', '€'],
+    ],
 
-    ['$', ''],
-    ['', '$'],
-    ['', '€'],
+    [
+        ['\"', '\"'],
+        ["'", "'"],
+        ["«", "»"],
+    ],
 
-    // extra spaces are trimmed separately later, only there to avoid conflict with trimAfter values
-    ['', ': ', 'trim_last_space'],
-    ['(', ')'],
-    ['[', '] ', 'trim_last_space'] // md link exception
+    [
+        ['#[[', ']]'],
+        ['#', ''],
+        ['[[', ']]'],
+    ],
 ]
 
-// TODO trim logseq markup:
-//  refs ((659d4f23-8d83-49fd-9bfb-c9eab32fa87d))
-//  macro {{...}}
-//  image: ![image.png](../assets/image_1687098889273_0.png){:height 200, :width 318}
 
 // TODO special markdown:
 //  code block
@@ -83,7 +98,7 @@ const EXPAND_WHEN_OUTSIDE = [
 //  admonitions & special blocks: #+BEGIN_NOTE ... #+END_NOTE
 
 
-function trim(line: string, markup: [string, string], selectPosition: [number, number], isSelectionMode: boolean): [number, number] {
+function trim(line: string, markup: [string, string], selectPosition: [number, number], isSelectionMode: boolean) {
     const [frontMarkup, backMarkup] = markup
     let [start, end] = selectPosition
 
@@ -111,11 +126,20 @@ function trim(line: string, markup: [string, string], selectPosition: [number, n
     // before
     while (true) {
         let wasTrimmed = false
-        trimBefore.forEach(str => {
-            if (selection.startsWith(str)) {
-                selection = selection.slice(str.length)
-                start += str.length
-                wasTrimmed = true
+        trimBefore.forEach(strOrRE => {
+            if (typeof strOrRE === 'string') {
+                if (selection.startsWith(strOrRE)) {
+                    selection = selection.slice(strOrRE.length)
+                    start += strOrRE.length
+                    wasTrimmed = true
+                }
+            } else {
+                const m = strOrRE.exec(selection)
+                if (m) {
+                    selection = selection.slice(m[0].length)
+                    start += m[0].length
+                    wasTrimmed = true
+                }
             }
         })
         if (!wasTrimmed || selection.length === 0)
@@ -125,18 +149,28 @@ function trim(line: string, markup: [string, string], selectPosition: [number, n
     // after
     while (true) {
         let wasTrimmed = false
-        trimAfter.forEach((str) => {
-            if (selection.endsWith(str)) {
-                selection = selection.slice(0, -str.length)
-                end -= str.length
-                wasTrimmed = true
+        trimAfter.forEach((strOrRE) => {
+            if (typeof strOrRE === 'string') {
+                if (selection.endsWith(strOrRE)) {
+                    selection = selection.slice(0, -strOrRE.length)
+                    end -= strOrRE.length
+                    wasTrimmed = true
+                }
+            } else {
+                const m = strOrRE.exec(selection)
+                if (m) {
+                    selection = selection.slice(0, -m[0].length)
+                    end -= m[0].length
+                    wasTrimmed = true
+                }
             }
         })
         if (!wasTrimmed || !selection.length)
             break
     }
 
-    return [start, end]
+    selectPosition[0] = start
+    selectPosition[1] = end
 }
 
 function isMarkedUp(line: string, markup: [string, string], selectPosition: [number, number]) {
@@ -155,32 +189,51 @@ function isMarkedUp(line: string, markup: [string, string], selectPosition: [num
     return charsBefore === frontMarkup && charsAfter === backMarkup
 }
 
-function expandSelection(line: string, markup: [string, string], selectPosition: [number, number]) {
-    // expand to word
-    const selectionInfo = getEditingCursorSelection()
-    const selectionStart = selectionInfo ? selectionInfo[0] : 0
-    const selectionEnd = selectionInfo ? selectionInfo[1] : selection.length
+function wordAtPosition(line: string, position: number) {
+    const wordLeftRegexp  =  /[\p{Letter}\p{Number}'_-]*$/u
+    const wordRightRegexp = /^[\p{Letter}\p{Number}'_-]*/u
 
-    const firstWord = wordAtPosition(selectionStart)
-    let lastWord = wordAtPosition(selectionEnd)
+    const mr = wordRightRegexp.exec(line.slice(position))!
+    return [
+        line.slice(0, position).search(wordLeftRegexp),
+        position + mr[0].length,
+    ]
+}
 
-    // has to come after trimming to include things like brackets
-    const expandWhenOutside = constant.EXPANDWHENOUTSIDE;
-    expandWhenOutside.forEach(pair => {
-        if (pair[0] === frontMarkup || pair[1] === endMarkup )
-            return; // allow undoing of the command creating the syntax
-        const trimLastSpace = Boolean(pair[2]);
+function expand(line: string, markup: [string, string], selectPosition: [number, number]) {
+    const [frontMarkup, backMarkup] = markup
+    let [start, end] = selectPosition
 
-        if (isOutsideSel (pair[0], pair[1])) {
-            firstWord.anchor.ch -= pair[0].length;
-            lastWord.head.ch += pair[1].length;
-            if (trimLastSpace) lastWord.head.ch--; // to avoid conflicts between trimming and expansion
-            editor.setSelection(firstWord.anchor, lastWord.head);
+    let wordEdge
+    [start, wordEdge] = wordAtPosition(line, start)
+    if (wordEdge < end)
+        [wordEdge, end] = wordAtPosition(line, end)
+    else
+        end = wordEdge
+
+    function setSelection() {
+        selectPosition[0] = start
+        selectPosition[1] = end
+    }
+
+    setSelection()
+
+    EXPAND_WHEN_OUTSIDE.forEach(group => {
+        for (const pair of group) {
+            const [L, R] = pair
+            if (L === frontMarkup || R === backMarkup)
+                break  // allow undoing of the syntax
+
+            const trimLastSpace = Boolean(pair[2])
+
+            if (isMarkedUp(line, [L, R], [start, end])) {
+                start -= L.length
+                end += R.length
+                setSelection()
+                break
+            }
         }
-    });
-
-
-    return { anchor: selectionStart, head: selectionEnd };
+    })
 }
 
 function applyMarkup(
@@ -197,25 +250,30 @@ function applyMarkup(
     if (!selectPosition)
         selectPosition = [0, line.length]
 
-    selectPosition = trim(line, markup, selectPosition, isSelectionMode)
+    trim(line, markup, selectPosition, isSelectionMode)
+    if (isSelectionMode)
+        expand(line, markup, selectPosition)
 
-    const [start, end] = selectPosition
+    let [start, end] = selectPosition
     if (start > end)
         return line  // no changes
 
     if (start === end) {
         if (!isSelectionMode)
             return line
-
-        // expand
     }
 
     let selection = line.slice(start, end)
 
-    if (isMarkedUp(line, markup, selectPosition))
+    if (isMarkedUp(line, markup, selectPosition)) {
+        selectPosition[0] -= frontMarkup.length
+        selectPosition[1] -= frontMarkup.length
         return line.slice(0, start - frontMarkup.length) + selection + line.slice(end + backMarkup.length)
-    else
+    } else {
+        selectPosition[0] += frontMarkup.length
+        selectPosition[1] += frontMarkup.length
         return line.slice(0, start) + frontMarkup + selection + backMarkup + line.slice(end)
+    }
 }
 
 function wrap(block: BlockEntity, content: string, markup: [string, string]) {
@@ -223,13 +281,18 @@ function wrap(block: BlockEntity, content: string, markup: [string, string]) {
         return content.split('\n').map((line) => applyMarkup(line, markup)).join('\n')
 
     let lineStartPosition = 0
+    let newLineStartPosition = 0
 
     const selectStart = block._selectPosition[0]
     const selectEnd = block._selectPosition[1]
+    const selectReversedEnd = content.length - selectEnd
 
-    return content.split('\n').map((line, index) => {
-        if (index !== 0)
-            lineStartPosition++  // \n sign
+    const wrapped = content.split('\n').map((line, index) => {
+        if (index !== 0) {
+            // \n sign
+            lineStartPosition++
+            newLineStartPosition++
+        }
 
         const lineEndPosition = lineStartPosition + line.length
 
@@ -241,6 +304,7 @@ function wrap(block: BlockEntity, content: string, markup: [string, string]) {
             lineStartPosition === selectEnd && selectEnd !== selectStart
         ) {
             lineStartPosition += line.length
+            newLineStartPosition += line.length
             return line
         }
 
@@ -248,42 +312,51 @@ function wrap(block: BlockEntity, content: string, markup: [string, string]) {
         if (selectStart < lineStartPosition && lineEndPosition < selectEnd)
             wholeLine = true
 
-        const start = Math.max(selectStart - lineStartPosition, 0)
-        const end = Math.min(selectEnd - lineStartPosition, line.length)
-        const newLine = applyMarkup(
-            line, markup,
-            wholeLine ? undefined : [start, end],
-        )
+        const selectPositionLine: [number, number] = [
+            Math.max(selectStart - lineStartPosition, 0),
+            Math.min(selectEnd - lineStartPosition, line.length),
+        ]
+        const newLine = applyMarkup(line, markup, wholeLine ? undefined : selectPositionLine)
 
-        if (line !== newLine) {
-            // assumption: one line = one insertion / one erasing of markup
-            const delta = newLine.length - line.length
-            const sign = delta > 0 ? +1 : -1
-            const lsize = markup[0].length
-            const rsize = markup[1].length
-
-            // this line contains selection's start
-            if (selectStart >= lineStartPosition) {
-                block._selectPosition[0] += lsize * sign
-                block._selectPosition[1] += lsize * sign
-
-                // this line contains selection's end
-                if (! (selectEnd <= lineEndPosition) )
-                    block._selectPosition[1] += rsize * sign
-            } else {
-                block._selectPosition[1] += lsize * sign
-
-                // this line contains selection's end
-                if (!( selectEnd <= lineEndPosition ))
-                    block._selectPosition[1] += rsize * sign
+        if (!wholeLine) {
+            // first line of selection
+            if (lineStartPosition <= selectStart && selectStart <= lineEndPosition) {
+                block._selectPosition[0] = newLineStartPosition + selectPositionLine[0]
+            }
+            // last line of selection
+            if (lineStartPosition <= selectEnd && selectStart <= lineEndPosition) {
+                block._selectPosition[1] = newLineStartPosition + selectPositionLine[1]
             }
         }
 
         lineStartPosition += line.length
+        newLineStartPosition += newLine.length
         return newLine
     }).join('\n')
+
+    return wrapped
 }
 
 export function magicBold(content, level, block, parent) {
     return wrap(block, content, MARKUP.bold)
+}
+
+export function magicItalics(content, level, block, parent) {
+    return wrap(block, content, MARKUP.italics)
+}
+
+export function magicStrikethrough(content, level, block, parent) {
+    return wrap(block, content, MARKUP.strikethrough)
+}
+
+export function magicHightlight(content, level, block, parent) {
+    return wrap(block, content, MARKUP.hightlight)
+}
+
+export function magicUnderline(content, level, block, parent) {
+    return wrap(block, content, MARKUP.underline)
+}
+
+export function magicCode(content, level, block, parent) {
+    return wrap(block, content, MARKUP.code)
 }

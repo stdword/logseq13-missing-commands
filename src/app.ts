@@ -24,6 +24,7 @@ import {
 import { improveCursorMovementFeature, improveSearchFeature, spareBlocksFeature } from './features'
 import { borderView, columnsView, galleryView, hideDotRefs, tabularView } from './views'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
+import { magicCode, magicHightlight, magicItalics, magicStrikethrough, magicUnderline } from './commands/magic_markup'
 
 
 const DEV = process.env.NODE_ENV === 'development'
@@ -447,6 +448,31 @@ async function main() {
         // @ts-expect-error
         keybinding: {},
     }, (e) => updateBlocksCommand(magicBold, false, false))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Magic italics', key: 'mc-7-update-15-magic-italics',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(magicItalics, false, false))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Magic strikethrough', key: 'mc-7-update-16-magic-strikethrough',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(magicStrikethrough, false, false))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Magic hightlight', key: 'mc-7-update-17-magic-hightlight',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(magicHightlight, false, false))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Magic underline', key: 'mc-7-update-18-magic-underline',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(magicUnderline, false, false))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Magic code', key: 'mc-7-update-19-magic-code',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(magicCode, false, false))
 
 
     // Navigation
