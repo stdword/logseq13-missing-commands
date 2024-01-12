@@ -48,7 +48,7 @@ _Designed to be very productive with keyboard_  ❤️
 
 <p> </p>
 
-## 1) Features
+## 1) ⛓️ Features
 
 <table>
 <tr><td><details><summary><b>TAB-trigger on Search</b></summary>
@@ -75,7 +75,7 @@ _Designed to be very productive with keyboard_  ❤️
 </table>
 
 
-## 2) Commands: _Blocks reordering_
+## 2) 🔧 Blocks reordering
 
 <table>
 <tr><td><details><summary><b>Toggle auto heading</b></summary>
@@ -91,7 +91,7 @@ _Designed to be very productive with keyboard_  ❤️
 </table>
 
 
-## 3) Commands: _Fast navigation_
+## 3) 🔧 Fast navigation
 
 <table>
 <tr><td><details><summary><b>Go to (↑) previous / (↓) next block</b></summary>
@@ -119,7 +119,7 @@ _Designed to be very productive with keyboard_  ❤️
 </table>
 
 
-## 4) Commands: _Blocks movements_
+## 4) 🔧 Blocks movements
 
 <table>
 <tr><td><details><summary><b>Outdent (⇤) children of the block</b></summary>
@@ -136,7 +136,7 @@ _Designed to be very productive with keyboard_  ❤️
 </table>
 
 
-## 5) Commands: _Splitting & Joining blocks_
+## 5) 🔧 Splitting & Joining blocks
 
 <table>
 <tr><td><details><summary><b>Magic Split & Magic Join</b></summary>
@@ -190,7 +190,7 @@ _Designed to be very productive with keyboard_  ❤️
 </table>
 
 
-## 6) Commands: _Updating blocks_
+## 6) 🔧 Updating blocks
 
 <table>
 <!--
@@ -211,10 +211,18 @@ _Designed to be very productive with keyboard_  ❤️
   <p><b>Note</b>: title case command has two variations — title <i>words</i> and title <i>sentences</i>.</p>
   <p><img width="350px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/f4775d48-1a24-49ce-994a-857bd5471c70"/></p>
 </details></td></tr>
+
+<!--
+<tr><td><details><summary><b>Parse YouTube timestamps</b></summary>
+  <p>Transform copied from YouTube timestamps to Logseq format.</p>
+  <p><img width="400px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/def32ac9-1d2e-424d-a269-e228d64e394d"/></p>
+</details></td></tr>
+-->
+
 </table>
 
 
-## 7) Views
+## 7) 🔭 Views
 
 <table>
 <tr><td><details><summary><b>Hide references started with «.»</b></summary>
