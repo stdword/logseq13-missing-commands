@@ -12,10 +12,12 @@ export async function getChosenBlocks(): Promise<[BlockEntity[], boolean]> {
     if (!uuid)
         return [[], false]
 
-    return [
-        [await logseq.Editor.getBlock(uuid as string) as BlockEntity],
-        false,
-    ]
+    const editingBlock = await logseq.Editor.getBlock(uuid as string) as BlockEntity
+
+    // to get ahead of Logseq block content saving process
+    editingBlock.content = await logseq.Editor.getEditingBlockContent()
+
+    return [ [editingBlock], false ]
 }
 
 /**

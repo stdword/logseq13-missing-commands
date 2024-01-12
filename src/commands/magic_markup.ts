@@ -35,7 +35,6 @@ const TRIM_BEGIN_SELECTION_ADDITION = [
     /^\s*[^\s:;,^@#~"`/|\\(){}[\]]+:: .*$/u,  // property with value
 ]
 
-
 const TRIM_BEFORE: (string | RegExp)[] = [
     /^\(\([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\)\)/,  // block ref
     /^{{\w+.*?}}/,  // macro call
@@ -90,12 +89,6 @@ const EXPAND_WHEN_OUTSIDE = [
         ['[[', ']]'],
     ],
 ]
-
-
-// TODO special markdown:
-//  code block
-//  table
-//  admonitions & special blocks: #+BEGIN_NOTE ... #+END_NOTE
 
 
 function trim(line: string, markup: [string, string], selectPosition: [number, number], isSelectionMode: boolean) {
