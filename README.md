@@ -193,7 +193,7 @@ _Designed to be very productive with keyboard_  ❤️
 ## 6) 🔧 Updating blocks
 
 <table>
-<!--
+
 <tr><td><details><summary><b>Magic Bold / Italics / Underlne / Hightlight / Code</b></summary>
   <p>Apply various formatting in a smart way: auto-select whole words, recognize Logseq special syntax, smart undo formatting, and work out of editing mode.</p>
   <p>To use it in edit mode:<ol>
@@ -204,7 +204,6 @@ _Designed to be very productive with keyboard_  ❤️
   <p><img width="400px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/dc632eca-8887-4f42-99d0-17ded489034f"/></p>
   <p><img width="300px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/6f8c08e2-f248-409d-9af9-76d859075472"/></p>
 </details></td></tr>
--->
 
 <tr><td><details><summary><b>Remove new lines</b></summary>
   <p>Remove all «new line» characters from text. Helpful for work with OCR texts.</p>
@@ -217,7 +216,6 @@ _Designed to be very productive with keyboard_  ❤️
   <p><img width="350px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/f4775d48-1a24-49ce-994a-857bd5471c70"/></p>
 </details></td></tr>
 
-<!--
 <tr><td><details><summary><b>Remove HTML tags</b></summary>
   <p>Remove all HTML tags from the block, leaving only the text content.</p>
   <p><b>Note</b>: there is no exceptions — everything between «<» and «>» will be removed.</p>
@@ -228,7 +226,6 @@ _Designed to be very productive with keyboard_  ❤️
   <p>Transform copied from YouTube timestamps to Logseq format.</p>
   <p><img width="400px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/def32ac9-1d2e-424d-a269-e228d64e394d"/></p>
 </details></td></tr>
--->
 
 </table>
 
@@ -255,7 +252,7 @@ _Designed to be very productive with keyboard_  ❤️
   <p><img width="550px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/37b0d07d-1ef3-480d-9ab0-5c6258363f45"/></p>
   <p><img width="550px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/d25aae8f-37a1-4619-ad63-fcdf799687c3"/></p>
 </details></td></tr>
-<!--
+
 <tr><td><details><summary><b>Columns view</b></summary>
   <p>Use the <code>#.columns</code> reference to organize child blocks to columns of <i>the same</i> width.<br/>
   <b>Note</b>: 1 column = 1 block.</p>
@@ -288,7 +285,6 @@ _Designed to be very productive with keyboard_  ❤️
   <b>Note</b>: these references can be combined.</p>
   <p><img width="400px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/114dc4eb-5bc7-49fb-8bca-eb4ef2566876"/></p>
 </details></td></tr>
--->
 
 </table>
 
