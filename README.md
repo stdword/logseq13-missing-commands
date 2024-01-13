@@ -15,7 +15,7 @@ Missing Commands, Views & Features
 
 <div align="center">
 
-[![](https://img.shields.io/badge/status-in_development-ca966c)](https://github.com/stdword/logseq13-missing-commands/releases)
+[![](https://img.shields.io/badge/status-support-ca966c)](https://github.com/stdword/logseq13-missing-commands/releases)
 [![Version](https://img.shields.io/github/v/release/stdword/logseq13-missing-commands?color=b3c5d0)](https://github.com/stdword/logseq13-missing-commands/releases)
 [![Downloads](https://img.shields.io/github/downloads/stdword/logseq13-missing-commands/total.svg?color=ca966c)](https://github.com/stdword/logseq13-missing-commands#from-logseq-marketplace-recommended-way)
 
@@ -194,7 +194,7 @@ _Designed to be very productive with keyboard_  ❤️
 
 <table>
 
-<tr><td><details><summary><b>Magic Bold / Italics / Underlne / Hightlight / Code</b></summary>
+<tr><td><details><summary><b>Magic Bold / Italics / Underlne / Hightlight / Strikethrough / Code</b></summary>
   <p>Apply various formatting in a smart way: auto-select whole words, recognize Logseq special syntax, smart undo formatting, and work out of editing mode.</p>
   <p>To use it in edit mode:<ol>
     <li>Go to the <i>Keymap</i> (<code>g s</code>) → <i>Formatting</i> section and replace standard Logseq commands (Bold, Highlight, Italics, Strikethrough) with magic ones.</li>
