@@ -8,7 +8,7 @@ const MARKUP: {[type: string]: MarkUp } = {
     bold:          [['**', '**'],        ['<b>', '</b>']],
     italics:        [['_', '_'],           ['*', '*'],       ['<i>', '</i>']],
     strikethrough: [['~~', '~~'],        ['<s>', '</s>']],
-    hightlight:    [['==', '=='],     ['<mark>', '</mark>']],
+    highlight:    [['==', '=='],     ['<mark>', '</mark>']],
     underline:  [['<ins>', '</ins>'],    ['<u>', '</u>']],
     code:           [['`', '`'],      ['<code>', '</code>']],
 }
@@ -349,8 +349,8 @@ export function magicStrikethrough(content, level, block, parent) {
     return wrap(block, content, MARKUP.strikethrough)
 }
 
-export function magicHightlight(content, level, block, parent) {
-    return wrap(block, content, MARKUP.hightlight)
+export function magicHighlight(content, level, block, parent) {
+    return wrap(block, content, MARKUP.highlight)
 }
 
 export function magicUnderline(content, level, block, parent) {

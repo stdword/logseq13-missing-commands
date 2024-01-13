@@ -24,7 +24,7 @@ import {
 import { improveCursorMovementFeature, improveSearchFeature, spareBlocksFeature } from './features'
 import { borderView, columnsView, galleryView, hideDotRefs, tabularView } from './views'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
-import { magicCode, magicHightlight, magicItalics, magicStrikethrough, magicUnderline } from './commands/magic_markup'
+import { magicCode, magicHighlight, magicItalics, magicStrikethrough, magicUnderline } from './commands/magic_markup'
 
 
 const DEV = process.env.NODE_ENV === 'development'
@@ -459,10 +459,10 @@ async function main() {
         keybinding: {},
     }, (e) => updateBlocksCommand(magicStrikethrough, false, false))
     logseq.App.registerCommandPalette({
-        label: ICON + ' Magic ==hightlight==', key: 'mc-7-update-17-magic-hightlight',
+        label: ICON + ' Magic ==highlight==', key: 'mc-7-update-17-magic-highlight',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => updateBlocksCommand(magicHightlight, false, false))
+    }, (e) => updateBlocksCommand(magicHighlight, false, false))
     logseq.App.registerCommandPalette({
         label: ICON + ' Magic underline', key: 'mc-7-update-18-magic-underline',
         // @ts-expect-error
