@@ -1,3 +1,24 @@
+# [1.5.0](https://github.com/stdword/logseq13-missing-commands/compare/v1.4.0...v1.5.0) (2024-01-13)
+
+
+### Bug Fixes
+
+* **commands:** change italics style from *text* to _text_ ([511bbb2](https://github.com/stdword/logseq13-missing-commands/commit/511bbb2df32d95722769eb7871d47a8ea4993f90))
+* **commands:** not applying markup on empty lines without selected text in edit mode ([16ba455](https://github.com/stdword/logseq13-missing-commands/commit/16ba4557b97e487a902ad256a86b473852336375))
+* **commands:** prevent overwriting during update of editing block ([3d6d834](https://github.com/stdword/logseq13-missing-commands/commit/3d6d834f385aefc93055932be45f302e844d26d3))
+* **views:** tabular view ([c03b7e6](https://github.com/stdword/logseq13-missing-commands/commit/c03b7e632cadf1eea61f4c897ffc3f9782a4f30f))
+
+
+### Features
+
+* **command:** remove HTML tags ([e312691](https://github.com/stdword/logseq13-missing-commands/commit/e312691d8b3fc22d881cc06435876dd269a04bc4))
+* **commands:** magic bold ([c8b6314](https://github.com/stdword/logseq13-missing-commands/commit/c8b63146fda7bc09094ca6bf6a921a88369efba5))
+* **commands:** magic formatting: add alternative markup styles ([b21a7a0](https://github.com/stdword/logseq13-missing-commands/commit/b21a7a03ba6ac48b384d04e9995c223db40e4720))
+* **commands:** magic italics, underline, strikethrough, highlight, code ([2afc7cf](https://github.com/stdword/logseq13-missing-commands/commit/2afc7cf93d9704eecfb2d08c67ab6b2554944586))
+* **commands:** parse youtube timestamps ([8d5002a](https://github.com/stdword/logseq13-missing-commands/commit/8d5002aea39ac6e75acf12e41c17b0592f2783b8))
+* **views:** columns view, box view, gallery view ([5998d9b](https://github.com/stdword/logseq13-missing-commands/commit/5998d9b37e5517566d6af26274f7e3248dff20a5))
+* **views:** columns, gallery and border views ([05bc386](https://github.com/stdword/logseq13-missing-commands/commit/05bc3866eaadb77fc81e697d7039377a43e25757))
+
 # [1.4.0](https://github.com/stdword/logseq13-missing-commands/compare/v1.3.2...v1.4.0) (2024-01-04)
 
 

@@ -1,6 +1,6 @@
 {
     "name": "logseq13-missing-commands",
-    "version": "1.4.0",
+    "version": "1.5.0",
     "description": "Sort blocks, TAB-trigger on search, split by sentences, parse text structure, blocks navigation, etc.",
     "author": "stdword",
     "repository": "https://github.com/stdword/logseq13-missing-commands.git",
