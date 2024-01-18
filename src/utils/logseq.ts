@@ -440,8 +440,8 @@ export async function insertBatchBlockBefore(
 
     // first block in a page
     if (srcBlock.left.id === srcBlock.page.id) {
-        // there is no batch way: use pseudo block
-        // issue: https://github.com/logseq/logseq/issues/10729
+        // there is bug with first block in page: use pseudo block
+        // issue: https://github.com/logseq/logseq/issues/10871
         const first = ( await logseq.Editor.insertBlock(
             srcBlock.uuid, 'ø', {before: true, sibling: true}) )!
         const result = await logseq.Editor.insertBatchBlock(
@@ -452,10 +452,8 @@ export async function insertBatchBlockBefore(
 
     const prev = await logseq.Editor.getPreviousSiblingBlock(srcBlock.uuid)
     if (prev) {
-        // special handling for empty block & numbering
+        // special handling for numbering
         // issue: https://github.com/logseq/logseq/issues/10729
-        const empty = !PropertiesUtils.deleteAllProperties(prev.content)
-
         let numbering = undefined
         let properties = {}
         if (prev.properties) {
@@ -465,14 +463,10 @@ export async function insertBatchBlockBefore(
         }
         if (numbering)
             await logseq.Editor.removeBlockProperty(prev.uuid, PropertiesUtils.numberingProperty_)
-        if (empty)
-            await logseq.Editor.updateBlock(prev.uuid, 'ø', {properties})
 
         const inserted = await logseq.Editor.insertBatchBlock(
             prev.uuid, blocks, {before: false, sibling: true, ...opts})
 
-        if (empty)
-            await logseq.Editor.updateBlock(prev.uuid, '', {properties})
         if (numbering)
             await logseq.Editor.upsertBlockProperty(prev.uuid, PropertiesUtils.numberingProperty_, numbering)
 
@@ -482,10 +476,8 @@ export async function insertBatchBlockBefore(
     // first block for parent
     const parent = ( await logseq.Editor.getBlock(srcBlock.parent.id) )!
 
-    // special handling for empty block & numbering
+    // special handling for numbering
     // issue: https://github.com/logseq/logseq/issues/10729
-    const empty = !PropertiesUtils.deleteAllProperties(parent.content)
-
     let numbering = undefined
     let properties = {}
     if (parent.properties) {
@@ -495,14 +487,10 @@ export async function insertBatchBlockBefore(
     }
     if (numbering)
         await logseq.Editor.removeBlockProperty(parent.uuid, PropertiesUtils.numberingProperty_)
-    if (empty)
-        await logseq.Editor.updateBlock(parent.uuid, 'ø', {properties})
 
     const inserted = await logseq.Editor.insertBatchBlock(
-        parent.uuid, blocks, {sibling: false, ...opts})
+        parent.uuid, blocks, {before: true, sibling: false, ...opts})
 
-    if (empty)
-        await logseq.Editor.updateBlock(parent.uuid, '', {properties})
     if (numbering)
         await logseq.Editor.upsertBlockProperty(parent.uuid, PropertiesUtils.numberingProperty_, numbering)
 
