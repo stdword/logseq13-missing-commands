@@ -19,17 +19,18 @@ import {
 
     splitByLines, splitBySentences, splitByWords,
     removeNewLines, removeHTML, parseYoutubeTimestamp,
-    lowerCase, upperCase, titleCaseWords, titleCaseSentences, magicBold,
+    lowerCase, upperCase, titleCaseWords, titleCaseSentences,
 } from './commands'
+import { MARKUP, magicQuotes, magicWrap } from './commands/magic_markup'
 import { improveCursorMovementFeature, improveSearchFeature, spareBlocksFeature } from './features'
 import { borderView, columnsView, galleryView, hideDotRefs, tabularView } from './views'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
-import { magicCode, magicHighlight, magicItalics, magicRef, magicStrikethrough, magicTag, magicUnderline } from './commands/magic_markup'
 
 
 const DEV = process.env.NODE_ENV === 'development'
 
 const defaultSpareBlocksSpace = 20
+const defaultMagicQuotes = '""'
 
 const settingsSchema: SettingSchemaDesc[] = [
     {
@@ -49,6 +50,15 @@ const settingsSchema: SettingSchemaDesc[] = [
             </ol></p>
         `.trim(),
         default: null,
+    },
+    {
+        key: 'magicQuotes',
+        title: 'Use this quotes for «Magic quotes» command',
+        description: `
+            <p>Default is <code>${defaultMagicQuotes}</code>.</p>
+        `.trim(),
+        type: 'string',
+        default: defaultMagicQuotes,
     },
     {
         key: 'headingFeatures',
@@ -208,6 +218,18 @@ async function postInit(settings) {
     await onAppSettingsChanged(settings, undefined)
 }
 async function onAppSettingsChanged(current, old) {
+    if (current.magicQuotes !== old?.magicQuotes) {
+        if (current.magicQuotes.length === 0)
+            current.magicQuotes = defaultMagicQuotes
+        if (current.magicQuotes.length === 1)
+            current.magicQuotes += current.magicQuotes
+        if (current.magicQuotes.length > 2)
+            current.magicQuotes = current.magicQuotes.slice(0, 2)
+
+        if (current.magicQuotes !== logseq.settings!.magicQuotes)
+            logseq.settings!.magicQuotes = current.magicQuotes
+    }
+
     if (!old || current.enableHomeEnd !== old.enableHomeEnd) {
         improveCursorMovementFeature(false)
         if (current.enableHomeEnd === 'Yes')
@@ -447,42 +469,65 @@ async function main() {
         label: ICON + ' Magic **bold**', key: 'mc-7-update-14-magic-bold',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => updateBlocksCommand(magicBold, false, false))
+    }, (e) => updateBlocksCommand(
+        (content, level, block, parent) => {return magicWrap(block, content, MARKUP.bold)},
+        false, false))
     logseq.App.registerCommandPalette({
         label: ICON + ' Magic _italics_', key: 'mc-7-update-15-magic-italics',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => updateBlocksCommand(magicItalics, false, false))
+    }, (e) => updateBlocksCommand(
+        (content, level, block, parent) => {return magicWrap(block, content, MARKUP.italics)},
+        false, false))
     logseq.App.registerCommandPalette({
         label: ICON + ' Magic ~~strikethrough~~', key: 'mc-7-update-16-magic-strikethrough',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => updateBlocksCommand(magicStrikethrough, false, false))
+    }, (e) => updateBlocksCommand(
+        (content, level, block, parent) => {return magicWrap(block, content, MARKUP.strikethrough)},
+        false, false))
     logseq.App.registerCommandPalette({
         label: ICON + ' Magic ==highlight==', key: 'mc-7-update-17-magic-highlight',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => updateBlocksCommand(magicHighlight, false, false))
+    }, (e) => updateBlocksCommand(
+        (content, level, block, parent) => {return magicWrap(block, content, MARKUP.highlight)},
+        false, false))
     logseq.App.registerCommandPalette({
         label: ICON + ' Magic underline', key: 'mc-7-update-18-magic-underline',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => updateBlocksCommand(magicUnderline, false, false))
+    }, (e) => updateBlocksCommand(
+        (content, level, block, parent) => {return magicWrap(block, content, MARKUP.underline)},
+        false, false))
     logseq.App.registerCommandPalette({
         label: ICON + ' Magic `code`', key: 'mc-7-update-19-magic-code',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => updateBlocksCommand(magicCode, false, false))
+    }, (e) => updateBlocksCommand(
+        (content, level, block, parent) => {return magicWrap(block, content, MARKUP.code)},
+        false, false))
     logseq.App.registerCommandPalette({
         label: ICON + ' Magic [[reference]]', key: 'mc-7-update-20-magic-ref',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => updateBlocksCommand(magicRef, false, false))
+    }, (e) => updateBlocksCommand(
+        (content, level, block, parent) => {return magicWrap(block, content, MARKUP.ref)},
+        false, false))
     logseq.App.registerCommandPalette({
         label: ICON + ' Magic #tag', key: 'mc-7-update-21-magic-tag',
         // @ts-expect-error
         keybinding: {},
-    }, (e) => updateBlocksCommand(magicTag, false, false))
+    }, (e) => updateBlocksCommand(
+        (content, level, block, parent) => {return magicWrap(block, content, MARKUP.tag)},
+        false, false))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Magic "quotes"', key: 'mc-7-update-22-magic-quotes',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(
+        (content, level, block, parent) => {return magicQuotes(block, content, settings.magicQuotes)},
+        false, false))
 
 
     // Navigation

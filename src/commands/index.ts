@@ -12,8 +12,6 @@ import {
     transformSelectedBlocksWithMovements, unique, walkBlockTree, walkBlockTreeAsync,
 } from '../utils'
 
-import { magicBold } from './magic_markup'
-
 
 // there is no `saw` emoji in Windows — use `kitchen knife`: it has the same colors
 export const ICON = isWindows ? '🔪' : '🪚'
@@ -999,5 +997,3 @@ export function parseYoutubeTimestamp(content, level, block, parent) {
             replacer,
         )
 }
-export { magicBold }
-

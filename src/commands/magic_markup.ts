@@ -64,7 +64,7 @@ class MarkUp implements Iterable<[string, string]> {
     }
 }
 
-const MARKUP: {[type: string]: MarkUp } = {
+export const MARKUP: {[type: string]: MarkUp } = {
     bold: new MarkUp({
         wrap:     ['**', '**'],
         unwrap: [['<b>', '</b>']] }),
@@ -92,7 +92,6 @@ const MARKUP: {[type: string]: MarkUp } = {
         alternativeWrapWhenMatch: /\s+/,
         alternativeWrapIndex: 1, }),
 }
-type MARKUP_NAME = keyof typeof MARKUP
 
 const TRIM_BEGIN = [
     /^\s+/,              // spaces at the beginning
@@ -302,11 +301,9 @@ function expand(line: string, markup: MarkUp, selectPosition: [number, number]) 
     })
 }
 
-function applyMarkup(line: string, markupName: MARKUP_NAME, selectPosition?: [number, number]): string {
+function applyMarkup(line: string, markup: MarkUp, selectPosition?: [number, number]): string {
     if (!line && !selectPosition)
         return ''
-
-    const markup = MARKUP[markupName]
 
     const isSelectionMode = Boolean(selectPosition)
     if (!selectPosition)
@@ -340,9 +337,9 @@ function applyMarkup(line: string, markupName: MARKUP_NAME, selectPosition?: [nu
     }
 }
 
-function wrap(block: BlockEntity, content: string, markupName: MARKUP_NAME) {
+export function magicWrap(block: BlockEntity, content: string, markup: MarkUp) {
     if (!block._selectPosition)
-        return content.split('\n').map((line) => applyMarkup(line, markupName)).join('\n')
+        return content.split('\n').map((line) => applyMarkup(line, markup)).join('\n')
 
     let lineStartPosition = 0
     let newLineStartPosition = 0
@@ -380,7 +377,7 @@ function wrap(block: BlockEntity, content: string, markupName: MARKUP_NAME) {
             Math.max(selectStart - lineStartPosition, 0),
             Math.min(selectEnd - lineStartPosition, line.length),
         ]
-        const newLine = applyMarkup(line, markupName, wholeLine ? undefined : selectPositionLine)
+        const newLine = applyMarkup(line, markup, wholeLine ? undefined : selectPositionLine)
 
         if (!wholeLine) {
             // first line of selection
@@ -401,34 +398,20 @@ function wrap(block: BlockEntity, content: string, markupName: MARKUP_NAME) {
     return wrapped
 }
 
-export function magicBold(content, level, block, parent) {
-    return wrap(block, content, 'bold me')
-}
+export function magicQuotes(block: BlockEntity, content: string, quotes: string) {
+    const wrap: [string, string] = [quotes[0], quotes[1]]
+    const unwrap: ([string, string] | null)[] = [
+        ['«', '»'], ['"', '"'], ["'", "'"], ['“', '“'], ['‘', '‘']]
 
-export function magicItalics(content, level, block, parent) {
-    return wrap(block, content, 'italics')
-}
+    for (const [i, pair] of Object.entries(unwrap)) {
+        if (pair && pair[0] == wrap[0] && pair[1] == wrap[1]) {
+            unwrap.splice(Number(i), 1)
+            break
+        }
+    }
 
-export function magicStrikethrough(content, level, block, parent) {
-    return wrap(block, content, 'strikethrough')
-}
+    console.log('TRACING', {wrap, unwrap})
 
-export function magicHighlight(content, level, block, parent) {
-    return wrap(block, content, 'highlight')
-}
-
-export function magicUnderline(content, level, block, parent) {
-    return wrap(block, content, 'underline')
-}
-
-export function magicCode(content, level, block, parent) {
-    return wrap(block, content, 'code')
-}
-
-export function magicRef(content, level, block, parent) {
-    return wrap(block, content, 'ref')
-}
-
-export function magicTag(content, level, block, parent) {
-    return wrap(block, content, 'tag')
+    const quotesMarkup = new MarkUp({wrap, unwrap})
+    return magicWrap(block, content, quotesMarkup)
 }
