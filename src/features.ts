@@ -1,4 +1,4 @@
-import { provideStyle, setNativeValue } from './utils'
+import { PropertiesUtils, escapeForRegExp, provideStyle, setNativeValue } from './utils'
 
 import spareBlocksStyle from './css/spare_blocks.css?inline'
 
@@ -107,6 +107,88 @@ export function improveSearchFeature(toggle: boolean) {
         parent.document.addEventListener('keydown', improveSearch_KeyDownListener, true)
     else
         parent.document.removeEventListener('keydown', improveSearch_KeyDownListener, true)
+}
+
+/**
+ * Edit block on mouse click to reference with ALT/OPT pressed
+ */
+async function improveMouseRefClick_MouseUpListener(e: MouseEvent) {
+    if (!e.target)
+        return
+
+    if (! (e.altKey && !e.shiftKey && !e.metaKey && !e.ctrlKey))
+        return
+
+    const target = e.target as HTMLElement
+    if (target.tagName !== 'A')
+        return
+
+    const isTag = target.classList.contains('tag')
+    if (!target.classList.contains('page-ref') && !isTag)
+        return
+
+    const block = target.closest('.block-content') as HTMLElement
+    // @ts-expect-error
+    const uuid = block.attributes.blockid.value
+    if (!uuid)
+        return
+
+    e.stopPropagation()
+
+    let content = (await logseq.Editor.getBlock(uuid))!.content
+    content = PropertiesUtils.deletePropertyFromString(content, 'id')
+
+    // get ref text
+    const walker = document.createTreeWalker(target, NodeFilter.SHOW_TEXT, null)!
+    let text = ''
+    let node: Node | null
+    while (true) {
+        node = walker.nextNode()
+        if (!node)
+            break
+        text = node.textContent!
+    }
+
+    if (isTag)
+        text = text.slice(1)
+
+    // find ref position in block
+    const escapedText = escapeForRegExp(text)
+    const refText = `\\[\\[${escapedText}\\]\\]`
+
+    let startRefPos = -1
+    if (isTag) {
+        startRefPos = content.search(new RegExp(`#${escapedText}`, 'u'))
+        if (startRefPos !== -1)
+            startRefPos += 1  // for #
+
+        if (startRefPos === -1) {
+            startRefPos = content.search(new RegExp(`#${refText}`, 'u'))
+            if (startRefPos !== -1)
+                startRefPos += 3  // for #[[
+        }
+    } else {
+        startRefPos = content.search(new RegExp(refText, 'u'))
+        if (startRefPos !== -1)
+            startRefPos += 2  // for [[
+    }
+
+    if (startRefPos === -1)
+        startRefPos = 0
+
+    // find relative click position
+    const textSize = (target.textContent ?? '').length || 1
+    const rect = target.getBoundingClientRect()
+    const relativePos = e.x - rect.left
+    const charPos = Math.round(textSize * relativePos / rect.width)
+
+    await logseq.Editor.editBlock(uuid, {pos: startRefPos + charPos})
+}
+export function improveMouseRefClick(toggle: boolean) {
+    if (toggle)
+        parent.document.addEventListener('mouseup', improveMouseRefClick_MouseUpListener, true)
+    else
+        parent.document.removeEventListener('mouseup', improveMouseRefClick_MouseUpListener, true)
 }
 
 /**

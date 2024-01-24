@@ -22,7 +22,7 @@ import {
     lowerCase, upperCase, titleCaseWords, titleCaseSentences,
 } from './commands'
 import { MARKUP, magicQuotes, magicWrap } from './commands/magic_markup'
-import { improveCursorMovementFeature, improveSearchFeature, spareBlocksFeature } from './features'
+import { improveCursorMovementFeature, improveMouseRefClick, improveSearchFeature, spareBlocksFeature } from './features'
 import { borderView, columnsView, galleryView, hideDotRefs, tabularView } from './views'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
 
@@ -91,6 +91,17 @@ const settingsSchema: SettingSchemaDesc[] = [
         description: `
             <p>1. Press <code>Tab</code> to fill the input with selected search item.</p>
             <p>2. Press <code>←</code> arrow (with empty input) to fill the input with the current page name.</p>
+        `.trim(),
+        type: 'enum',
+        enumPicker: 'radio',
+        enumChoices: ['Yes', 'No'],
+        default: 'Yes',
+    },
+    {
+        key: 'enableMouseRefClick',
+        title: 'Enable block editing on mouse click to [[reference]]?',
+        description: `
+            With <code>⌥</code> (or <code>Alt</code> for Windows) pressed.
         `.trim(),
         type: 'enum',
         enumPicker: 'radio',
@@ -240,6 +251,12 @@ async function onAppSettingsChanged(current, old) {
         improveSearchFeature(false)
         if (current.enableSearchImprovements === 'Yes')
             improveSearchFeature(true)
+    }
+
+    if (!old || current.enableMouseRefClick !== old.enableMouseRefClick) {
+        improveMouseRefClick(false)
+        if (current.enableMouseRefClick === 'Yes')
+            improveMouseRefClick(true)
     }
 
     if (!old || current.spareBlocksSpace !== old.spareBlocksSpace)
