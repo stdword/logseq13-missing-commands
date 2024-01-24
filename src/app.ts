@@ -101,7 +101,8 @@ const settingsSchema: SettingSchemaDesc[] = [
         key: 'enableMouseRefClick',
         title: 'Enable block editing on mouse click to [[reference]]?',
         description: `
-            With <code>⌥</code> (or <code>Alt</code> for Windows) pressed.
+            <p>With <code>⌥</code> (or <code>Alt</code> for Windows) pressed.</p>
+            <p><i>Restriction</i>: this feature only works for the first page reference or tag. There is no way to recognize the others if they are the same.</p>
         `.trim(),
         type: 'enum',
         enumPicker: 'radio',
