@@ -159,13 +159,11 @@ async function improveMouseRefClick_MouseUpListener(e: MouseEvent) {
     let startRefPos = -1
     if (isTag) {
         startRefPos = content.search(new RegExp(`#${escapedText}`, 'u'))
-        if (startRefPos !== -1)
-            startRefPos += 1  // for #
 
         if (startRefPos === -1) {
             startRefPos = content.search(new RegExp(`#${refText}`, 'u'))
             if (startRefPos !== -1)
-                startRefPos += 3  // for #[[
+                startRefPos += 2  // for [[
         }
     } else {
         startRefPos = content.search(new RegExp(refText, 'u'))
