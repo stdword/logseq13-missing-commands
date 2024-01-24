@@ -72,6 +72,12 @@ _Designed to be very productive with keyboard_  ❤️
   <p><b>Motivation</b>: blocks on the first level represent the most general parts of the information, which usually stand separately: headings, categories, clients, code snippets, links, etc.</p>
   <p><img width="300px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/7a3ab5be-8f97-4538-9cc5-5af2d76d4b31"/></p>
 </details></td></tr>
+
+<tr><td><details><summary><b>Edit block on mouse click on page reference or tag with <code>⌥</code> (or <code>Alt</code> for Windows) key</b></summary>
+  <p><b>Restriction</b>: this feature only works for the first page reference or tag. There is no way to recognize the others if they are the same.</p>
+  <p><img width="250px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/24d40b51-37f3-4744-aa05-c89b8e6db472"/></p>
+</details></td></tr>
+
 </table>
 
 
@@ -194,11 +200,11 @@ _Designed to be very productive with keyboard_  ❤️
 
 <table>
 
-<tr><td><details><summary><b>Magic Bold / Italics / Underlne / Hightlight / Strikethrough / Code</b></summary>
+<tr><td><details><summary><b>Magic Bold / Italics / Underlne / Hightlight / Strikethrough / Code / Reference / Tag / Quotes</b></summary>
   <p>Apply various formatting in a smart way: auto-select whole words, recognize Logseq special syntax, smart undo formatting, and work out of editing mode.</p>
   <p>To use it in edit mode:<ol>
     <li>Go to the <i>Keymap</i> (<code>g s</code>) → <i>Formatting</i> section and replace standard Logseq commands (Bold, Highlight, Italics, Strikethrough) with magic ones.</li>
-    <li>Bind <i>Magic underline</i> and <i>Magic `code`</i> commands to shortcuts of your choice (e.g. <kbd>⌘U</kbd> and <kbd>⌥~</kbd>).</li>
+    <li>Bind <i>Magic underline</i>, <i>Magic `code`</i>, <i>Magic [[reference]]</i>, <i>Magic #tag</i> and <i>Magic "quotes"</i> commands to shortcuts of your choice (e.g. <kbd>⌘U</kbd>, <kbd>⌥~</kbd>, etc.).</li>
   </ol></p>
   <p><b>Note</b>: command uses «_» for italics to prevent <a href="https://github.com/logseq/logseq/issues/8790">this</a> cases.</p>
   <p><img width="400px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/dc632eca-8887-4f42-99d0-17ded489034f"/></p>
