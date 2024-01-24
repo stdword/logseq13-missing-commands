@@ -24,7 +24,7 @@ import {
 import { improveCursorMovementFeature, improveSearchFeature, spareBlocksFeature } from './features'
 import { borderView, columnsView, galleryView, hideDotRefs, tabularView } from './views'
 import { getChosenBlocks, p, scrollToBlock } from './utils'
-import { magicCode, magicHighlight, magicItalics, magicStrikethrough, magicUnderline } from './commands/magic_markup'
+import { magicCode, magicHighlight, magicItalics, magicRef, magicStrikethrough, magicTag, magicUnderline } from './commands/magic_markup'
 
 
 const DEV = process.env.NODE_ENV === 'development'
@@ -473,6 +473,16 @@ async function main() {
         // @ts-expect-error
         keybinding: {},
     }, (e) => updateBlocksCommand(magicCode, false, false))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Magic [[reference]]', key: 'mc-7-update-20-magic-ref',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(magicRef, false, false))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Magic #tag', key: 'mc-7-update-21-magic-tag',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(magicTag, false, false))
 
 
     // Navigation

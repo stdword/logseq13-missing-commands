@@ -2,32 +2,115 @@ import '@logseq/libs'
 import { BlockEntity } from '@logseq/libs/dist/LSPlugin'
 
 
-type MarkUp = [string, string][] & {wrappedWith?: string}
-const MARKUP: {[type: string]: MarkUp } = {
-    // first pair is for wrapping, others — for unwrapping
-    bold:          [['**', '**'],        ['<b>', '</b>']],
-    italics:        [['_', '_'],           ['*', '*'],       ['<i>', '</i>']],
-    strikethrough: [['~~', '~~'],        ['<s>', '</s>']],
-    highlight:    [['==', '=='],     ['<mark>', '</mark>']],
-    underline:  [['<ins>', '</ins>'],    ['<u>', '</u>']],
-    code:           [['`', '`'],      ['<code>', '</code>']],
+class MarkUp implements Iterable<[string, string]> {
+    public wrap: [string, string]
+    public alternativeWrap: [string, string]
+    public unwrap: [string, string][]
+
+    public wrappedWith?: string
+    public alternativeWrapWhenMatch?: RegExp
+
+    constructor({ wrap, unwrap, alternativeWrapWhenMatch, alternativeWrapIndex }: {
+        wrap: [string, string]
+        unwrap: ([string, string] | null)[]
+        alternativeWrapWhenMatch?: RegExp
+        alternativeWrapIndex?: number
+    }) {
+        this.wrap = wrap
+        this.unwrap = unwrap.map((item) => item === null ? wrap : item)
+        if (!this.unwrap.includes(wrap))
+            this.unwrap.splice(0, 0, wrap)
+        this.wrappedWith = undefined
+        this.alternativeWrapWhenMatch = alternativeWrapWhenMatch
+        this.alternativeWrap = this.unwrap[alternativeWrapIndex ?? 1]
+    }
+
+    [Symbol.iterator]() {
+        let index = 0
+        return {
+            next: () => {
+                return {
+                    done: index >= this.unwrap.length,
+                    value: this.unwrap[index++],
+                }
+            }
+        }
+    }
+    getWrapFor(selection: string) {
+        if (this.alternativeWrapWhenMatch && this.alternativeWrapWhenMatch.test(selection))
+            return this.alternativeWrap
+        return this.wrap
+    }
+    getUnwrapFor(line: string, selectPosition: [number, number]): [string, string] | null {
+        // Assertion: selectPosition should be already trimmed, so markup is always OUTside
+
+        for (const markup of this.unwrap)
+            if (MarkUp.isMarkedUpWith(line, selectPosition, markup))
+                return markup
+        return null
+    }
+    static isMarkedUpWith(line: string, selectPosition: [number, number], markup: [string, string]): boolean {
+        const [start, end] = selectPosition
+        const [frontMarkup, backMarkup] = markup
+
+        if (start < frontMarkup.length)
+            return false
+        if (end + backMarkup.length > line.length)
+            return false
+
+        const charsBefore = line.slice(start - frontMarkup.length, start)
+        const charsAfter = line.slice(end, end + backMarkup.length)
+        return charsBefore === frontMarkup && charsAfter === backMarkup
+    }
 }
 
+const MARKUP: {[type: string]: MarkUp } = {
+    bold: new MarkUp({
+        wrap:     ['**', '**'],
+        unwrap: [['<b>', '</b>']] }),
+    italics: new MarkUp({
+        wrap:    ['_', '_'],
+        unwrap: [['*', '*'], ['<i>', '</i>']] }),
+    strikethrough: new MarkUp({
+        wrap:     ['~~', '~~'],
+        unwrap: [['<s>', '</s>']] }),
+    highlight: new MarkUp({
+        wrap:        ['==', '=='],
+        unwrap: [['<mark>', '</mark>']] }),
+    underline: new MarkUp({
+        wrap:  ['<ins>', '</ins>'],
+        unwrap: [['<u>', '</u>']] }),
+    code: new MarkUp({
+        wrap:         ['`', '`'],
+        unwrap: [['<code>', '</code>']] }),
+    ref: new MarkUp({
+        wrap:     ['[[', ']]'],
+        unwrap: [['#[[', ']]'], null, ['#', '']] }),
+    tag: new MarkUp({
+        wrap: ['#', ''],
+        unwrap: [['#[[', ']]'], ['[[', ']]']],
+        alternativeWrapWhenMatch: /\s+/,
+        alternativeWrapIndex: 1, }),
+}
+type MARKUP_NAME = keyof typeof MARKUP
+
 const TRIM_BEGIN = [
-    /^\s+/,
+    /^\s+/,              // spaces at the beginning
 
-    /^#{1,6} /,
+    /^#{1,6} /,          // headings
 
-    /^\s*[-+*] /,
-    /^\s*[-+*] \[.\] /,
-    /^>/,
+    /^\s*[-+*] /,        // list item
+    /^\s*[-+*] \[.\] /,  // list item with markdown task
+    /^>/,                // quote
 
+    // logseq tasks
     /^(LATER|TODO) (\[#(A|B|C)\])?/,
     /^(NOW|DOING) (\[#(A|B|C)\])?/,
     /^DONE (\[#(A|B|C)\])?/,
     /^(WAIT|WAITING) (\[#(A|B|C)\])?/,
     /^(CANCELED|CANCELLED) (\[#(A|B|C)\])?/,
-    /^\[#(A|B|C)\]/,
+
+    /^\[#(A|B|C)\]/,  // non-task blocks with priorities
 
     /^\s*[^\s:;,^@#~"`/|\\(){}[\]]+:: /u,  // property without value
     /^\s*DEADLINE: <[^>]+>$/,
@@ -36,20 +119,18 @@ const TRIM_BEGIN = [
 const TRIM_BEGIN_SELECTION_ADDITION = [
     /^\s*[^\s:;,^@#~"`/|\\(){}[\]]+:: .*$/u,  // property with value
 ]
-
 const TRIM_BEFORE: (string | RegExp)[] = [
     /^\(\([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\)\)/,  // block ref
     /^{{\w+.*?}}/,  // macro call
 
     /^\s/,
 ]
-
 const TRIM_AFTER: (string | RegExp)[] = [
     /\!\[.*?\]\(.+?\){.*?}$/,  // link to image
     /\!\[.*?\]\(.+?\)$/,       // link to image
 
-    // /\]\(.+?\)$/,          // link to page
-    /\]\(\[\[.+?\]\]\)$/,  // link to page
+    // /\]\(.+?\)$/,           // link to page
+    /\]\(\[\[.+?\]\]\)$/,      // link to page
 
     /\]\(\(\([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\)\)\)$/,  // link to block
     /\(\([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\)\)$/,  // block ref
@@ -60,7 +141,6 @@ const TRIM_AFTER: (string | RegExp)[] = [
 
     /\]\($/, // to not break markdown links
 ]
-
 const EXPAND_WHEN_OUTSIDE = [
     // this is OR groups
     // order is expansion direction
@@ -116,6 +196,9 @@ function trim(line: string, markup: MarkUp, selectPosition: [number, number], is
     while (true) {
         let wasTrimmed = false
         trimBefore.forEach(strOrRE => {
+            if (!strOrRE)
+                return
+
             if (typeof strOrRE === 'string') {
                 if (selection.startsWith(strOrRE)) {
                     selection = selection.slice(strOrRE.length)
@@ -139,6 +222,9 @@ function trim(line: string, markup: MarkUp, selectPosition: [number, number], is
     while (true) {
         let wasTrimmed = false
         trimAfter.forEach((strOrRE) => {
+            if (!strOrRE)
+                return
+
             if (typeof strOrRE === 'string') {
                 if (selection.endsWith(strOrRE)) {
                     selection = selection.slice(0, -strOrRE.length)
@@ -162,29 +248,6 @@ function trim(line: string, markup: MarkUp, selectPosition: [number, number], is
     selectPosition[1] = end
 }
 
-function isMarkedUp(line: string, markup: MarkUp, selectPosition: [number, number]) {
-    // note: may change markup
-    // assertion:: selectPosition should be already trimmed, so markup is always OUTside
-
-    const [start, end] = selectPosition
-    for (const [i, [frontMarkup, backMarkup]] of Object.entries(markup)) {
-        if (start < frontMarkup.length)
-            continue
-        if (end + backMarkup.length > line.length)
-            continue
-
-        const charsBefore = line.slice(start - frontMarkup.length, start)
-        const charsAfter = line.slice(end, end + backMarkup.length)
-        if (charsBefore === frontMarkup && charsAfter === backMarkup) {
-            markup.wrappedWith = i
-            Object.defineProperty(markup, 'wrappedWith', {enumerable: false})
-            return true
-        }
-    }
-
-    return false
-}
-
 function wordAtPosition(line: string, position: number) {
     const wordLeftRegexp  =  /(?!_)[\p{Letter}\p{Number}'_-]*$/u
     const wordRightRegexp = /^[\p{Letter}\p{Number}'_-]*(?<!_)/u
@@ -199,7 +262,7 @@ function wordAtPosition(line: string, position: number) {
 function expand(line: string, markup: MarkUp, selectPosition: [number, number]) {
     let [start, end] = selectPosition
 
-    let wordEdge
+    let wordEdge: number
     [start, wordEdge] = wordAtPosition(line, start)
     if (wordEdge < end)
         [wordEdge, end] = wordAtPosition(line, end)
@@ -229,7 +292,7 @@ function expand(line: string, markup: MarkUp, selectPosition: [number, number]) 
 
             const trimLastSpace = Boolean(pair[2])
 
-            if (isMarkedUp(line, [[L, R]] as MarkUp, [start, end])) {
+            if (MarkUp.isMarkedUpWith(line, [start, end], [L, R])) {
                 start -= L.length
                 end += R.length
                 setSelection()
@@ -239,10 +302,11 @@ function expand(line: string, markup: MarkUp, selectPosition: [number, number]) 
     })
 }
 
-function applyMarkup(line: string, markup: MarkUp, selectPosition?: [number, number]): string {
+function applyMarkup(line: string, markupName: MARKUP_NAME, selectPosition?: [number, number]): string {
     if (!line && !selectPosition)
         return ''
 
+    const markup = MARKUP[markupName]
 
     const isSelectionMode = Boolean(selectPosition)
     if (!selectPosition)
@@ -262,23 +326,23 @@ function applyMarkup(line: string, markup: MarkUp, selectPosition?: [number, num
     }
 
     let selection = line.slice(start, end)
-
-    if (isMarkedUp(line, markup, selectPosition)) {
-        const [frontMarkup, backMarkup] = markup[markup.wrappedWith!]
+    const wrappedWith = markup.getUnwrapFor(line, selectPosition)
+    if (wrappedWith) {
+        const [frontMarkup, backMarkup] = wrappedWith
         selectPosition[0] -= frontMarkup.length
         selectPosition[1] -= frontMarkup.length
         return line.slice(0, start - frontMarkup.length) + selection + line.slice(end + backMarkup.length)
     } else {
-        const [frontMarkup, backMarkup] = markup[0]
+        const [frontMarkup, backMarkup] = markup.getWrapFor(selection)
         selectPosition[0] += frontMarkup.length
         selectPosition[1] += frontMarkup.length
         return line.slice(0, start) + frontMarkup + selection + backMarkup + line.slice(end)
     }
 }
 
-function wrap(block: BlockEntity, content: string, markup: MarkUp) {
+function wrap(block: BlockEntity, content: string, markupName: MARKUP_NAME) {
     if (!block._selectPosition)
-        return content.split('\n').map((line) => applyMarkup(line, markup)).join('\n')
+        return content.split('\n').map((line) => applyMarkup(line, markupName)).join('\n')
 
     let lineStartPosition = 0
     let newLineStartPosition = 0
@@ -316,7 +380,7 @@ function wrap(block: BlockEntity, content: string, markup: MarkUp) {
             Math.max(selectStart - lineStartPosition, 0),
             Math.min(selectEnd - lineStartPosition, line.length),
         ]
-        const newLine = applyMarkup(line, markup, wholeLine ? undefined : selectPositionLine)
+        const newLine = applyMarkup(line, markupName, wholeLine ? undefined : selectPositionLine)
 
         if (!wholeLine) {
             // first line of selection
@@ -338,25 +402,33 @@ function wrap(block: BlockEntity, content: string, markup: MarkUp) {
 }
 
 export function magicBold(content, level, block, parent) {
-    return wrap(block, content, MARKUP.bold)
+    return wrap(block, content, 'bold me')
 }
 
 export function magicItalics(content, level, block, parent) {
-    return wrap(block, content, MARKUP.italics)
+    return wrap(block, content, 'italics')
 }
 
 export function magicStrikethrough(content, level, block, parent) {
-    return wrap(block, content, MARKUP.strikethrough)
+    return wrap(block, content, 'strikethrough')
 }
 
 export function magicHighlight(content, level, block, parent) {
-    return wrap(block, content, MARKUP.highlight)
+    return wrap(block, content, 'highlight')
 }
 
 export function magicUnderline(content, level, block, parent) {
-    return wrap(block, content, MARKUP.underline)
+    return wrap(block, content, 'underline')
 }
 
 export function magicCode(content, level, block, parent) {
-    return wrap(block, content, MARKUP.code)
+    return wrap(block, content, 'code')
+}
+
+export function magicRef(content, level, block, parent) {
+    return wrap(block, content, 'ref')
+}
+
+export function magicTag(content, level, block, parent) {
+    return wrap(block, content, 'tag')
 }
