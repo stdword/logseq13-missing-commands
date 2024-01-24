@@ -1,3 +1,17 @@
+# [1.6.0](https://github.com/stdword/logseq13-missing-commands/compare/v1.5.0...v1.6.0) (2024-01-24)
+
+
+### Bug Fixes
+
+* click alignment for tags ([df407aa](https://github.com/stdword/logseq13-missing-commands/commit/df407aad08a74be54ac210b9f3923b70ca6899d1))
+
+
+### Features
+
+* **commands:** magic formatting: magic quotes ([f8282c6](https://github.com/stdword/logseq13-missing-commands/commit/f8282c687064d0485612162c74af11ffbed9d7b4))
+* **commands:** magic formatting: magic reference & magic tag commands ([cfbd402](https://github.com/stdword/logseq13-missing-commands/commit/cfbd402ade3053b60213a03438deaf818eda334d))
+* **features:** mouse click with opt/alt on page ref ([89ebb29](https://github.com/stdword/logseq13-missing-commands/commit/89ebb29ccc667a5d4dbb67b6f523b98d54112f1a))
+
 # [1.5.0](https://github.com/stdword/logseq13-missing-commands/compare/v1.4.0...v1.5.0) (2024-01-13)
 
 
