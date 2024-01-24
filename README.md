@@ -209,6 +209,7 @@ _Designed to be very productive with keyboard_  ❤️
   <p><b>Note</b>: command uses «_» for italics to prevent <a href="https://github.com/logseq/logseq/issues/8790">this</a> cases.</p>
   <p><img width="400px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/dc632eca-8887-4f42-99d0-17ded489034f"/></p>
   <p><img width="300px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/6f8c08e2-f248-409d-9af9-76d859075472"/></p>
+  <p><img width="220px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/c06e90aa-d504-4929-8fb1-840ecfab0d6b"/></p>
 </details></td></tr>
 
 <tr><td><details><summary><b>Remove new lines</b></summary>
