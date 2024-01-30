@@ -119,7 +119,11 @@ async function improveMouseRefClick_MouseUpListener(e: MouseEvent) {
     if (! (e.altKey && !e.shiftKey && !e.metaKey && !e.ctrlKey))
         return
 
-    const target = e.target as HTMLElement
+    let target = e.target as HTMLElement
+    if (target.classList.contains('awLi-icon'))  // Awesome Links: icon element
+        target = target.parentElement!
+    if (target.classList.contains('shml-anchor'))  // Shorten My Links: anchor element
+        target = target.parentElement!
     if (target.tagName !== 'A')
         return
 
@@ -135,22 +139,30 @@ async function improveMouseRefClick_MouseUpListener(e: MouseEvent) {
 
     e.stopPropagation()
 
+    // get block content
     let content = (await logseq.Editor.getBlock(uuid))!.content
     content = PropertiesUtils.deletePropertyFromString(content, 'id')
+    //
 
-    // get ref text
-    const walker = document.createTreeWalker(target, NodeFilter.SHOW_TEXT, null)!
-    let text = ''
-    let node: Node | null
-    while (true) {
-        node = walker.nextNode()
-        if (!node)
-            break
-        text = node.textContent!
+    // get ref text and its width per char
+    const textNode = target.childNodes[target.childNodes.length - 1]
+    let text = textNode.textContent ?? ''
+
+    const rect = target.getBoundingClientRect()
+    let textWidth = rect.width
+    for (const child of target.childNodes) {
+        const e = child as HTMLElement
+        if (child.nodeType !== document.TEXT_NODE) {
+            textWidth -= e.getBoundingClientRect().width
+            if (e.classList.contains('awLi-icon'))
+                textWidth -= 5  // additional margin for icon
+        }
     }
 
+    const widthPerChar = textWidth / (text.length || 1)
     if (isTag)
         text = text.slice(1)
+    //
 
     // find ref position in block
     const escapedText = escapeForRegExp(text)
@@ -165,22 +177,34 @@ async function improveMouseRefClick_MouseUpListener(e: MouseEvent) {
             if (startRefPos !== -1)
                 startRefPos += 2  // for [[
         }
+
+        if (startRefPos !== -1)
+            startRefPos += 1  // for #
     } else {
         startRefPos = content.search(new RegExp(refText, 'u'))
         if (startRefPos !== -1)
             startRefPos += 2  // for [[
     }
 
+    if (startRefPos === -1) {
+        // Shorten My Links plugin integration
+        const shortenRefText = `/${escapedText}\\]\\]`
+        startRefPos = content.search(new RegExp(shortenRefText, 'u'))
+        if (startRefPos !== -1)
+            startRefPos += 1  // for /
+    }
+
     if (startRefPos === -1)
         startRefPos = 0
+    //
 
     // find relative click position
-    const textSize = (target.textContent ?? '').length || 1
-    const rect = target.getBoundingClientRect()
-    const relativePos = e.x - rect.left
-    const charPos = Math.round(textSize * relativePos / rect.width)
+    const relativeToEndPos = rect.right - e.x
+    const charPosRight = Math.round(relativeToEndPos / widthPerChar)
+    const charsOffset = Math.max(0, text.length - charPosRight)
+    //
 
-    await logseq.Editor.editBlock(uuid, {pos: startRefPos + charPos})
+    await logseq.Editor.editBlock(uuid, {pos: startRefPos + charsOffset})
 }
 export function improveMouseRefClick(toggle: boolean) {
     if (toggle)
