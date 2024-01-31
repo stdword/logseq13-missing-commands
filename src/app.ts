@@ -151,6 +151,7 @@ const settingsSchema: SettingSchemaDesc[] = [
             <li>Use the <code>#.tabular</code> reference in a block to apply a Tana-like tabular view for all its children.
                 It could be subsequent: <code>#.tabular</code> inside another <code>#.tabular</code>. However, only <ins>two</ins> subsequent levels are supported.</li>
             <li>Use the <code>#.tabular0</code> reference in <ins>another tabular row</ins> to skip the immediate children.</li>
+            <li>Use the <code>#.tabular0</code> reference to <ins>hide</ins> heading block.</li>
             </ol>
         `.trim(),
         type: 'enum',
