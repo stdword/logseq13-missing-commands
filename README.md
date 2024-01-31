@@ -251,13 +251,17 @@ _Designed to be very productive with keyboard_  ❤️
 </details></td></tr>
 
 <tr><td><details><summary><b>Tabular view</b></summary>
-  <p>Use the <code>#.tabular</code> reference in a block to apply a Tana-like tabular view for all its children.<br/>
-  <b>Note</b>: it could be subsequent — <code>#.tabular</code> inside another <code>#.tabular</code>. However, only two subsequent levels are supported.</p>
-  <p>Use the <code>#.tabular0</code> reference in another tabular row to skip the immediate children.<br/>
-  <b>Note</b>: The <code>#.tabular0</code> reference always needs to be subsequent.</p>
+  <p>Use the <code>#.tabular</code> reference in a block to apply a Tana-like tabular view for all its children.</p>
   <p><img width="550px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/81253770-b02f-4b31-9b5c-af9dd031cad0"/></p>
+  
+  <p><b>Note</b>: it could be nested — <code>#.tabular</code> inside another <code>#.tabular</code>. However, only two-level depth is supported.</p>
   <p><img width="550px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/37b0d07d-1ef3-480d-9ab0-5c6258363f45"/></p>
+
+  <p>Use the <code>#.tabular0</code> reference in <ins>another tabular row</ins> to skip the immediate children.</p>
   <p><img width="550px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/d25aae8f-37a1-4619-ad63-fcdf799687c3"/></p>
+
+  <p>Use the <code>#.tabular0</code> reference to <ins>hide</ins> heading block.</p>
+  <p><img width="300px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/3246feec-6478-4eb4-b291-2f9dca662344"/></p>
 </details></td></tr>
 
 <tr><td><details><summary><b>Columns view</b></summary>
