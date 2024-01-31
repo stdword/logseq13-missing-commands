@@ -1,3 +1,16 @@
+# [1.7.0](https://github.com/stdword/logseq13-missing-commands/compare/v1.6.0...v1.7.0) (2024-01-31)
+
+
+### Bug Fixes
+
+* **commands:** magic split: add case with ordered lists in 1.2 style (no dot in the end) ([61b065a](https://github.com/stdword/logseq13-missing-commands/commit/61b065a5909ac16e84d2f96e1becd3fa9353223c))
+
+
+### Features
+
+* **features:** mouse ref click: plugins integration — shorten my links & awesome links ([c84160b](https://github.com/stdword/logseq13-missing-commands/commit/c84160b0f3d81dbcced32386445e213304ab751d))
+* **views:** tabular view: add hidden header mode with #.tabular0 ([fe0fca0](https://github.com/stdword/logseq13-missing-commands/commit/fe0fca0db8862703a90d583777442f2522b1add2))
+
 # [1.6.0](https://github.com/stdword/logseq13-missing-commands/compare/v1.5.0...v1.6.0) (2024-01-24)
 
 
