@@ -262,6 +262,14 @@ _Designed to be very productive with keyboard_  ❤️
 
   <p>Use the <code>#.tabular0</code> reference to <ins>hide</ins> heading block.</p>
   <p><img width="300px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/3246feec-6478-4eb4-b291-2f9dca662344"/></p>
+
+  <p>FAQ: How to return back double square brackets for page references in the left column?</p>
+  <p>Add following code to <code>custom.css</code>:</p>
+  <pre>
+    .ls-block[data-refs-self*='".tabular'] > .block-children-container > .block-children > .ls-block > .block-main-container > .block-content-wrapper .page-reference .bracket {
+      display: inline-flex;
+    }
+  </pre>
 </details></td></tr>
 
 <tr><td><details><summary><b>Columns view</b></summary>
