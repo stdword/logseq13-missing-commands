@@ -32,7 +32,7 @@ export async function toggleAutoHeadingCommand(opts: {togglingBasedOnFirstBlock:
     if (blocks.length === 0)
         return
 
-    const firstBlockHeading = blocks[0].properties?.heading
+    const firstBlockHeading = blocks[0].properties?.heading || HEADING_REGEX.test(blocks[0].content)
 
     for (const block of blocks) {
         if (HEADING_REGEX.test(block.content)) {
@@ -54,6 +54,9 @@ export async function toggleAutoHeadingCommand(opts: {togglingBasedOnFirstBlock:
             await logseq.Editor.upsertBlockProperty(block.uuid, PROPERTY, true)
         else
             await logseq.Editor.removeBlockProperty(block.uuid, PROPERTY)
+
+        // ensure currently edited content will be saved
+        await logseq.Editor.updateBlock(block.uuid, block.content)
     }
 }
 
