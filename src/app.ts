@@ -19,7 +19,7 @@ import {
 
     splitByLines, splitBySentences, splitByWords,
     removeNewLines, removeHTML, parseYoutubeTimestamp,
-    lowerCase, upperCase, titleCaseWords, titleCaseSentences,
+    lowerCase, upperCase, titleCaseWords, titleCaseSentences, splitByCommas,
 } from './commands'
 import { MARKUP, magicQuotes, magicWrap } from './commands/magic_markup'
 import { improveCursorMovementFeature, improveMouseRefClick, improveSearchFeature, spareBlocksFeature } from './features'
@@ -357,6 +357,17 @@ async function main() {
         keybinding: {},
     }, (e) => splitBlocksCommand(
         splitBySentences, setting_storeChildBlocksIn(), true))
+
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Split by commas', key: 'mc-5-split-9-by-commas',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => splitBlocksCommand(splitByCommas, setting_storeChildBlocksIn()))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Split by commas (with nested)', key: 'mc-5-split-10-by-commas',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => splitBlocksCommand(splitByCommas, setting_storeChildBlocksIn(), true))
 
 
     // Joining

@@ -382,12 +382,22 @@ export async function outdentChildrenCommand() {
 
 export function splitByLines(text: string): IBatchBlock[] {
     const textBlocks = text.split(/\n/)
-    return textBlocks.map((tb) => {return {content: tb}})
+    return textBlocks
+        .map((tb) => {return {content: tb}})
 }
 
 export function splitByWords(text: string): IBatchBlock[] {
     const textBlocks = text.split(/[^\p{Lowercase_Letter}'-_]+/iu)
-    return textBlocks.filter((tb) => !!tb).map((tb) => {return {content: tb}})
+    return textBlocks
+        .filter((tb) => !!tb)
+        .map((tb) => {return {content: tb}})
+}
+
+export function splitByCommas(text: string): IBatchBlock[] {
+    const textBlocks = text.split(/,\s*/)
+    return textBlocks
+        .filter((tb) => !!tb)
+        .map((tb) => {return {content: tb}})
 }
 
 export function splitBySentences(text: string): IBatchBlock[] {
