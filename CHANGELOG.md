@@ -1,3 +1,16 @@
+# [1.8.0](https://github.com/stdword/logseq13-missing-commands/compare/v1.7.0...v1.8.0) (2024-04-25)
+
+
+### Bug Fixes
+
+* **commands:** toggle heading: preserve edited content ([d4db38e](https://github.com/stdword/logseq13-missing-commands/commit/d4db38ece9a486ef4ca120e7b11869e540e177d4))
+
+
+### Features
+
+* **commands:** split by commas ([a0acf35](https://github.com/stdword/logseq13-missing-commands/commit/a0acf355c91e49ac12a5219ea5a2051aa9fcf297))
+* **commands:** trim lines punctiation & split by semicolon ([11a9d7e](https://github.com/stdword/logseq13-missing-commands/commit/11a9d7e73977abb9a8f55f789bd5d800b33f0182))
+
 # [1.7.0](https://github.com/stdword/logseq13-missing-commands/compare/v1.6.0...v1.7.0) (2024-01-31)
 
 
