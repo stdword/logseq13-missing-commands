@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/stdword/logseq13-missing-commands/compare/v1.8.0...v1.8.1) (2024-04-25)
+
+
+### Bug Fixes
+
+* **features:** ⌥ + mouse click on ref wihen ref contains «-» sign ([0eeea74](https://github.com/stdword/logseq13-missing-commands/commit/0eeea744d7b056ac2d7f8be0c88bc49d1b1df2de))
+
 # [1.8.0](https://github.com/stdword/logseq13-missing-commands/compare/v1.7.0...v1.8.0) (2024-04-25)
 
 
