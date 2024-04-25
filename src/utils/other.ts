@@ -76,7 +76,7 @@ export function reduceTextWithLength(text: string, length: number, suffix = '...
 
 export function escapeForRegExp(str: string) {
     const specials = [
-        '-', '^', '$',
+        '^', '$',
         '/', '.', '*', '+', '?', '|',
         '(', ')', '[', ']', '{', '}', '\\',
     ]

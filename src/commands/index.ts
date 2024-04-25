@@ -5,7 +5,7 @@ import markdownit from 'markdown-it'
 
 import {
     PropertiesUtils, WalkBlock, checkPropertyExistenceInTree, ensureChildrenIncluded,
-    escapeForRegExp, filterOutChildBlocks, getBlocksWithReferences,
+    filterOutChildBlocks, getBlocksWithReferences,
     getChosenBlocks, getEditingCursorSelection, insertBatchBlockBefore, isWindows, lettersToNumber,
     numberToLetters, numberToRoman, p, reduceBlockTree,
     reduceTextWithLength, scrollToBlock, setEditingCursorSelection, sleep, transformBlocksTreeByReplacing,
