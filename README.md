@@ -176,12 +176,15 @@ _Designed to be very productive with keyboard_  ❤️
   </p>
 </details></td></tr>
 
-<tr><td><details><summary><b>Split comma-separated words / Join via commas</b></summary>
-  <p>Get all words from the comma-separated text and place it at the separate blocks (and vice-versa).</p>
-  <p><b>Note</b>: Use previous <i>Split by words</i> command to split.</p>
-  <p><b>Note</b>: Joinig respects the root node with colon «:».</p>
-  <p><img width="450px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/6ee64586-7ecd-4a61-bc82-b60b2756af97" /></p>
+<tr><td><details><summary><b>Split by commas or semicolons / Join via commas</b></summary>
+  <p>Split the text by commas (or semicolons with the separate command).</p>
+  <p><img width="300px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/28844592-f5a5-4fa8-845e-64a9d72fcfec" /></p>
+
+  <p>Join separate blocks via commas.</p>
   <p><img width="450px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/1fb4f3ab-31f4-40ff-a617-ea8f74fb7567" /></p>
+
+  <p><b>Note</b>: Joining can respect the root node with colon «:».</p>
+  <p><img width="450px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/6ee64586-7ecd-4a61-bc82-b60b2756af97" /></p>
 </details></td></tr>
 
 <tr><td><details><summary><b>Split / Join sentences</b></summary>
@@ -216,6 +219,13 @@ _Designed to be very productive with keyboard_  ❤️
   <p>Remove all «new line» characters from text. Helpful for work with OCR texts.</p>
   <p><b>Note</b>: command adds spaces when it's necessary.</p>
   <p><img width="400px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/770ae2d1-1cc7-4c27-9054-45849ddd4127"/></p>
+</details></td></tr>
+
+<tr><td><details><summary><b>Trim lines punctuation ". , ;"</b></summary>
+  <p>Remove any of «. , ;» characters from the end of every line of text.</p>
+  <p><b>Note</b>: command removes only one punctuation character.</p>
+
+  <p><img width="300px" src="https://github.com/stdword/logseq13-missing-commands/assets/1984175/7e6eb3a2-4ba6-4a6c-b680-5bc8449cb060"/></p>
 </details></td></tr>
 
 <tr><td><details><summary><b>Lower / upper / title letters case</b></summary>
