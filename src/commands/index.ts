@@ -400,6 +400,13 @@ export function splitByCommas(text: string): IBatchBlock[] {
         .map((tb) => {return {content: tb}})
 }
 
+export function splitBySemicolons(text: string): IBatchBlock[] {
+    const textBlocks = text.split(/;\s*/)
+    return textBlocks
+        .filter((tb) => !!tb)
+        .map((tb) => {return {content: tb}})
+}
+
 export function splitBySentences(text: string): IBatchBlock[] {
     const textBlocks = text.split(/(?<=[.!?…])\s+/)
     return textBlocks
@@ -944,6 +951,11 @@ export async function updateBlocksCommand(
         const sole = blocks[0]
         setEditingCursorSelection(sole._selectPosition[0], sole._selectPosition[1])
     }
+}
+
+export function trimLinePunctuation(content, level, block, parent) {
+    return content
+        .replaceAll(/[.;,](?=\n|$)/g, '')
 }
 
 export function removeNewLines(content, level, block, parent) {

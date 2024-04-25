@@ -19,7 +19,7 @@ import {
 
     splitByLines, splitBySentences, splitByWords,
     removeNewLines, removeHTML, parseYoutubeTimestamp,
-    lowerCase, upperCase, titleCaseWords, titleCaseSentences, splitByCommas,
+    lowerCase, upperCase, titleCaseWords, titleCaseSentences, splitByCommas, trimLinePunctuation, splitBySemicolons,
 } from './commands'
 import { MARKUP, magicQuotes, magicWrap } from './commands/magic_markup'
 import { improveCursorMovementFeature, improveMouseRefClick, improveSearchFeature, spareBlocksFeature } from './features'
@@ -369,6 +369,17 @@ async function main() {
         keybinding: {},
     }, (e) => splitBlocksCommand(splitByCommas, setting_storeChildBlocksIn(), true))
 
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Split by semicolons', key: 'mc-5-split-11-by-semicolons',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => splitBlocksCommand(splitBySemicolons, setting_storeChildBlocksIn()))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Split by semicolons (with nested)', key: 'mc-5-split-12-by-semicolons-nested',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => splitBlocksCommand(splitBySemicolons, setting_storeChildBlocksIn(), true))
+
 
     // Joining
     logseq.App.registerCommandPalette({
@@ -495,6 +506,8 @@ async function main() {
         keybinding: {},
     }, (e) => updateBlocksCommand(parseYoutubeTimestamp, true))
 
+
+    // Formatting
     logseq.App.registerCommandPalette({
         label: ICON + ' Magic **bold**', key: 'mc-7-update-14-magic-bold',
         // @ts-expect-error
@@ -558,6 +571,17 @@ async function main() {
     }, (e) => updateBlocksCommand(
         (content, level, block, parent) => {return magicQuotes(block, content, settings.magicQuotes)},
         false, false))
+
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Trim lines punctuation ". , ;"', key: 'mc-7-update-23-trim-punctuation',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(trimLinePunctuation))
+    logseq.App.registerCommandPalette({
+        label: ICON + ' Trim lines punctuation ". , ;" (with nested)', key: 'mc-7-update-24-trim-punctuation-nested',
+        // @ts-expect-error
+        keybinding: {},
+    }, (e) => updateBlocksCommand(trimLinePunctuation, true))
 
 
     // Navigation
