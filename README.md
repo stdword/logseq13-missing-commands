@@ -36,7 +36,7 @@ _Designed to be very productive with keyboard_  ❤️
 > 
 > To find out the shortcut for the particular command (or bind your own) use [this](https://github.com/stdword/logseq13-missing-commands/tree/main?tab=readme-ov-file#how-to-change-default-shortcut-for-the-particular-command) instruction.
 >
-> Any command could be called from <i>Commands Palette</i>
+> Any command could be called from <i>Commands Palette</i>, but consider [this](https://github.com/stdword/logseq13-missing-commands/edit/main/README.md#why-any-command-from-command-palette-doesnt-work) Logseq bug.
 
 <p> </p>
 
@@ -344,6 +344,12 @@ _Designed to be very productive with keyboard_  ❤️
 
 
 ## FAQ
+### Why any command from Command Palette doesn't work?
+The reason is the bug in Logseq interaction with _Command Palette_:
+- If you selecting the command **with mouse**, it cannot detect currently selected blocks or currently editing block.
+- If you selecting the command **with keyboard** (using <kbd>Enter</kbd>), it cannot detect currently editing block, but can detect currently selected blocks.
+- If you want to execute the particular command for currently editing block — [bind the shortcut](https://github.com/stdword/logseq13-missing-commands/tree/main?tab=readme-ov-file#how-to-change-default-shortcut-for-the-particular-command) to it.
+
 ### How to change default shortcut for the particular command?
 1. Open «Settings» → «Keymap» (or press `g s`).
 2. Copy this emoji «🪚» (for Windows use «🔪») and insert it to search input.
