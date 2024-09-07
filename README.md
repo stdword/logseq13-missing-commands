@@ -36,7 +36,7 @@ _Designed to be very productive with keyboard_  ❤️
 > 
 > To find out the shortcut for the particular command (or bind your own) use [this](https://github.com/stdword/logseq13-missing-commands/tree/main?tab=readme-ov-file#how-to-change-default-shortcut-for-the-particular-command) instruction.
 >
-> Any command could be called from <i>Commands Palette</i>, but consider [this](https://github.com/stdword/logseq13-missing-commands/edit/main/README.md#why-any-command-from-command-palette-doesnt-work) Logseq bug.
+> Any command could be called from <i>Commands Palette</i>, but consider [this](https://github.com/stdword/logseq13-missing-commands/tree/main?tab=readme-ov-file#why-any-command-from-command-palette-doesnt-work) Logseq bug.
 
 <p> </p>
 
@@ -344,11 +344,11 @@ _Designed to be very productive with keyboard_  ❤️
 
 
 ## FAQ
-### Why any command from Command Palette doesn't work?
-The reason is the bug in Logseq interaction with _Command Palette_:
-- If you selecting the command **with mouse**, it cannot detect currently selected blocks or currently editing block.
-- If you selecting the command **with keyboard** (using <kbd>Enter</kbd>), it cannot detect currently editing block, but can detect currently selected blocks.
-- If you want to execute the particular command for currently editing block — [bind the shortcut](https://github.com/stdword/logseq13-missing-commands/tree/main?tab=readme-ov-file#how-to-change-default-shortcut-for-the-particular-command) to it.
+### Any command from the _Command Palette_ doesn't work! Why?
+The reason is the bug in Logseq's interaction with the _Command Palette_:
+- If you select the command **with your mouse**, it cannot detect the currently selected blocks or the currently editing block.
+- If you select the command **with your keyboard** (using <kbd>Enter</kbd>), it cannot detect the currently editing block, but it can detect the currently selected blocks.
+- If you want to execute a particular command for the currently editing block — [bind a shortcut](https://github.com/stdword/logseq13-missing-commands/tree/main?tab=readme-ov-file#how-to-change-default-shortcut-for-the-particular-command) to it.
 
 ### How to change default shortcut for the particular command?
 1. Open «Settings» → «Keymap» (or press `g s`).
