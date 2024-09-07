@@ -36,7 +36,7 @@ _Designed to be very productive with keyboard_  ❤️
 > 
 > To find out the shortcut for the particular command (or bind your own) use [this](https://github.com/stdword/logseq13-missing-commands/tree/main?tab=readme-ov-file#how-to-change-default-shortcut-for-the-particular-command) instruction.
 >
-> Any command could be called from <i>Commands Palette</i>, but consider [this](https://github.com/stdword/logseq13-missing-commands/tree/main?tab=readme-ov-file#why-any-command-from-command-palette-doesnt-work) Logseq bug.
+> Any command could be called from <i>Commands Palette</i>, but consider [this](https://github.com/stdword/logseq13-missing-commands/tree/main?tab=readme-ov-file#any-command-from-the-command-palette-doesnt-work-why) Logseq bug.
 
 <p> </p>
 
