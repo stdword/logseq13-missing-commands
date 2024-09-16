@@ -208,9 +208,12 @@ export async function previousSiblingBlockCommand() {
         return
 
     const cursorPosition = (await logseq.Editor.getEditingCursorPosition())?.pos
+    const content = await logseq.Editor.getEditingBlockContent()
+    const isPositionOnTheEnd = cursorPosition === undefined || cursorPosition === content.length
+
     await logseq.Editor.editBlock(
         prevBlock.uuid,
-        cursorPosition ? {pos: cursorPosition} : undefined
+        !isPositionOnTheEnd ? {pos: cursorPosition} : undefined
     )
 }
 
@@ -225,9 +228,12 @@ export async function nextSiblingBlockCommand() {
         return
 
     const cursorPosition = (await logseq.Editor.getEditingCursorPosition())?.pos
+    const content = await logseq.Editor.getEditingBlockContent()
+    const isPositionOnTheEnd = cursorPosition === undefined || cursorPosition === content.length
+
     await logseq.Editor.editBlock(
         nextBlock.uuid,
-        cursorPosition ? {pos: cursorPosition} : undefined
+        !isPositionOnTheEnd ? {pos: cursorPosition} : undefined
     )
 }
 
@@ -264,9 +270,12 @@ export async function editPreviousBlockCommand() {
     }
 
     const cursorPosition = (await logseq.Editor.getEditingCursorPosition())?.pos
+    const content = await logseq.Editor.getEditingBlockContent()
+    const isPositionOnTheEnd = cursorPosition === undefined || cursorPosition === content.length
+
     await logseq.Editor.editBlock(
         (prevBlock as BlockEntity).uuid,
-        cursorPosition ? {pos: cursorPosition} : undefined
+        !isPositionOnTheEnd ? {pos: cursorPosition} : undefined
     )
 }
 
@@ -311,9 +320,12 @@ export async function editNextBlockCommand() {
     }
 
     const cursorPosition = (await logseq.Editor.getEditingCursorPosition())?.pos
+    const content = await logseq.Editor.getEditingBlockContent()
+    const isPositionOnTheEnd = cursorPosition === undefined || cursorPosition === content.length
+
     await logseq.Editor.editBlock(
         (nextBlock as BlockEntity).uuid,
-        cursorPosition ? {pos: cursorPosition} : undefined
+        !isPositionOnTheEnd ? {pos: cursorPosition} : undefined
     )
 }
 
@@ -892,7 +904,6 @@ export async function updateBlocksCommand(
     if (blocks.length === 0)
         return
 
-    let position = -1
     if (!isSelectedState)
         blocks[0]._selectPosition = getEditingCursorSelection()!
 
