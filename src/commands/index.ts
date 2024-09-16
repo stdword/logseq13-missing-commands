@@ -56,6 +56,7 @@ export async function toggleAutoHeadingCommand(opts: {togglingBasedOnFirstBlock:
             await logseq.Editor.removeBlockProperty(block.uuid, PROPERTY)
 
         // ensure currently edited content will be saved
+        block.content = block.content.replace(/\n?^heading:: true$/m, '')
         await logseq.Editor.updateBlock(block.uuid, block.content)
     }
 }
