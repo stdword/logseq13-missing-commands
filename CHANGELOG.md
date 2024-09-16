@@ -1,3 +1,11 @@
+## [1.8.2](https://github.com/stdword/logseq13-missing-commands/compare/v1.8.1...v1.8.2) (2024-09-16)
+
+
+### Bug Fixes
+
+* keep cursor position ast the start/end of the blocks in movement commands ([b96b05b](https://github.com/stdword/logseq13-missing-commands/commit/b96b05baa220570a199e70bc4c8676436095da52))
+* set heading command in selection mode ([2efc368](https://github.com/stdword/logseq13-missing-commands/commit/2efc3680dd1538a444d5ac7a7d32ac45291642fe))
+
 ## [1.8.1](https://github.com/stdword/logseq13-missing-commands/compare/v1.8.0...v1.8.1) (2024-04-25)
 
 
