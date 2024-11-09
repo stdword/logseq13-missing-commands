@@ -884,7 +884,7 @@ export function magicJoinCommand(independentMode: boolean) {
 export async function updateBlocksCommand(
     callback: (content: string, level: number, block: BlockEntity, parent?: BlockEntity) => string,
     recursive: boolean = false,
-    cleanPropertiesBefore: boolean = false,
+    cleanPropertiesBefore: boolean = true,
 ) {
     let [ blocks, isSelectedState ] = await getChosenBlocks()
     if (blocks.length === 0)
