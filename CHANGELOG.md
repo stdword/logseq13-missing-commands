@@ -1,3 +1,10 @@
+## [1.8.3](https://github.com/stdword/logseq13-missing-commands/compare/v1.8.2...v1.8.3) (2024-11-09)
+
+
+### Bug Fixes
+
+* bug with properties got shown after block update ([b730a54](https://github.com/stdword/logseq13-missing-commands/commit/b730a54cf26969ba163a8abbcaa7fcef97490a03))
+
 ## [1.8.2](https://github.com/stdword/logseq13-missing-commands/compare/v1.8.1...v1.8.2) (2024-09-16)
 
 
